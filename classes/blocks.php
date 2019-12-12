@@ -278,6 +278,26 @@ class blocks extends \block_manager {
         }
     }
 
+    /**
+     * Override standard functionality.
+     *
+     * - If default region is locked - don't add any blocks.
+     *
+     * @param $blockname
+     */
+    public function add_block_at_end_of_default_region($blockname) {
+        $defaulregion = $this->get_default_region();
+
+        if ($this->is_locked_region($defaulregion)) {
+            redirect($this->page->url,
+                'Default region is locked. Block has not been added',
+                null,
+                notification::NOTIFY_ERROR
+            );
+        }
+
+        parent::add_block_at_end_of_default_region($blockname);
+    }
 
     /**
      * Override standard block control display.
