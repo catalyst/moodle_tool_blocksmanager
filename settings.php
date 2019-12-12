@@ -25,7 +25,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-if ($ADMIN->fulltree) {
-   // TODO: Define the plugin settings page.
-   // https://docs.moodle.org/dev/Admin_settings
+if ($hassiteconfig) {
+    $settings = new admin_settingpage('tool_blocksmanager_settings', get_string('pluginname', 'tool_blocksmanager'));
+    $ADMIN->add('tools', $settings);
+    if (!during_initial_install()) {
+        $regions = implode(', ', array_keys($PAGE->theme->get_all_block_regions()));
+        $settings->add(new admin_setting_configtext('tool_blocksmanager/lockedregions',
+            new lang_string('lockedregions',     'tool_blocksmanager'),
+            new lang_string('lockedregions_desc', 'tool_blocksmanager', $regions),
+            ''));
+
+    }
 }

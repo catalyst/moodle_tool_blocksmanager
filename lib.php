@@ -15,17 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin strings are defined here.
+ * Lib functions.
  *
- * @package     tool_blocksmanager
- * @category    string
- * @copyright   2019 Catalyst IT
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_blocksmanager
+ * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
+ * @copyright  Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Blocks Manager';
+/**
+ * Call back tool_blocksmanager_after_config.
+ */
+function tool_blocksmanager_after_config() {
+    global $CFG;
 
-$string['lockedregions'] = 'Locked regions';
-$string['lockedregions_desc'] = 'A comma separated list of regions to lock. E.g. side-pre,side-post,center. If locked, blocks cannot be added/deleted or moved/reordered within this region. <br />All regions available for selected theme: {$a}';
+    $CFG->blockmanagerclass = '\\tool_blocksmanager\\blocks';
+}
