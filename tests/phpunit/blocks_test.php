@@ -37,7 +37,7 @@ class tool_blocksmanager_blocks_testcase extends advanced_testcase {
      * Data provide to test locke region.
      * @return array
      */
-    public function is_locked_data_provider() {
+    public function is_locked_region_data_provider() {
         return [
             'Everything is empty' => ['', '', false],
             'Region is locked' => ['locked', 'test,locked,test1', true],
@@ -45,7 +45,6 @@ class tool_blocksmanager_blocks_testcase extends advanced_testcase {
             'Config with spaces' => ['locked', '  test, locked  , test1 ', true],
             'Empty config' => ['notlocked', '', false],
             'Empty region' => ['', 'test,locked,test1, ,', false],
-            'Null region' => [null, 'test,locked,test1,null', false],
             'Space region' => [' ', 'test,locked,test1, ,', false],
         ];
     }
@@ -53,7 +52,8 @@ class tool_blocksmanager_blocks_testcase extends advanced_testcase {
     /**
      * Test that we can check if the region is locked.
      *
-     * @dataProvider  is_locked_data_provider
+     * @dataProvider  is_locked_region_data_provider
+     *
      * @param $region
      * @param $config
      * @param $expected
@@ -64,5 +64,40 @@ class tool_blocksmanager_blocks_testcase extends advanced_testcase {
         $blocks = new \tool_blocksmanager\blocks($page);
 
         $this->assertEquals($expected, $blocks->is_locked_region($region));
+    }
+
+    /**
+     * Data provide to test locke region.
+     * @return array
+     */
+    public function is_locked_layout_data_provider() {
+        return [
+            'Everything is empty' => ['', '', true],
+            'Layout is locked' => ['locked', '', true],
+            'Layout is not locked' => ['not_locked', 'test,not_locked,test1', false],
+            'Config with spaces' => ['not_locked', '  test, not_locked  , test1 ', false],
+            'Empty config' => ['locked', '', true],
+            'Empty layout' => ['', 'test,not_locked,test1, ,', true],
+            'Space layout' => [' ', 'test,not_locked,test1, ,', true],
+        ];
+    }
+
+    /**
+     * Test that we can check if layouts should be blocked or now.
+     *
+     * @dataProvider is_locked_layout_data_provider
+     *
+     * @param $layout
+     * @param $config
+     * @param $expected
+     *
+     * @throws \dml_exception
+     */
+    public function test_is_locked_layout($layout, $config, $expected) {
+        set_config('excludedlayouts', $config, 'tool_blocksmanager');
+        $page = new moodle_page();
+        $blocks = new \tool_blocksmanager\blocks($page);
+
+        $this->assertEquals($expected, $blocks->is_locked_layout($layout));
     }
 }

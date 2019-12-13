@@ -29,11 +29,19 @@ if ($hassiteconfig) {
     $settings = new admin_settingpage('tool_blocksmanager_settings', get_string('pluginname', 'tool_blocksmanager'));
     $ADMIN->add('tools', $settings);
     if (!during_initial_install()) {
+
+        // Regions to lock.
         $regions = implode(', ', array_keys($PAGE->theme->get_all_block_regions()));
         $settings->add(new admin_setting_configtext('tool_blocksmanager/lockedregions',
-            new lang_string('lockedregions',     'tool_blocksmanager'),
+            new lang_string('lockedregions', 'tool_blocksmanager'),
             new lang_string('lockedregions_desc', 'tool_blocksmanager', $regions),
             ''));
 
+        // Layouts to exclude locking.
+        $layouts = implode(', ', array_keys($PAGE->theme->layouts));
+        $settings->add(new admin_setting_configtext('tool_blocksmanager/excludedlayouts',
+            new lang_string('excludedlayouts', 'tool_blocksmanager'),
+            new lang_string('excludedlayouts_desc', 'tool_blocksmanager', $layouts),
+            ''));
     }
 }

@@ -184,7 +184,7 @@ class blocks extends \block_manager {
 
             $warning = false;
 
-            if (!$this->is_locked_region($data->bui_defaultregion)) {
+            if (!$this->is_locked_layout($this->page->pagelayout) && !$this->is_locked_region($data->bui_defaultregion)) {
                 $bi->defaultregion = $data->bui_defaultregion;
             } else {
                 $warning = true;
@@ -212,7 +212,7 @@ class blocks extends \block_manager {
             $bp->visible = $data->bui_visible;
 
 
-            if (!$this->is_locked_region($data->bui_region)) {
+            if (!$this->is_locked_layout($this->page->pagelayout) && !$this->is_locked_region($data->bui_region)) {
                 $bp->region = $data->bui_region;
             } else {
                 $warning = true;
@@ -288,7 +288,7 @@ class blocks extends \block_manager {
     public function add_block_at_end_of_default_region($blockname) {
         $defaulregion = $this->get_default_region();
 
-        if ($this->is_locked_region($defaulregion)) {
+        if ($this->is_locked_layout($this->page->pagelayout) && $this->is_locked_region($defaulregion)) {
             redirect($this->page->url,
                 'Default region is locked. Block has not been added',
                 null,
@@ -309,7 +309,7 @@ class blocks extends \block_manager {
      * @return \an|array
      */
     public function edit_controls($block) {
-        if ($this->is_locked_region($block->instance->region)) {
+        if ($this->is_locked_layout($this->page->pagelayout) && $this->is_locked_region($block->instance->region)) {
             return [];
         }
 
@@ -328,11 +328,24 @@ class blocks extends \block_manager {
     public function process_url_move() {
         $newregion = optional_param('bui_newregion', '', PARAM_ALPHANUMEXT);
 
-        if ($this->is_locked_region($newregion)) {
+        if ($this->is_locked_layout($this->page->pagelayout) && $this->is_locked_region($newregion)) {
             throw new \moodle_exception('Region is locked. Position changes will not be saved.');
         }
 
         parent::process_url_move();
+    }
+
+    /**
+     * Check if bocks on provided layout can be locked.
+     *
+     * @param string $layout Layout name.
+     *
+     * @return bool
+     * @throws \dml_exception
+     */
+    public function is_locked_layout(string $layout) {
+        // Config has regions excluded from locking.
+        return !$this->value_is_in_config($layout, 'excludedlayouts');
     }
 
     /**
@@ -343,17 +356,32 @@ class blocks extends \block_manager {
      * @return bool
      * @throws \dml_exception
      */
-    public function is_locked_region($region) {
-        $locked = false;
+    public function is_locked_region(string $region) {
+        return $this->value_is_in_config($region, 'lockedregions');
+    }
 
-        $lockedregions = get_config('tool_blocksmanager', 'lockedregions');
-        if (!empty($region) && !empty($lockedregions)) {
-            $lockedregions = explode(',', $lockedregions);
-            $lockedregions = array_map('trim', $lockedregions);
-            $locked = in_array($region, $lockedregions);
+    /**
+     * Check if provided value in config.
+     *
+     * This method will check comma separated list of values stored in config text field.
+     *
+     * @param $value
+     * @param $configname
+     *
+     * @return bool
+     * @throws \dml_exception
+     */
+    protected function value_is_in_config(string $value, string $configname) {
+        $result = false;
+
+        $configvalue = get_config('tool_blocksmanager', $configname);
+        if (!empty($value) && !empty($configvalue)) {
+            $configvalue = explode(',', $configvalue);
+            $configvalue = array_map('trim', $configvalue);
+            $result = in_array($value, $configvalue);
         }
 
-        return $locked;
+        return $result;
     }
 
 }

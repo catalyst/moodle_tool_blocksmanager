@@ -29,3 +29,5 @@ $string['pluginname'] = 'Blocks Manager';
 
 $string['lockedregions'] = 'Locked regions';
 $string['lockedregions_desc'] = 'A comma separated list of regions to lock. E.g. side-pre,side-post,center. If locked, blocks cannot be added/deleted or moved/reordered within this region. <br />All regions available for selected theme: {$a}';
+$string['excludedlayouts'] = 'Excluded layouts';
+$string['excludedlayouts_desc'] = 'A comma separated list of layouts where the blocks will not be locked. <br />All layouts available for selected theme: {$a}';
