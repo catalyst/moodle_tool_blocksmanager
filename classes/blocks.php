@@ -76,7 +76,6 @@ class blocks extends \block_manager {
         $editpage->set_pagelayout('admin');
         $editpage->blocks->show_only_fake_blocks(true);
         $editpage->set_course($this->page->course);
-        //$editpage->set_context($block->context);
         $editpage->set_context($this->page->context);
         if ($this->page->cm) {
             $editpage->set_cm($this->page->cm);
@@ -89,7 +88,6 @@ class blocks extends \block_manager {
         // At this point we are either going to redirect, or display the form, so
         // overwrite global $PAGE ready for this. (Formslib refers to it.)
         $PAGE = $editpage;
-        //some functions like MoodleQuickForm::addHelpButton use $OUTPUT so we need to replace that to
         $output = $editpage->get_renderer('core');
         $OUTPUT = $output;
 
@@ -173,7 +171,7 @@ class blocks extends \block_manager {
                 } else {
                     $bi->showinsubcontexts = 0;
                 }
-            } else  if ($parentcontext->contextlevel == CONTEXT_USER) {
+            } else if ($parentcontext->contextlevel == CONTEXT_USER) {
                 // for user context
                 // subpagepattern should be null
                 if ($bits[0] == 'user' or $bits[0] == 'my') {
@@ -211,14 +209,12 @@ class blocks extends \block_manager {
             $bp = new stdClass;
             $bp->visible = $data->bui_visible;
 
-
             if (!$this->is_locked_layout($this->page->pagelayout) && !$this->is_locked_region($data->bui_region)) {
                 $bp->region = $data->bui_region;
             } else {
                 $warning = true;
                 $bp->region = $block->instance->region;
             }
-
 
             $bp->weight = $data->bui_weight;
             $needbprecord = !$data->bui_visible || $data->bui_region != $data->bui_defaultregion ||
