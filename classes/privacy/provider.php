@@ -15,21 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin strings are defined here.
+ * Privacy Subsystem implementation.
  *
  * @package     tool_blocksmanager
- * @category    string
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_blocksmanager\privacy;
+
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Blocks Manager';
+class provider implements \core_privacy\local\metadata\null_provider {
 
-$string['lockedregions'] = 'Locked regions';
-$string['lockedregions_desc'] = 'A comma separated list of regions to lock. E.g. side-pre,side-post,center. If locked, blocks cannot be added/deleted or moved/reordered within this region. <br />All regions available for selected theme: {$a}';
-$string['excludedlayouts'] = 'Excluded layouts';
-$string['excludedlayouts_desc'] = 'A comma separated list of layouts where the blocks will not be locked. <br />All layouts available for selected theme: {$a}';
-$string['blocksmanager:bypasslocking'] = 'Bypass blocks locking';
-$string['privacy:metadata'] = 'The Blocks Manager plugin does not store any personal data.';
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}
