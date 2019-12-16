@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Plugin capabilities.
  *
  * @package     tool_blocksmanager
  * @copyright   2019 Catalyst IT
@@ -24,8 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tool_blocksmanager';
-$plugin->release = '0.1.0';
-$plugin->version = 2019121001;
-$plugin->requires = 2018051700;
-$plugin->maturity = MATURITY_STABLE;
+$capabilities = [
+    'tool/blocksmanager:bypasslocking' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW
+        ],
+    ],
+];

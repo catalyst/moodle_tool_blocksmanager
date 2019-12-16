@@ -25,4 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Block Manager';
+$string['pluginname'] = 'Blocks Manager';
+
+$string['lockedregions'] = 'Locked regions';
+$string['lockedregions_desc'] = 'A comma separated list of regions to lock. E.g. side-pre,side-post,center. If locked, blocks cannot be added/deleted or moved/reordered within this region. <br />Regions potentially available for selected theme: {$a}';
+$string['excludedlayouts'] = 'Excluded layouts';
+$string['excludedlayouts_desc'] = 'A comma separated list of layouts where the blocks will not be locked. <br />Layouts potentially available for selected theme: {$a}';
+$string['blocksmanager:bypasslocking'] = 'Bypass blocks locking';
+$string['privacy:metadata'] = 'The Blocks Manager plugin does not store any personal data.';
+$string['error:lockedregion'] = 'The region is locked. Position changes will not be saved.';
+$string['error:lockedefaultregion'] = 'The default region is locked. Block has not been added';

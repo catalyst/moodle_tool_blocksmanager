@@ -1,21 +1,29 @@
 # Block Manager #
 
-TODO Describe the plugin shortly here.
+An admin tool that allows you to control a block layout across units.
 
-TODO Provide more detailed description here.
+## Features ##
+* Lock down functionality of an entire region.
+  - Set Locked regions (blocks cannot be added/deleted or moved/reordered within these regions).
+  - Set Excluded layouts (layouts where the blocks will not be locked).
+* TODO: Lock down certain functionality of specific blocks in a region.
+* TODO: Add a specific set of blocks to ALL units, in a region.
+* TODO: Define default region and weight for every block type, so that existing blocks in units are placed in those regions and weighted accordingly.
 
-## License ##
+## Installation ##
+1. Download files or clone the repository to /admin/tool/blocksmanager
+2. Install the plugin as usual.
+3. Add following line to your config.php.
 
-2019 Catalyst IT
+```php
+ $CFG->blockmanagerclass = '\\tool_blocksmanager\\blocks';
+```
 
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
+# Crafted by Catalyst IT
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <http://www.gnu.org/licenses/>.
+This plugin was developed by Catalyst IT Australia:
+
+https://www.catalyst-au.net/
+
+![Catalyst IT](/pix/catalyst-logo.png?raw=true)

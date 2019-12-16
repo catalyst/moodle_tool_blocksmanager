@@ -15,17 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Privacy Subsystem implementation.
  *
  * @package     tool_blocksmanager
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_blocksmanager\privacy;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tool_blocksmanager';
-$plugin->release = '0.1.0';
-$plugin->version = 2019121001;
-$plugin->requires = 2018051700;
-$plugin->maturity = MATURITY_STABLE;
+class provider implements \core_privacy\local\metadata\null_provider {
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}
