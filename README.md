@@ -4,6 +4,8 @@ An admin tool that allows you to control a block layout across units.
 
 ## Features ##
 * Lock down functionality of an entire region.
+  - Set Locked regions (blocks cannot be added/deleted or moved/reordered within these regions).
+  - Set Excluded layouts (layouts where the blocks will not be locked).
 * TODO: Lock down certain functionality of specific blocks in a region.
 * TODO: Add a specific set of blocks to ALL units, in a region.
 * TODO: Define default region and weight for every block type, so that existing blocks in units are placed in those regions and weighted accordingly.
