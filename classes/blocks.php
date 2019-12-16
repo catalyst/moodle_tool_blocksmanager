@@ -40,11 +40,6 @@ defined('MOODLE_INTERNAL') || die();
 class blocks extends \block_manager {
 
     /**
-     * Handle showing/processing the submission from the block editing form.
-     * @return boolean true if the form was submitted and the new config saved. Does not
-     *      return if the editing form was displayed. False otherwise.
-     */
-    /**
      * Override standard edit actions:
      *
      *  - if a trying to save block to blocked region - don't save and display error after redirect.
@@ -180,6 +175,7 @@ class blocks extends \block_manager {
                 }
             }
 
+            // Blocks Manager custom code.
             $warning = false;
 
             if (!$this->is_locked_layout($this->page->pagelayout) && !$this->is_locked_region($data->bui_defaultregion)) {
@@ -187,6 +183,7 @@ class blocks extends \block_manager {
             } else {
                 $warning = true;
             }
+            // Blocks Manager custom code.
 
             $bi->defaultweight = $data->bui_defaultweight;
             $bi->timemodified = time();
@@ -209,12 +206,14 @@ class blocks extends \block_manager {
             $bp = new stdClass;
             $bp->visible = $data->bui_visible;
 
+            // Blocks Manager custom code.
             if (!$this->is_locked_layout($this->page->pagelayout) && !$this->is_locked_region($data->bui_region)) {
                 $bp->region = $data->bui_region;
             } else {
                 $warning = true;
                 $bp->region = $block->instance->region;
             }
+            // Blocks Manager custom code.
 
             $bp->weight = $data->bui_weight;
             $needbprecord = !$data->bui_visible || $data->bui_region != $data->bui_defaultregion ||
@@ -239,6 +238,7 @@ class blocks extends \block_manager {
                 $DB->insert_record('block_positions', $bp);
             }
 
+            // Blocks Manager custom code.
             if ($warning) {
                 redirect($this->page->url,
                     get_string('error:lockedregion', 'tool_blocksmanager'),
@@ -247,8 +247,8 @@ class blocks extends \block_manager {
                 );
             } else {
                 redirect($this->page->url);
-
             }
+            // Blocks Manager custom code.
 
         } else {
             $strheading = get_string('blockconfiga', 'moodle', $block->get_title());
