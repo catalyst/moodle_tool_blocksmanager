@@ -33,3 +33,5 @@ $string['excludedlayouts'] = 'Excluded layouts';
 $string['excludedlayouts_desc'] = 'A comma separated list of layouts where the blocks will not be locked. <br />All layouts available for selected theme: {$a}';
 $string['blocksmanager:bypasslocking'] = 'Bypass blocks locking';
 $string['privacy:metadata'] = 'The Blocks Manager plugin does not store any personal data.';
+$string['error:lockedregion'] = 'The region is locked. Position changes will not be saved.';
+$string['error:lockedefaultregion'] = 'The default region is locked. Block has not been added';

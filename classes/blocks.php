@@ -241,7 +241,7 @@ class blocks extends \block_manager {
 
             if ($warning) {
                 redirect($this->page->url,
-                    'Region is locked. Position changes is not saved.',
+                    get_string('error:lockedregion', 'tool_blocksmanager'),
                     null,
                     notification::NOTIFY_ERROR
                 );
@@ -286,7 +286,7 @@ class blocks extends \block_manager {
 
         if ($this->is_locked_layout($this->page->pagelayout) && $this->is_locked_region($defaulregion)) {
             redirect($this->page->url,
-                'Default region is locked. Block has not been added',
+                get_string('error:lockedefaultregion', 'tool_blocksmanager'),
                 null,
                 notification::NOTIFY_ERROR
             );
@@ -325,7 +325,7 @@ class blocks extends \block_manager {
         $newregion = optional_param('bui_newregion', '', PARAM_ALPHANUMEXT);
 
         if ($this->is_locked_layout($this->page->pagelayout) && $this->is_locked_region($newregion)) {
-            throw new \moodle_exception('Region is locked. Position changes will not be saved.');
+            throw new \moodle_exception('error:lockedregion', 'tool_blocksmanager');
         }
 
         parent::process_url_move();
