@@ -65,39 +65,4 @@ class tool_blocksmanager_blocks_testcase extends advanced_testcase {
 
         $this->assertEquals($expected, $blocks->is_locked_region($region));
     }
-
-    /**
-     * Data provide to test locke region.
-     * @return array
-     */
-    public function is_locked_layout_data_provider() {
-        return [
-            'Everything is empty' => ['', '', true],
-            'Layout is locked' => ['locked', '', true],
-            'Layout is not locked' => ['not_locked', 'test,not_locked,test1', false],
-            'Config with spaces' => ['not_locked', '  test, not_locked  , test1 ', false],
-            'Empty config' => ['locked', '', true],
-            'Empty layout' => ['', 'test,not_locked,test1, ,', true],
-            'Space layout' => [' ', 'test,not_locked,test1, ,', true],
-        ];
-    }
-
-    /**
-     * Test that we can check if layouts should be blocked or now.
-     *
-     * @dataProvider is_locked_layout_data_provider
-     *
-     * @param $layout
-     * @param $config
-     * @param $expected
-     *
-     * @throws \dml_exception
-     */
-    public function test_is_locked_layout($layout, $config, $expected) {
-        set_config('excludedlayouts', $config, 'tool_blocksmanager');
-        $page = new moodle_page();
-        $blocks = new \tool_blocksmanager\blocks($page);
-
-        $this->assertEquals($expected, $blocks->is_locked_layout($layout));
-    }
 }

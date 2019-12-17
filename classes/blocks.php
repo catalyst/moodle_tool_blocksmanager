@@ -178,7 +178,7 @@ class blocks extends \block_manager {
             // Blocks Manager custom code.
             $warning = false;
 
-            if (!$this->is_locked_layout($this->page->pagelayout) && !$this->is_locked_region($data->bui_defaultregion)) {
+            if (!$this->is_locked_region($data->bui_defaultregion)) {
                 $bi->defaultregion = $data->bui_defaultregion;
             } else {
                 $warning = true;
@@ -207,7 +207,7 @@ class blocks extends \block_manager {
             $bp->visible = $data->bui_visible;
 
             // Blocks Manager custom code.
-            if (!$this->is_locked_layout($this->page->pagelayout) && !$this->is_locked_region($data->bui_region)) {
+            if (!$this->is_locked_region($data->bui_region)) {
                 $bp->region = $data->bui_region;
             } else {
                 $warning = true;
@@ -284,7 +284,7 @@ class blocks extends \block_manager {
     public function add_block_at_end_of_default_region($blockname) {
         $defaulregion = $this->get_default_region();
 
-        if ($this->is_locked_layout($this->page->pagelayout) && $this->is_locked_region($defaulregion)) {
+        if ($this->is_locked_region($defaulregion)) {
             redirect($this->page->url,
                 get_string('error:lockedefaultregion', 'tool_blocksmanager'),
                 null,
@@ -305,7 +305,7 @@ class blocks extends \block_manager {
      * @return \an|array
      */
     public function edit_controls($block) {
-        if ($this->is_locked_layout($this->page->pagelayout) && $this->is_locked_region($block->instance->region)) {
+        if ($this->is_locked_region($block->instance->region)) {
             return [];
         }
 
@@ -324,24 +324,11 @@ class blocks extends \block_manager {
     public function process_url_move() {
         $newregion = optional_param('bui_newregion', '', PARAM_ALPHANUMEXT);
 
-        if ($this->is_locked_layout($this->page->pagelayout) && $this->is_locked_region($newregion)) {
+        if ($this->is_locked_region($newregion)) {
             throw new \moodle_exception('error:lockedregion', 'tool_blocksmanager');
         }
 
         parent::process_url_move();
-    }
-
-    /**
-     * Check if bocks on provided layout can be locked.
-     *
-     * @param string $layout Layout name.
-     *
-     * @return bool
-     * @throws \dml_exception
-     */
-    public function is_locked_layout(string $layout) {
-        // Config has regions excluded from locking.
-        return !$this->value_is_in_config($layout, 'excludedlayouts');
     }
 
     /**

@@ -36,12 +36,5 @@ if ($hassiteconfig) {
             new lang_string('lockedregions', 'tool_blocksmanager'),
             new lang_string('lockedregions_desc', 'tool_blocksmanager', $regions),
             ''));
-
-        // Layouts to exclude locking.
-        $layouts = implode(', ', array_keys($PAGE->theme->layouts));
-        $settings->add(new admin_setting_configtext('tool_blocksmanager/excludedlayouts',
-            new lang_string('excludedlayouts', 'tool_blocksmanager'),
-            new lang_string('excludedlayouts_desc', 'tool_blocksmanager', $layouts),
-            ''));
     }
 }
