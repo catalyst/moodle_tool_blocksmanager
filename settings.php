@@ -30,18 +30,27 @@ if ($hassiteconfig) {
     $ADMIN->add('tools', $settings);
     if (!during_initial_install()) {
 
+        // Region locking.
+        $settings->add(new admin_setting_heading('tool_blocksmanager/lockingheading',
+            new lang_string('lockingheading', 'tool_blocksmanager'),
+            '')
+        );
+
+        // Course categories to apply locking.
+        $settings->add(new admin_setting_configmultiselect('tool_blocksmanager/lockedcategories',
+                new lang_string('lockedcategories', 'tool_blocksmanager'),
+                new lang_string('lockedcategories_desc', 'tool_blocksmanager'),
+                [],
+                \core_course_category::make_categories_list()
+            )
+        );
+
         // Regions to lock.
         $regions = implode(', ', array_keys($PAGE->theme->get_all_block_regions()));
         $settings->add(new admin_setting_configtext('tool_blocksmanager/lockedregions',
-            new lang_string('lockedregions', 'tool_blocksmanager'),
-            new lang_string('lockedregions_desc', 'tool_blocksmanager', $regions),
-            ''));
-
-        // Layouts to exclude locking.
-        $layouts = implode(', ', array_keys($PAGE->theme->layouts));
-        $settings->add(new admin_setting_configtext('tool_blocksmanager/excludedlayouts',
-            new lang_string('excludedlayouts', 'tool_blocksmanager'),
-            new lang_string('excludedlayouts_desc', 'tool_blocksmanager', $layouts),
-            ''));
+                new lang_string('lockedregions', 'tool_blocksmanager'),
+                new lang_string('lockedregions_desc', 'tool_blocksmanager', $regions),
+                '')
+        );
     }
 }

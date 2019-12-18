@@ -67,37 +67,73 @@ class tool_blocksmanager_blocks_testcase extends advanced_testcase {
     }
 
     /**
-     * Data provide to test locke region.
-     * @return array
+     * Test empty course category.
      */
-    public function is_locked_layout_data_provider() {
-        return [
-            'Everything is empty' => ['', '', true],
-            'Layout is locked' => ['locked', '', true],
-            'Layout is not locked' => ['not_locked', 'test,not_locked,test1', false],
-            'Config with spaces' => ['not_locked', '  test, not_locked  , test1 ', false],
-            'Empty config' => ['locked', '', true],
-            'Empty layout' => ['', 'test,not_locked,test1, ,', true],
-            'Space layout' => [' ', 'test,not_locked,test1, ,', true],
-        ];
-    }
-
-    /**
-     * Test that we can check if layouts should be blocked or now.
-     *
-     * @dataProvider is_locked_layout_data_provider
-     *
-     * @param $layout
-     * @param $config
-     * @param $expected
-     *
-     * @throws \dml_exception
-     */
-    public function test_is_locked_layout($layout, $config, $expected) {
-        set_config('excludedlayouts', $config, 'tool_blocksmanager');
+    public function test_is_locked_course_category_empty_category() {
         $page = new moodle_page();
         $blocks = new \tool_blocksmanager\blocks($page);
 
-        $this->assertEquals($expected, $blocks->is_locked_layout($layout));
+        $this->assertFalse($blocks->is_locked_course_category(null));
+        $this->assertFalse($blocks->is_locked_course_category(false));
     }
+
+    /**
+     * Test that throw an exception if category is not valid.
+     */
+    public function test_is_locked_course_category_exception_if_invalid_category() {
+        $page = new moodle_page();
+        $blocks = new \tool_blocksmanager\blocks($page);
+
+        $category = new stdClass();
+        $category->name = 'Test name';
+
+        $this->expectException('coding_exception');
+        $this->expectExceptionMessage('Course category must have id');
+
+        $blocks->is_locked_course_category($category);
+    }
+
+    /**
+     * Test that can check if provided category is locked.
+     */
+    public function test_is_locked_course_category() {
+        // Build the category tree.
+        $cat1 = $this->getDataGenerator()->create_category();
+        $cat11 = $this->getDataGenerator()->create_category(['parent' => $cat1->id]);
+        $cat111 = $this->getDataGenerator()->create_category(['parent' => $cat11->id]);
+        $cat2 = $this->getDataGenerator()->create_category();
+
+        $page = new moodle_page();
+
+        set_config('lockedcategories', $cat111->id, 'tool_blocksmanager');
+        $blocks = new \tool_blocksmanager\blocks($page);
+        $this->assertFalse($blocks->is_locked_course_category($cat1));
+        $this->assertFalse($blocks->is_locked_course_category($cat11));
+        $this->assertTrue($blocks->is_locked_course_category($cat111));
+
+        set_config('lockedcategories', $cat11->id, 'tool_blocksmanager');
+        $blocks = new \tool_blocksmanager\blocks($page);
+        $this->assertFalse($blocks->is_locked_course_category($cat1));
+        $this->assertTrue($blocks->is_locked_course_category($cat11));
+        $this->assertTrue($blocks->is_locked_course_category($cat111));
+
+        set_config('lockedcategories', $cat1->id, 'tool_blocksmanager');
+        $blocks = new \tool_blocksmanager\blocks($page);
+        $this->assertTrue($blocks->is_locked_course_category($cat1));
+        $this->assertTrue($blocks->is_locked_course_category($cat11));
+        $this->assertTrue($blocks->is_locked_course_category($cat111));
+
+        set_config('lockedcategories', $cat2->id, 'tool_blocksmanager');
+        $blocks = new \tool_blocksmanager\blocks($page);
+        $this->assertFalse($blocks->is_locked_course_category($cat1));
+        $this->assertFalse($blocks->is_locked_course_category($cat11));
+        $this->assertFalse($blocks->is_locked_course_category($cat111));
+
+        set_config('lockedcategories', implode(',', [$cat111->id, $cat2->id]), 'tool_blocksmanager');
+        $blocks = new \tool_blocksmanager\blocks($page);
+        $this->assertFalse($blocks->is_locked_course_category($cat1));
+        $this->assertFalse($blocks->is_locked_course_category($cat11));
+        $this->assertTrue($blocks->is_locked_course_category($cat111));
+    }
+
 }
