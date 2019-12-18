@@ -32,8 +32,8 @@ if ($hassiteconfig) {
 
         // Region locking.
         $settings->add(new admin_setting_heading('tool_blocksmanager/lockingheading',
-            new lang_string('lockingheading', 'tool_blocksmanager'),
-            '')
+                new lang_string('lockingheading', 'tool_blocksmanager'),
+                '')
         );
 
         // Course categories to apply locking.
@@ -52,5 +52,20 @@ if ($hassiteconfig) {
                 new lang_string('lockedregions_desc', 'tool_blocksmanager', $regions),
                 '')
         );
+
+        // Visibility can be changed?
+        $settings->add(new admin_setting_configcheckbox('tool_blocksmanager/unlockvisibility',
+                new lang_string('unlockvisibility', 'tool_blocksmanager'),
+                new lang_string('unlockvisibility_desc', 'tool_blocksmanager'),
+                1)
+        );
+
+        // Can be configured?
+        $settings->add(new admin_setting_configcheckbox('tool_blocksmanager/unlockconfig',
+                new lang_string('unlockconfig', 'tool_blocksmanager'),
+                new lang_string('unlockconfig_desc', 'tool_blocksmanager'),
+                1)
+        );
+
     }
 }
