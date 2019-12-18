@@ -32,8 +32,8 @@ if ($hassiteconfig) {
 
         // Region locking.
         $settings->add(new admin_setting_heading('tool_blocksmanager/lockingheading',
-            new lang_string('lockingheading', 'tool_blocksmanager'),
-            '')
+                new lang_string('lockingheading', 'tool_blocksmanager'),
+                '')
         );
 
         // Course categories to apply locking.
