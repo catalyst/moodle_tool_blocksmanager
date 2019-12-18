@@ -60,5 +60,12 @@ if ($hassiteconfig) {
                 1)
         );
 
+        // Can be configured?
+        $settings->add(new admin_setting_configcheckbox('tool_blocksmanager/unlockconfig',
+                new lang_string('unlockconfig', 'tool_blocksmanager'),
+                new lang_string('unlockconfig_desc', 'tool_blocksmanager'),
+                1)
+        );
+
     }
 }

@@ -186,12 +186,17 @@ class blocks extends \block_manager {
 
             if (!$this->is_locked_region($data->bui_defaultregion) && !$this->is_locked_course_category($this->page->category)) {
                 $bi->defaultregion = $data->bui_defaultregion;
-            } else {
+            } else if ($block->instance->defaultregion != $data->bui_defaultregion) {
+                $warning = true;
+            }
+
+            if (!$this->is_locked_region($data->bui_defaultregion) && !$this->is_locked_course_category($this->page->category)) {
+                $bi->defaultweight = $data->bui_defaultweight;
+            } else if ($block->instance->defaultweight != $data->bui_defaultweight) {
                 $warning = true;
             }
             // Blocks Manager custom code.
 
-            $bi->defaultweight = $data->bui_defaultweight;
             $bi->timemodified = time();
             $DB->update_record('block_instances', $bi);
 
@@ -210,18 +215,33 @@ class blocks extends \block_manager {
             $block->instance_config_save($config);
 
             $bp = new stdClass;
-            $bp->visible = $data->bui_visible;
 
             // Blocks Manager custom code.
+            if (!$this->is_locked_region($data->bui_region) && !$this->is_locked_course_category($this->page->category)) {
+                $bp->visible = $data->bui_visible;
+            } else {
+                if ($this->can_change_visibility($block)) {
+                    $bp->visible = $data->bui_visible;
+                } else {
+                    $bp->visible = $block->instance->visible;
+                    $warning = true;
+                }
+            }
+
             if (!$this->is_locked_region($data->bui_region) && !$this->is_locked_course_category($this->page->category)) {
                 $bp->region = $data->bui_region;
             } else {
                 $warning = true;
                 $bp->region = $block->instance->region;
             }
-            // Blocks Manager custom code.
 
-            $bp->weight = $data->bui_weight;
+            if (!$this->is_locked_region($data->bui_region) && !$this->is_locked_course_category($this->page->category)) {
+                $bp->weight = $data->bui_weight;
+            } else {
+                $warning = true;
+                $bp->weight = $block->instance->weight;
+            }
+            // Blocks Manager custom code.
             $needbprecord = !$data->bui_visible || $data->bui_region != $data->bui_defaultregion ||
                 $data->bui_weight != $data->bui_defaultweight;
 
@@ -318,6 +338,17 @@ class blocks extends \block_manager {
             $blocktitle = $block->title;
             if (empty($blocktitle)) {
                 $blocktitle = $block->arialabel;
+            }
+
+            if ((get_config('tool_blocksmanager', 'unlockconfig')) && ($this->page->user_can_edit_blocks() || $block->user_can_edit())) {
+                // Edit config icon - always show - needed for positioning UI.
+                $str = new \lang_string('configureblock', 'block', $blocktitle);
+                $controls[] = new \action_menu_link_secondary(
+                    new moodle_url($actionurl, array('bui_editid' => $block->instance->id)),
+                    new \pix_icon('t/edit', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
+                    $str,
+                    array('class' => 'editing_edit')
+                );
             }
 
             if ($this->can_change_visibility($block)) {
