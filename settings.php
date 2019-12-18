@@ -52,5 +52,13 @@ if ($hassiteconfig) {
                 new lang_string('lockedregions_desc', 'tool_blocksmanager', $regions),
                 '')
         );
+
+        // Visibility can be changed?
+        $settings->add(new admin_setting_configcheckbox('tool_blocksmanager/unlockvisibility',
+                new lang_string('unlockvisibility', 'tool_blocksmanager'),
+                new lang_string('unlockvisibility_desc', 'tool_blocksmanager'),
+                1)
+        );
+
     }
 }

@@ -312,10 +312,72 @@ class blocks extends \block_manager {
      */
     public function edit_controls($block) {
         if ($this->is_locked_region($block->instance->region) && $this->is_locked_course_category($this->page->category)) {
-            return [];
+            $controls = [];
+
+            $actionurl = $this->page->url->out(false, array('sesskey' => sesskey()));
+            $blocktitle = $block->title;
+            if (empty($blocktitle)) {
+                $blocktitle = $block->arialabel;
+            }
+
+            if ($this->can_change_visibility($block)) {
+                // Show/hide icon.
+                if ($block->instance->visible) {
+                    $str = new \lang_string('hideblock', 'block', $blocktitle);
+                    $url = new moodle_url($actionurl, array('bui_hideid' => $block->instance->id));
+                    $icon = new \pix_icon('t/hide', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
+                    $attributes = array('class' => 'editing_hide');
+                } else {
+                    $str = new \lang_string('showblock', 'block', $blocktitle);
+                    $url = new moodle_url($actionurl, array('bui_showid' => $block->instance->id));
+                    $icon = new \pix_icon('t/show', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
+                    $attributes = array('class' => 'editing_show');
+                }
+                $controls[] = new \action_menu_link_secondary($url, $icon, $str, $attributes);
+            }
+
+            return $controls;
         }
 
         return parent::edit_controls($block);
+    }
+
+    /**
+     * Handle showing or hiding a block.
+     * @return boolean true if anything was done. False if not.
+     */
+    public function process_url_show_hide() {
+        if ($blockid = optional_param('bui_hideid', null, PARAM_INT)) {
+            $newvisibility = 0;
+        } else if ($blockid = optional_param('bui_showid', null, PARAM_INT)) {
+            $newvisibility = 1;
+        } else {
+            return false;
+        }
+
+        require_sesskey();
+
+        $block = $this->page->blocks->find_instance($blockid);
+
+        if (!$this->can_change_visibility($block)) {
+            return false;
+        }
+
+        return parent::process_url_show_hide();
+    }
+
+    /**
+     * Check if visibility can be changed.
+     *
+     * @param \block_base $block Block instance.
+     *
+     * @return bool
+     * @throws \dml_exception
+     */
+    public function can_change_visibility($block) {
+        return  get_config('tool_blocksmanager', 'unlockvisibility')
+            && $this->page->user_can_edit_blocks()
+            && $block->instance_can_be_hidden();
     }
 
     /**

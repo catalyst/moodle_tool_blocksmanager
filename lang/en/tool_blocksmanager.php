@@ -36,3 +36,5 @@ $string['blocksmanager:bypasslocking'] = 'Bypass blocks locking';
 $string['privacy:metadata'] = 'The Blocks Manager plugin does not store any personal data.';
 $string['error:lockedregion'] = 'The region is locked. Position changes will not be saved.';
 $string['error:lockedefaultregion'] = 'The default region is locked. Block has not been added';
+$string['unlockvisibility'] = 'Visibility can be changed?';
+$string['unlockvisibility_desc'] = 'If yes, then visibility settings will be available for the blocks in the locked regions.';
