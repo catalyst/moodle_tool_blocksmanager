@@ -40,6 +40,12 @@ defined('MOODLE_INTERNAL') || die();
 class blocks extends \block_manager {
 
     /**
+     * A list of locked categories.
+     * @var array
+     */
+    protected $lockedcategories;
+
+    /**
      * Override standard edit actions:
      *
      *  - if a trying to save block to blocked region - don't save and display error after redirect.
@@ -178,7 +184,7 @@ class blocks extends \block_manager {
             // Blocks Manager custom code.
             $warning = false;
 
-            if (!$this->is_locked_region($data->bui_defaultregion)) {
+            if (!$this->is_locked_region($data->bui_defaultregion) && !$this->is_locked_course_category($this->page->category)) {
                 $bi->defaultregion = $data->bui_defaultregion;
             } else {
                 $warning = true;
@@ -207,7 +213,7 @@ class blocks extends \block_manager {
             $bp->visible = $data->bui_visible;
 
             // Blocks Manager custom code.
-            if (!$this->is_locked_region($data->bui_region)) {
+            if (!$this->is_locked_region($data->bui_region) && !$this->is_locked_course_category($this->page->category)) {
                 $bp->region = $data->bui_region;
             } else {
                 $warning = true;
@@ -284,7 +290,7 @@ class blocks extends \block_manager {
     public function add_block_at_end_of_default_region($blockname) {
         $defaulregion = $this->get_default_region();
 
-        if ($this->is_locked_region($defaulregion)) {
+        if ($this->is_locked_region($defaulregion) && $this->is_locked_course_category($this->page->category)) {
             redirect($this->page->url,
                 get_string('error:lockedefaultregion', 'tool_blocksmanager'),
                 null,
@@ -305,7 +311,7 @@ class blocks extends \block_manager {
      * @return \an|array
      */
     public function edit_controls($block) {
-        if ($this->is_locked_region($block->instance->region)) {
+        if ($this->is_locked_region($block->instance->region) && $this->is_locked_course_category($this->page->category)) {
             return [];
         }
 
@@ -324,7 +330,7 @@ class blocks extends \block_manager {
     public function process_url_move() {
         $newregion = optional_param('bui_newregion', '', PARAM_ALPHANUMEXT);
 
-        if ($this->is_locked_region($newregion)) {
+        if ($this->is_locked_region($newregion) && $this->is_locked_course_category($this->page->category)) {
             throw new \moodle_exception('error:lockedregion', 'tool_blocksmanager');
         }
 
@@ -365,6 +371,55 @@ class blocks extends \block_manager {
         }
 
         return $result;
+    }
+
+    /**
+     * Check if the provided course category is locked.
+     *
+     * @param stdClass | null $category Course category.
+     *
+     * @return bool
+     */
+    public function is_locked_course_category($category) {
+        if (empty($category)) {
+            return false;
+        } else {
+            if (empty($category->id)) {
+                throw new \coding_exception('Course category must have id');
+            }
+
+            return in_array($category->id, $this->get_locked_categories());
+        }
+    }
+
+    /**
+     * Get list of locked categories.
+     *
+     * @return array
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     */
+    protected function get_locked_categories() {
+        if (isset($this->lockedcategories) && is_array($this->lockedcategories)) {
+            return $this->lockedcategories;
+        }
+
+        $this->lockedcategories = [];
+        $lockedcats = get_config('tool_blocksmanager', 'lockedcategories');
+
+        if (!empty($lockedcats)) {
+            $lockedcats = explode(',', $lockedcats);
+
+            foreach ($lockedcats as $cat) {
+                $this->lockedcategories[] = $cat;
+                $this->lockedcategories = array_merge(
+                    $this->lockedcategories,
+                    \core_course_category::get($cat)->get_all_children_ids()
+                );
+            }
+        }
+
+        return $this->lockedcategories;
     }
 
 }
