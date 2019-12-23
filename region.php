@@ -15,26 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin administration pages are defined here.
+ *  Region editing page.
  *
  * @package     tool_blocksmanager
- * @category    admin
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require_once('../../../config.php');
+require_once($CFG->libdir . '/adminlib.php');
 
-if ($hassiteconfig) {
-    $settings = new admin_category('tool_blocksmanager_settings', get_string('pluginname', 'tool_blocksmanager'));
-    $ADMIN->add('tools', $settings);
+$action = optional_param('action', 'view', PARAM_ALPHANUMEXT);
 
-    $ADMIN->add(
-        'tool_blocksmanager_settings',
-        new admin_externalpage(
-            'tool_blocksmanager/region',
-            get_string('manageregionlocking', 'tool_blocksmanager'),
-            new moodle_url('/admin/tool/blocksmanager/region.php')
-        )
-    );
-}
+$PAGE->set_context(context_system::instance());
+
+$manager = new \tool_blocksmanager\region_manager();
+$manager->execute($action);
