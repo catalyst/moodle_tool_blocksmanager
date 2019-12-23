@@ -504,11 +504,14 @@ class block_manager extends \block_manager {
             $lockedcats = explode(',', $lockedcats);
 
             foreach ($lockedcats as $cat) {
-                $this->lockedcategories[] = $cat;
-                $this->lockedcategories = array_merge(
-                    $this->lockedcategories,
-                    \core_course_category::get($cat)->get_all_children_ids()
-                );
+                if ($category = \core_course_category::get($cat, IGNORE_MISSING)) {
+                    $this->lockedcategories[] = $cat;
+                    $this->lockedcategories = array_merge(
+                        $this->lockedcategories,
+                        $category->get_all_children_ids()
+                    );
+                }
+
             }
         }
 
