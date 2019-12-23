@@ -81,6 +81,13 @@ class region_controller extends base_controller {
     /**
      * @inheritdoc
      */
+    protected function get_view_heading() {
+        return get_string('manageregionlocking', 'tool_blocksmanager');
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function get_new_heading() {
         return get_string('newregionlocking', 'tool_blocksmanager');
     }

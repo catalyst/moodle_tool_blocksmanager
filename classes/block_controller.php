@@ -82,6 +82,13 @@ class block_controller extends base_controller {
     /**
      * @inheritdoc
      */
+    protected function get_view_heading() {
+        return get_string('manageblocklocking', 'tool_blocksmanager');
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function get_new_heading() {
         return get_string('newblocklocking', 'tool_blocksmanager');
     }

@@ -126,6 +126,12 @@ abstract class base_controller {
     abstract protected function get_form($instance);
 
     /**
+     * View page heading string.
+     * @return mixed
+     */
+    abstract protected function get_view_heading();
+
+    /**
      * New record heading string.
      * @return string
      */
@@ -216,7 +222,7 @@ abstract class base_controller {
      */
     protected function view() {
 
-        $this->header(get_string('manageregionlocking', 'tool_blocksmanager'));
+        $this->header($this->get_view_heading());
         $this->print_add_button();
         $this->display_all_records();
 
