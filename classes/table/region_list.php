@@ -25,8 +25,8 @@
 namespace tool_blocksmanager\table;
 
 use core\persistent;
-use tool_blocksmanager\base_manager;
-use tool_blocksmanager\region_manager;
+use tool_blocksmanager\base_controller;
+use tool_blocksmanager\region_controller;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -204,7 +204,7 @@ class region_list extends \flexible_table {
 
         $buttons[] = self::format_icon_link(
             new \moodle_url($this->get_base_url(), [
-                'action' => base_manager::ACTION_EDIT,
+                'action' => base_controller::ACTION_EDIT,
                 'id' => $record->get('id'),
             ]),
             't/edit',
@@ -215,7 +215,7 @@ class region_list extends \flexible_table {
             new \moodle_url($this->get_base_url(), [
                 'id' => $record->get('id'),
                 'sesskey' => sesskey(),
-                'action' => base_manager::ACTION_DELETE,
+                'action' => base_controller::ACTION_DELETE,
             ]),
             't/delete' ,
             get_string('delete')
@@ -229,7 +229,7 @@ class region_list extends \flexible_table {
      * @return string
      */
     protected function get_base_url() {
-        return region_manager::get_base_url();
+        return region_controller::get_base_url();
     }
 
     /**

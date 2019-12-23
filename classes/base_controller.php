@@ -26,7 +26,7 @@ namespace tool_blocksmanager;
 
 defined('MOODLE_INTERNAL') || die();
 
-abstract class base_manager {
+abstract class base_controller {
     /**
      * View action.
      */

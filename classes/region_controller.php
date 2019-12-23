@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Block manager class for manipulating with blocks on the edit page.
+ * Region manager class for manipulating with regions on the edit page.
  *
  * @package     tool_blocksmanager
  * @copyright   2019 Catalyst IT
@@ -24,19 +24,18 @@
 
 namespace tool_blocksmanager;
 
-
-use tool_blocksmanager\table\block_list;
+use tool_blocksmanager\table\region_list;
 
 defined('MOODLE_INTERNAL') || die();
 
 
-class block_manager extends base_manager {
+class region_controller extends base_controller {
 
     /**
      * @inheritdoc
      */
     protected function get_instance($id = 0, \stdClass $data = null) {
-        return new block($id, $data);
+        return new region($id, $data);
     }
 
     /**
@@ -45,16 +44,16 @@ class block_manager extends base_manager {
     protected function get_form($instance) {
         global $PAGE;
 
-        return new form\block_form($PAGE->url->out(false), ['persistent' => $instance]);
+        return new form\region_form($PAGE->url->out(false), ['persistent' => $instance]);
     }
 
     /**
      * @inheritdoc
      */
     protected function display_all_records() {
-        $records = block::get_records();
+        $records = region::get_records();
 
-        $table = new block_list();
+        $table = new region_list();
         $table->display($records);
     }
 
@@ -62,34 +61,34 @@ class block_manager extends base_manager {
      * @inheritdoc
      */
     protected function get_create_button_text() {
-        return get_string('addblocklocking', 'tool_blocksmanager');
+        return get_string('addregionlocking', 'tool_blocksmanager');
     }
 
     /**
      * @inheritdoc
      */
     protected function set_external_page() {
-        admin_externalpage_setup('tool_blocksmanager/block');
+        admin_externalpage_setup('tool_blocksmanager/region');
     }
 
     /**
      * @inheritdoc
      */
     public static function get_base_url() {
-        return '/admin/tool/blocksmanager/block.php';
+        return '/admin/tool/blocksmanager/region.php';
     }
 
     /**
      * @inheritdoc
      */
     protected function get_new_heading() {
-        return get_string('newblocklocking', 'tool_blocksmanager');
+        return get_string('newregionlocking', 'tool_blocksmanager');
     }
 
     /**
      * @inheritdoc
      */
     protected function get_edit_heading() {
-        return get_string('editblocklocking', 'tool_blocksmanager');
+        return get_string('editregionlocking', 'tool_blocksmanager');
     }
 }
