@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-class tool_blocksmanager_blocks_testcase extends advanced_testcase {
+class tool_blocksmanager_block_manager_testcase extends advanced_testcase {
 
     /**
      * Initial set up.
@@ -61,7 +61,7 @@ class tool_blocksmanager_blocks_testcase extends advanced_testcase {
     public function test_is_locked_region($region, $config, $expected) {
         set_config('lockedregions', $config, 'tool_blocksmanager');
         $page = new moodle_page();
-        $blocks = new \tool_blocksmanager\blocks($page);
+        $blocks = new \tool_blocksmanager\block_manager($page);
 
         $this->assertEquals($expected, $blocks->is_locked_region($region));
     }
@@ -71,7 +71,7 @@ class tool_blocksmanager_blocks_testcase extends advanced_testcase {
      */
     public function test_is_locked_course_category_empty_category() {
         $page = new moodle_page();
-        $blocks = new \tool_blocksmanager\blocks($page);
+        $blocks = new \tool_blocksmanager\block_manager($page);
 
         $this->assertFalse($blocks->is_locked_course_category(null));
         $this->assertFalse($blocks->is_locked_course_category(false));
@@ -82,7 +82,7 @@ class tool_blocksmanager_blocks_testcase extends advanced_testcase {
      */
     public function test_is_locked_course_category_exception_if_invalid_category() {
         $page = new moodle_page();
-        $blocks = new \tool_blocksmanager\blocks($page);
+        $blocks = new \tool_blocksmanager\block_manager($page);
 
         $category = new stdClass();
         $category->name = 'Test name';
@@ -106,31 +106,31 @@ class tool_blocksmanager_blocks_testcase extends advanced_testcase {
         $page = new moodle_page();
 
         set_config('lockedcategories', $cat111->id, 'tool_blocksmanager');
-        $blocks = new \tool_blocksmanager\blocks($page);
+        $blocks = new \tool_blocksmanager\block_manager($page);
         $this->assertFalse($blocks->is_locked_course_category($cat1));
         $this->assertFalse($blocks->is_locked_course_category($cat11));
         $this->assertTrue($blocks->is_locked_course_category($cat111));
 
         set_config('lockedcategories', $cat11->id, 'tool_blocksmanager');
-        $blocks = new \tool_blocksmanager\blocks($page);
+        $blocks = new \tool_blocksmanager\block_manager($page);
         $this->assertFalse($blocks->is_locked_course_category($cat1));
         $this->assertTrue($blocks->is_locked_course_category($cat11));
         $this->assertTrue($blocks->is_locked_course_category($cat111));
 
         set_config('lockedcategories', $cat1->id, 'tool_blocksmanager');
-        $blocks = new \tool_blocksmanager\blocks($page);
+        $blocks = new \tool_blocksmanager\block_manager($page);
         $this->assertTrue($blocks->is_locked_course_category($cat1));
         $this->assertTrue($blocks->is_locked_course_category($cat11));
         $this->assertTrue($blocks->is_locked_course_category($cat111));
 
         set_config('lockedcategories', $cat2->id, 'tool_blocksmanager');
-        $blocks = new \tool_blocksmanager\blocks($page);
+        $blocks = new \tool_blocksmanager\block_manager($page);
         $this->assertFalse($blocks->is_locked_course_category($cat1));
         $this->assertFalse($blocks->is_locked_course_category($cat11));
         $this->assertFalse($blocks->is_locked_course_category($cat111));
 
         set_config('lockedcategories', implode(',', [$cat111->id, $cat2->id]), 'tool_blocksmanager');
-        $blocks = new \tool_blocksmanager\blocks($page);
+        $blocks = new \tool_blocksmanager\block_manager($page);
         $this->assertFalse($blocks->is_locked_course_category($cat1));
         $this->assertFalse($blocks->is_locked_course_category($cat11));
         $this->assertTrue($blocks->is_locked_course_category($cat111));

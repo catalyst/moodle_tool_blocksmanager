@@ -17,7 +17,7 @@ An admin tool that allows you to control a block layout across units.
 3. Add following line to your config.php.
 
 ```php
- $CFG->blockmanagerclass = '\\tool_blocksmanager\\blocks';
+ $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
 ```
 
 # Crafted by Catalyst IT

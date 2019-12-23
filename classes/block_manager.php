@@ -37,7 +37,7 @@ use core_tag_tag;
 
 defined('MOODLE_INTERNAL') || die();
 
-class blocks extends \block_manager {
+class block_manager extends \block_manager {
 
     /**
      * A list of locked categories.

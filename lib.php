@@ -31,5 +31,5 @@ defined('MOODLE_INTERNAL') || die();
 function tool_blocksmanager_after_config() {
     global $CFG;
 
-    $CFG->blockmanagerclass = '\\tool_blocksmanager\\blocks';
+    $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
 }
