@@ -24,7 +24,8 @@
 
 namespace tool_blocksmanager\table;
 
-use tool_blocksmanager\region;
+use core\persistent;
+use tool_blocksmanager\base_manager;
 use tool_blocksmanager\region_manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -47,26 +48,15 @@ class region_list extends \flexible_table {
         global $PAGE;
 
         $id = (is_null($id) ? self::$autoid++ : $id);
-        parent::__construct('tool_blocksmanager_region_'.$id);
+        parent::__construct('tool_blocksmanager_'.$id);
 
         $this->define_baseurl($PAGE->url);
         $this->set_attribute('class', 'generaltable admintable');
 
-        $columns = [
-            'region',
-            'categories',
-            'config',
-            'delete',
-            'hide',
-            'add',
-            'move',
-            'actions'
-        ];
-
-        $this->define_columns($columns);
+        $this->define_columns($this->get_columns());
 
         $headers = [];
-        foreach ($columns as $column) {
+        foreach ($this->get_columns() as $column) {
             $headers[] = get_string('col_' . $column, 'tool_blocksmanager');
         }
 
@@ -76,85 +66,102 @@ class region_list extends \flexible_table {
     }
 
     /**
+     * Return a list of all columns;
+     * @return array
+     */
+    protected function get_columns() {
+        return [
+            'region',
+            'categories',
+            'config',
+            'delete',
+            'hide',
+            'add',
+            'move',
+            'actions'
+        ];
+    }
+
+    /**
      * Display column.
      *
-     * @param \tool_blocksmanager\region $record
+     * @param persistent $record
      * @return string
      */
-    public function col_region(region $record) {
+    public function col_region(persistent $record) {
         return $this->get_display_value($record, 'region');
     }
 
     /**
      * Display column.
      *
-     * @param \tool_blocksmanager\region $record
+     * @param persistent $record
      * @return string
      */
-    public function col_categories(region $record) {
+    public function col_categories(persistent $record) {
         return $this->get_display_value($record, 'categories');
     }
 
     /**
      * Display column.
      *
-     * @param \tool_blocksmanager\region $record
+     * @param persistent $record
      * @return string
      */
-    public function col_config(region $record) {
+    public function col_config(persistent $record) {
         return $this->get_display_value($record, 'config');
     }
 
     /**
      * Display column.
      *
-     * @param \tool_blocksmanager\region $record
+     * @param persistent $record
      * @return string
      */
-    public function col_delete(region $record) {
+    public function col_delete(persistent $record) {
         return $this->get_display_value($record, 'delete');
     }
 
     /**
      * Display column.
      *
-     * @param \tool_blocksmanager\region $record
+     * @param persistent $record
      * @return string
      */
-    public function col_hide(region $record) {
+    public function col_hide(persistent $record) {
         return $this->get_display_value($record, 'hide');
     }
 
     /**
      * Display column.
      *
-     * @param \tool_blocksmanager\region $record
+     * @param persistent $record
      * @return string
      */
-    public function col_add(region $record) {
+    public function col_add(persistent $record) {
         return $this->get_display_value($record, 'add');
     }
 
     /**
      * Display column.
      *
-     * @param \tool_blocksmanager\region $record
+     * @param persistent $record
      * @return string
      */
-    public function col_move(region $record) {
+    public function col_move(persistent $record) {
         return $this->get_display_value($record, 'move');
     }
 
     /**
      * Get value to display.
      *
-     * @param \tool_blocksmanager\region $record Region record
+     * @param persistent $record Region record
      * @param string $col Col name.
      *
      * @return mixed|string
      * @throws \coding_exception
      */
-    protected function get_display_value(region $record, $col) {
+    protected function get_display_value(persistent $record, $col) {
         $value = $record->get($col);
 
         switch ($col) {
@@ -189,15 +196,15 @@ class region_list extends \flexible_table {
     /**
      * Display column.
      *
-     * @param \tool_blocksmanager\region $record
+     * @param persistent $record
      * @return string
      */
-    public function col_actions(region $record) {
+    public function col_actions(persistent $record) {
         $buttons = [];
 
         $buttons[] = self::format_icon_link(
-            new \moodle_url(region_manager::get_base_url(), [
-                'action' => region_manager::ACTION_EDIT,
+            new \moodle_url($this->get_base_url(), [
+                'action' => base_manager::ACTION_EDIT,
                 'id' => $record->get('id'),
             ]),
             't/edit',
@@ -205,16 +212,24 @@ class region_list extends \flexible_table {
         );
 
         $buttons[] = self::format_icon_link(
-            new \moodle_url(region_manager::get_base_url(), [
+            new \moodle_url($this->get_base_url(), [
                 'id' => $record->get('id'),
                 'sesskey' => sesskey(),
-                'action' => region_manager::ACTION_DELETE,
+                'action' => base_manager::ACTION_DELETE,
             ]),
             't/delete' ,
             get_string('delete')
         );
 
         return \html_writer::tag('nobr', implode('&nbsp;', $buttons));
+    }
+
+    /**
+     * Return base URL for action buttons.
+     * @return string
+     */
+    protected function get_base_url() {
+        return region_manager::get_base_url();
     }
 
     /**
@@ -242,7 +257,7 @@ class region_list extends \flexible_table {
     /**
      * Sets the data of the table.
      *
-     * @param region[] $records  An array with records.
+     * @param persistent[] $records  An array with records.
      */
     public function display(array $records) {
         foreach ($records as $record) {

@@ -15,17 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ *  Block editing page.
  *
  * @package     tool_blocksmanager
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require_once('../../../config.php');
+require_once($CFG->libdir . '/adminlib.php');
 
-$plugin->component = 'tool_blocksmanager';
-$plugin->release = '0.1.0';
-$plugin->version = 2019122301;
-$plugin->requires = 2018051700;
-$plugin->maturity = MATURITY_STABLE;
+$action = optional_param('action', 'view', PARAM_ALPHANUMEXT);
+
+$PAGE->set_context(context_system::instance());
+
+$manager = new \tool_blocksmanager\block_manager();
+$manager->execute($action);

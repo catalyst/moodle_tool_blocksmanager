@@ -66,5 +66,38 @@ function xmldb_tool_blocksmanager_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2019122300, 'tool', 'blocksmanager');
     }
 
+    if ($oldversion < 2019122301) {
+
+        // Define table tool_blocksmanager_block to be created.
+        $table = new xmldb_table('tool_blocksmanager_block');
+
+        // Adding fields to table tool_blocksmanager_block.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('region', XMLDB_TYPE_CHAR, '200', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('block', XMLDB_TYPE_CHAR, '200', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('categories', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('config', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('delete', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('hide', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('move', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table tool_blocksmanager_block.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+        // Adding indexes to table tool_blocksmanager_block.
+        $table->add_index('block', XMLDB_INDEX_NOTUNIQUE, ['block']);
+
+        // Conditionally launch create table for tool_blocksmanager_block.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Blocksmanager savepoint reached.
+        upgrade_plugin_savepoint(true, 2019122301, 'tool', 'blocksmanager');
+    }
+
     return true;
 }

@@ -32,6 +32,15 @@ if ($hassiteconfig) {
     $ADMIN->add(
         'tool_blocksmanager_settings',
         new admin_externalpage(
+            'tool_blocksmanager/block',
+            get_string('manageblocklocking', 'tool_blocksmanager'),
+            new moodle_url('/admin/tool/blocksmanager/block.php')
+        )
+    );
+
+    $ADMIN->add(
+        'tool_blocksmanager_settings',
+        new admin_externalpage(
             'tool_blocksmanager/region',
             get_string('manageregionlocking', 'tool_blocksmanager'),
             new moodle_url('/admin/tool/blocksmanager/region.php')
