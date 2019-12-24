@@ -188,9 +188,9 @@ abstract class base_controller {
             redirect(new \moodle_url(static::get_base_url()));
         } else {
             if (empty($instance)) {
-                $this->header($this->get_edit_heading());
-            } else {
                 $this->header($this->get_new_heading());
+            } else {
+                $this->header($this->get_edit_heading());
             }
         }
 
