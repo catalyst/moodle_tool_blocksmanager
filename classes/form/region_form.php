@@ -35,10 +35,15 @@ class region_form extends \core\form\persistent {
      * @inheritdoc
      */
     protected function definition() {
+        global $PAGE;
+
         $mform = $this->_form;
 
         $mform->addElement('text', 'region', get_string('field_region', 'tool_blocksmanager'));
         $mform->addRule('region', get_string('required'), 'required', null, 'client');
+
+        $regions = implode(', ', array_keys($PAGE->theme->get_all_block_regions()));
+        $mform->addElement('static', 'availableregions', get_string('availableregions', 'tool_blocksmanager'), $regions);
 
         $mform->addElement('select',
             'categories',

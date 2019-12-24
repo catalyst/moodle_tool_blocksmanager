@@ -42,6 +42,9 @@ class block_form extends \core\form\persistent {
         $mform->addElement('text', 'region', get_string('field_region', 'tool_blocksmanager'));
         $mform->addRule('region', get_string('required'), 'required', null, 'client');
 
+        $regions = implode(', ', array_keys($PAGE->theme->get_all_block_regions()));
+        $mform->addElement('static', 'availableregions', get_string('availableregions', 'tool_blocksmanager'), $regions);
+
         $blocks = [];
         foreach ($PAGE->blocks->get_installed_blocks() as $block) {
             $blocks[$block->name] = $block->name;

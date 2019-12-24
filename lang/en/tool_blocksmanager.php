@@ -60,4 +60,5 @@ $string['field_delete'] = 'Allow to Delete?';
 $string['field_hide'] = 'Allow to Hide?';
 $string['field_add'] = 'Allow to Add?';
 $string['field_move'] = 'Allow to Move?';
+$string['availableregions'] = 'Potentially available regions:';
 
