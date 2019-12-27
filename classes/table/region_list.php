@@ -74,7 +74,7 @@ class region_list extends \flexible_table {
             'region',
             'categories',
             'config',
-            'delete',
+            'remove',
             'hide',
             'add',
             'move',
@@ -118,8 +118,8 @@ class region_list extends \flexible_table {
      * @param persistent $record
      * @return string
      */
-    public function col_delete(persistent $record) {
-        return $this->get_display_value($record, 'delete');
+    public function col_remove(persistent $record) {
+        return $this->get_display_value($record, 'remove');
     }
 
     /**
@@ -179,7 +179,7 @@ class region_list extends \flexible_table {
                 break;
 
             case 'config':
-            case 'delete':
+            case 'remove':
             case 'hide':
             case 'add':
             case 'move':

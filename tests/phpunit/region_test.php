@@ -52,7 +52,7 @@ class tool_blocksmanager_region_testcase extends advanced_testcase {
                 'null' => NULL_NOT_ALLOWED,
                 'default' => 1,
             ],
-            'delete' => [
+            'remove' => [
                 'type' => PARAM_INT,
                 'null' => NULL_NOT_ALLOWED,
                 'default' => 0,
@@ -104,7 +104,7 @@ class tool_blocksmanager_region_testcase extends advanced_testcase {
         $this->assertTrue(\tool_blocksmanager\region::is_property_required('region'));
         $this->assertTrue(\tool_blocksmanager\region::is_property_required('categories'));
         $this->assertFalse(\tool_blocksmanager\region::is_property_required('config'));
-        $this->assertFalse(\tool_blocksmanager\region::is_property_required('delete'));
+        $this->assertFalse(\tool_blocksmanager\region::is_property_required('remove'));
         $this->assertFalse(\tool_blocksmanager\region::is_property_required('hide'));
         $this->assertFalse(\tool_blocksmanager\region::is_property_required('add'));
         $this->assertFalse(\tool_blocksmanager\region::is_property_required('move'));
@@ -114,7 +114,7 @@ class tool_blocksmanager_region_testcase extends advanced_testcase {
      * Test that can get action fields.
      */
     public function test_get_action_fields() {
-        $this->assertEquals(['config', 'delete', 'hide', 'add', 'move'], \tool_blocksmanager\region::get_action_fields());
+        $this->assertEquals(['config', 'remove', 'hide', 'add', 'move'], \tool_blocksmanager\region::get_action_fields());
     }
 
 }

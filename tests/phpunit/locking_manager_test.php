@@ -44,7 +44,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
             'region' => !isset($data['region']) ? 'region1' : $data['region'],
             'categories' => !isset($data['categories']) ? '' : $data['categories'],
             'config' => !isset($data['config']) ? 0 : $data['config'],
-            'delete' => !isset($data['delete']) ? 0 : $data['delete'],
+            'remove' => !isset($data['remove']) ? 0 : $data['remove'],
             'hide' => !isset($data['hide']) ? 0 : $data['hide'],
             'add' => !isset($data['add']) ? 0 : $data['add'],
             'move' => !isset($data['move']) ? 0 : $data['move'],
@@ -66,7 +66,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
             'block' => !isset($data['block']) ? 'block1' : $data['block'],
             'categories' => !isset($data['categories']) ? '' : $data['categories'],
             'config' => !isset($data['config']) ? 1 : $data['config'],
-            'delete' => !isset($data['delete']) ? 1 : $data['delete'],
+            'remove' => !isset($data['remove']) ? 1 : $data['remove'],
             'hide' => !isset($data['hide']) ? 1 : $data['hide'],
             'move' => !isset($data['move']) ? 1 : $data['move'],
         ]);
@@ -89,7 +89,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertTrue($locking->can_move('block', 'region1'));
         $this->assertTrue($locking->can_hide('block', 'region1'));
-        $this->assertTrue($locking->can_delete('block', 'region1'));
+        $this->assertTrue($locking->can_remove('block', 'region1'));
         $this->assertTrue($locking->can_move_out('block', 'region1'));
         $this->assertTrue($locking->can_move_in('block', 'region1'));
         $this->assertTrue($locking->can_configure('block', 'region1'));
@@ -99,7 +99,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertFalse($locking->can_move('block', 'region1'));
         $this->assertFalse($locking->can_hide('block', 'region1'));
-        $this->assertFalse($locking->can_delete('block', 'region1'));
+        $this->assertFalse($locking->can_remove('block', 'region1'));
         $this->assertFalse($locking->can_move_out('block', 'region1'));
         $this->assertFalse($locking->can_move_in('block', 'region1'));
         $this->assertFalse($locking->can_configure('block', 'region1'));
@@ -109,7 +109,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertFalse($locking->can_move('block', 'region1'));
         $this->assertFalse($locking->can_hide('block', 'region1'));
-        $this->assertFalse($locking->can_delete('block', 'region1'));
+        $this->assertFalse($locking->can_remove('block', 'region1'));
         $this->assertFalse($locking->can_move_out('block', 'region1'));
         $this->assertFalse($locking->can_move_in('block', 'region1'));
         $this->assertFalse($locking->can_configure('block', 'region1'));
@@ -128,7 +128,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertFalse($locking->can_move('block', 'region1'));
         $this->assertFalse($locking->can_hide('block', 'region1'));
-        $this->assertFalse($locking->can_delete('block', 'region1'));
+        $this->assertFalse($locking->can_remove('block', 'region1'));
         $this->assertFalse($locking->can_move_out('block', 'region1'));
         $this->assertFalse($locking->can_move_in('block', 'region1'));
         $this->assertFalse($locking->can_configure('block', 'region1'));
@@ -140,7 +140,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertTrue($locking->can_move('block1', 'region1'));
         $this->assertTrue($locking->can_hide('block1', 'region1'));
-        $this->assertTrue($locking->can_delete('block1', 'region1'));
+        $this->assertTrue($locking->can_remove('block1', 'region1'));
         $this->assertTrue($locking->can_move_out('block1', 'region2'));
         $this->assertFalse($locking->can_move_in('block1', 'region1')); // Because region is locked, can't add blocks.
         $this->assertTrue($locking->can_configure('block1', 'region1'));

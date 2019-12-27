@@ -441,7 +441,7 @@ class block_manager extends \block_manager {
         }
 
         if ($this->user_can_delete_block($block) &&
-            $this->get_locking_manager()->can_delete($block->instance->blockname, $block->instance->region)
+            $this->get_locking_manager()->can_remove($block->instance->blockname, $block->instance->region)
         ) {
             // Delete icon.
             $str = new \lang_string('deleteblock', 'block', $blocktitle);
@@ -518,7 +518,7 @@ class block_manager extends \block_manager {
         require_sesskey();
         $block = $this->page->blocks->find_instance($blockid);
         if ($this->user_can_delete_block($block) &&
-            !$this->get_locking_manager()->can_delete($block->instance->blockname, $block->instance->region)
+            !$this->get_locking_manager()->can_remove($block->instance->blockname, $block->instance->region)
         ) {
             return false;
         }

@@ -52,7 +52,7 @@ class region extends persistent {
                 'null' => NULL_NOT_ALLOWED,
                 'default' => 1,
             ],
-            'delete' => [
+            'remove' => [
                 'type' => PARAM_INT,
                 'null' => NULL_NOT_ALLOWED,
                 'default' => 0,
@@ -80,6 +80,6 @@ class region extends persistent {
      * @return array
      */
     public static function get_action_fields() {
-        return ['config', 'delete', 'hide', 'add', 'move'];
+        return ['config', 'remove', 'hide', 'add', 'move'];
     }
 }

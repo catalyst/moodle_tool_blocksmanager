@@ -50,7 +50,7 @@ class tool_blocksmanager_block_list_testcase extends advanced_testcase {
             'block' => 'Test block 1',
             'categories' => $category1->id . ',' . $category2->id,
             'config' => 1,
-            'delete' => 1,
+            'remove' => 1,
             'hide' => 1,
             'move' => 1,
         ]);
@@ -68,7 +68,7 @@ class tool_blocksmanager_block_list_testcase extends advanced_testcase {
             'block' => 'Test block 2',
             'categories' => $category1->id . ',' . $category2->id,
             'config' => 0,
-            'delete' => 0,
+            'remove' => 0,
             'hide' => 0,
             'move' => 0,
         ]);

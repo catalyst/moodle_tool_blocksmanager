@@ -99,5 +99,25 @@ function xmldb_tool_blocksmanager_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2019122301, 'tool', 'blocksmanager');
     }
 
+    if ($oldversion < 2019122701) {
+
+        $table = new xmldb_table('tool_blocksmanager_region');
+        $field = new xmldb_field('delete',  XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'remove');
+        }
+
+        $table = new xmldb_table('tool_blocksmanager_block');
+        $field = new xmldb_field('delete',  XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'remove');
+        }
+
+        // Blocksmanager savepoint reached.
+        upgrade_plugin_savepoint(true, 2019122701, 'tool', 'blocksmanager');
+    }
+
     return true;
 }

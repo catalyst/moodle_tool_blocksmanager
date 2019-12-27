@@ -43,7 +43,7 @@ class block_list extends region_list {
             'block',
             'categories',
             'config',
-            'delete',
+            'remove',
             'hide',
             'move',
             'actions'

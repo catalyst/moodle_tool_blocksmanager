@@ -53,7 +53,7 @@ class region_form extends \core\form\persistent {
         );
 
         $mform->addElement('selectyesno', 'config', get_string('field_config', 'tool_blocksmanager'));
-        $mform->addElement('selectyesno', 'delete', get_string('field_delete', 'tool_blocksmanager'));
+        $mform->addElement('selectyesno', 'remove', get_string('field_delete', 'tool_blocksmanager'));
         $mform->addElement('selectyesno', 'hide', get_string('field_hide', 'tool_blocksmanager'));
         $mform->addElement('selectyesno', 'add', get_string('field_add', 'tool_blocksmanager'));
         $mform->addElement('selectyesno', 'move', get_string('field_move', 'tool_blocksmanager'));

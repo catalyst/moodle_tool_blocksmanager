@@ -30,7 +30,7 @@ class locking_manager {
     /**
      * A list of valid actions.
      */
-    const VALID_ACTIONS = ['config', 'delete', 'hide', 'add', 'move'];
+    const VALID_ACTIONS = ['config', 'remove', 'hide', 'add', 'move'];
 
     /**
      * Moodle page.
@@ -81,15 +81,15 @@ class locking_manager {
     }
 
     /**
-     * Check can delete block in the provided region.
+     * Check can remove block in the provided region.
      *
      * @param string $blockname Name of the block.
      * @param string $region Name of the region.
      *
      * @return bool
      */
-    public function can_delete(string $blockname, string $region) {
-        return $this->can_action('delete', $blockname, $region);
+    public function can_remove(string $blockname, string $region) {
+        return $this->can_action('remove', $blockname, $region);
     }
 
     /**
@@ -137,7 +137,7 @@ class locking_manager {
      * @return bool
      */
     public function can_move_out(string $blockname, string $region) {
-        return $this->can_action('delete', $blockname, $region);
+        return $this->can_action('remove', $blockname, $region);
     }
 
     /**

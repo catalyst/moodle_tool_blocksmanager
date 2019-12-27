@@ -61,7 +61,7 @@ class block extends persistent {
                 'null' => NULL_NOT_ALLOWED,
                 'default' => 1,
             ],
-            'delete' => [
+            'remove' => [
                 'type' => PARAM_INT,
                 'null' => NULL_NOT_ALLOWED,
                 'default' => 0,
@@ -84,6 +84,6 @@ class block extends persistent {
      * @return array
      */
     public static function get_action_fields() {
-        return ['config', 'delete', 'hide', 'move'];
+        return ['config', 'remove', 'hide', 'move'];
     }
 }
