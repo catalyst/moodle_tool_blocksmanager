@@ -331,7 +331,7 @@ class block_manager extends \block_manager {
     public function add_block_at_end_of_default_region($blockname) {
         $defaulregion = $this->get_default_region();
 
-        if ($this->get_locking_manager()->can_move_in($blockname, $defaulregion)) {
+        if (!$this->get_locking_manager()->can_move_in($blockname, $defaulregion)) {
             redirect($this->page->url,
                 get_string('error:lockedefaultregion', 'tool_blocksmanager'),
                 null,
