@@ -43,9 +43,8 @@ class block_form extends \core\form\persistent {
 
         $mform->addElement('text', 'region', get_string('field_region', 'tool_blocksmanager'));
         $mform->addRule('region', get_string('required'), 'required', null, 'client');
-        $mform->addHelpButton('')
 
-        $regions = implode(', ', array_keys($PAGE->theme->get_all_block_regions()));
+        $regions = implode(', ', array_keys([block::ALL_REGIONS => ''] + $PAGE->theme->get_all_block_regions()));
         $mform->addElement('static', 'availableregions', get_string('availableregions', 'tool_blocksmanager'), $regions);
 
         $blocks = [];
