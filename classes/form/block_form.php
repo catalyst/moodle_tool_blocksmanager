@@ -24,6 +24,8 @@
 
 namespace tool_blocksmanager\form;
 
+use tool_blocksmanager\block;
+
 defined('MOODLE_INTERNAL') || die();
 
 class block_form extends \core\form\persistent {
@@ -41,6 +43,7 @@ class block_form extends \core\form\persistent {
 
         $mform->addElement('text', 'region', get_string('field_region', 'tool_blocksmanager'));
         $mform->addRule('region', get_string('required'), 'required', null, 'client');
+        $mform->addHelpButton('')
 
         $regions = implode(', ', array_keys($PAGE->theme->get_all_block_regions()));
         $mform->addElement('static', 'availableregions', get_string('availableregions', 'tool_blocksmanager'), $regions);
@@ -110,6 +113,12 @@ class block_form extends \core\form\persistent {
 
         if (empty($data->region)) {
             $newerrors['region'] = get_string('regionrequired', 'tool_blocksmanager');
+        }
+
+        if (empty($data->id)) {
+            if ($records = block::get_records(['block' => $data->block, 'categories' => $data->categories])) {
+                $newerrors['region'] = get_string('duplicaterule', 'tool_blocksmanager');
+            }
         }
 
         return $newerrors;

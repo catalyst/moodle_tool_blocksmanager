@@ -61,4 +61,4 @@ $string['field_hide'] = 'Allow to Hide?';
 $string['field_movein'] = 'Allow to Add?';
 $string['field_move'] = 'Allow to Move?';
 $string['availableregions'] = 'Potentially available regions:';
-
+$string['duplicaterule'] = 'The same rule is already exist.';

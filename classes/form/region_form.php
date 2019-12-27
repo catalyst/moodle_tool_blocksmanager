@@ -24,6 +24,8 @@
 
 namespace tool_blocksmanager\form;
 
+use tool_blocksmanager\region;
+
 defined('MOODLE_INTERNAL') || die();
 
 class region_form extends \core\form\persistent {
@@ -104,6 +106,12 @@ class region_form extends \core\form\persistent {
 
         if (empty($data->region)) {
             $newerrors['region'] = get_string('regionrequired', 'tool_blocksmanager');
+        }
+
+        if (empty($data->id)) {
+            if ($records = region::get_records(['region' => $data->region, 'categories' => $data->categories])) {
+                $newerrors['region'] = get_string('duplicaterule', 'tool_blocksmanager');
+            }
         }
 
         return $newerrors;
