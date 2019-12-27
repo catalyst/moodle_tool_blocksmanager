@@ -109,4 +109,11 @@ class tool_blocksmanager_block_testcase extends advanced_testcase {
         $this->assertFalse(\tool_blocksmanager\block::is_property_required('move'));
     }
 
+    /**
+     * Test that can get action fields.
+     */
+    public function test_get_action_fields() {
+        $this->assertEquals(['config', 'delete', 'hide', 'move'], \tool_blocksmanager\block::get_action_fields());
+    }
+
 }

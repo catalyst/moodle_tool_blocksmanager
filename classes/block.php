@@ -78,4 +78,12 @@ class block extends persistent {
             ],
         ];
     }
+
+    /**
+     * Get a list of action fields.
+     * @return array
+     */
+    public static function get_action_fields() {
+        return ['config', 'delete', 'hide', 'move'];
+    }
 }
