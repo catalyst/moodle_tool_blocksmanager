@@ -76,7 +76,7 @@ class region_list extends \flexible_table {
             'config',
             'remove',
             'hide',
-            'add',
+            'movein',
             'move',
             'actions'
         ];
@@ -138,8 +138,8 @@ class region_list extends \flexible_table {
      * @param persistent $record
      * @return string
      */
-    public function col_add(persistent $record) {
-        return $this->get_display_value($record, 'add');
+    public function col_movein(persistent $record) {
+        return $this->get_display_value($record, 'movein');
     }
 
     /**
@@ -181,7 +181,7 @@ class region_list extends \flexible_table {
             case 'config':
             case 'remove':
             case 'hide':
-            case 'add':
+            case 'movein':
             case 'move':
                 $display = empty($value) ? get_string('no') : get_string('yes');
                 break;

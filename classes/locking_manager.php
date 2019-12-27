@@ -30,7 +30,7 @@ class locking_manager {
     /**
      * A list of valid actions.
      */
-    const VALID_ACTIONS = ['config', 'remove', 'hide', 'add', 'move'];
+    const VALID_ACTIONS = ['config', 'remove', 'hide', 'movein', 'move'];
 
     /**
      * Moodle page.
@@ -125,7 +125,7 @@ class locking_manager {
      * @return bool
      */
     public function can_move_in(string $blockname, string $region) {
-        return $this->can_action('add', $blockname, $region);
+        return $this->can_action('movein', $blockname, $region);
     }
 
     /**

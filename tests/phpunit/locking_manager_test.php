@@ -46,7 +46,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
             'config' => !isset($data['config']) ? 0 : $data['config'],
             'remove' => !isset($data['remove']) ? 0 : $data['remove'],
             'hide' => !isset($data['hide']) ? 0 : $data['hide'],
-            'add' => !isset($data['add']) ? 0 : $data['add'],
+            'movein' => !isset($data['movein']) ? 0 : $data['movein'],
             'move' => !isset($data['move']) ? 0 : $data['move'],
         ]);
         $region->create();

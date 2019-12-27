@@ -51,7 +51,7 @@ class tool_blocksmanager_region_list_testcase extends advanced_testcase {
             'config' => 1,
             'remove' => 1,
             'hide' => 1,
-            'add' => 1,
+            'movein' => 1,
             'move' => 1,
         ]);
         $this->assertEquals('Test region 1', $table->col_region($region));
@@ -69,7 +69,7 @@ class tool_blocksmanager_region_list_testcase extends advanced_testcase {
             'config' => 0,
             'remove' => 0,
             'hide' => 0,
-            'add' => 0,
+            'movein' => 0,
             'move' => 0,
         ]);
         $this->assertEquals('Test region 2', $table->col_region($region));

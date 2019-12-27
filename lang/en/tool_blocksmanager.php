@@ -47,7 +47,7 @@ $string['col_categories'] = 'Categories';
 $string['col_config'] = 'Configure?';
 $string['col_remove'] = 'Delete?';
 $string['col_hide'] = 'Hide?';
-$string['col_add'] = 'Add?';
+$string['col_movein'] = 'Add?';
 $string['col_move'] = 'Move?';
 $string['col_actions'] = 'Actions';
 $string['no_regions'] = 'No locked regions';
@@ -58,7 +58,7 @@ $string['field_categories'] = 'Categories';
 $string['field_config'] = 'Allow to Configure?';
 $string['field_remove'] = 'Allow to Delete?';
 $string['field_hide'] = 'Allow to Hide?';
-$string['field_add'] = 'Allow to Add?';
+$string['field_movein'] = 'Allow to Add?';
 $string['field_move'] = 'Allow to Move?';
 $string['availableregions'] = 'Potentially available regions:';
 
