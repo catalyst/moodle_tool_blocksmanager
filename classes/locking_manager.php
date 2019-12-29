@@ -165,6 +165,10 @@ class locking_manager {
             throw new \coding_exception('Invalid action ' . $action);
         }
 
+        if ($this->can_do_any_action()) {
+            return true;
+        }
+
         // We check actions only on course related pages. No limit on others.
         if (!empty($this->category)) {
             if (empty($this->category->id)) {
@@ -230,6 +234,15 @@ class locking_manager {
         }
 
         return $result;
+    }
+
+    /**
+     * Check if can do any action.
+     *
+     * @return bool
+     */
+    protected function can_do_any_action() {
+        return has_capability('tool/blocksmanager:bypasslocking', \context_system::instance());
     }
 
 }

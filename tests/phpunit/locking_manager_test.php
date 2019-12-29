@@ -146,4 +146,41 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
         $this->assertTrue($locking->can_configure('block1', 'region1'));
     }
 
+    /**
+     * Test that can bypass locking.
+     */
+    public function test_can_do_all_actions_with_required_caps() {
+        $category = $this->getDataGenerator()->create_category();
+        $page = new moodle_page();
+        $page->set_category_by_id($category->id);
+
+        $this->create_region_rule(['categories' => $category->id]);
+
+        $user = $this->getDataGenerator()->create_user();
+        $this->setUser($user);
+
+        $locking = new \tool_blocksmanager\locking_manager($page);
+
+        // Can't do anything.
+        $this->assertFalse($locking->can_move('block', 'region1'));
+        $this->assertFalse($locking->can_hide('block', 'region1'));
+        $this->assertFalse($locking->can_remove('block', 'region1'));
+        $this->assertFalse($locking->can_move_out('block', 'region1'));
+        $this->assertFalse($locking->can_move_in('block', 'region1'));
+        $this->assertFalse($locking->can_configure('block', 'region1'));
+
+        // Create role and assign "bypasslocking" cap.
+        $roleid = $this->getDataGenerator()->create_role();
+        assign_capability('tool/blocksmanager:bypasslocking', CAP_ALLOW, $roleid, context_system::instance());
+        $this->getDataGenerator()->role_assign($roleid, $user->id);
+
+        // Can do everything now.
+        $this->assertTrue($locking->can_move('block', 'region1'));
+        $this->assertTrue($locking->can_hide('block', 'region1'));
+        $this->assertTrue($locking->can_remove('block', 'region1'));
+        $this->assertTrue($locking->can_move_out('block', 'region1'));
+        $this->assertTrue($locking->can_move_in('block', 'region1'));
+        $this->assertTrue($locking->can_configure('block', 'region1'));
+    }
+
 }
