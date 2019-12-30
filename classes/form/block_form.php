@@ -109,29 +109,44 @@ class block_form extends \core\form\persistent {
     protected function extra_validation($data, $files, array &$errors) {
         global $DB;
 
+        $id = optional_param('id', null, PARAM_INT);
+
         $newerrors = array();
 
         if (empty($data->region)) {
             $newerrors['region'] = get_string('regionrequired', 'tool_blocksmanager');
         }
 
-        // Check if can use All regions and no.
+        // Check if can use All regions.
         if ($data->region == block::ALL_REGIONS) {
             $select = $DB->sql_compare_text('categories') . " = ? AND block = ? AND region <> ?";
-            if ($records = block::get_records_select($select, [$data->categories, $data->block, block::ALL_REGIONS])) {
-                $newerrors['region'] = get_string('cantuseallregions', 'tool_blocksmanager');
-            }
+            $params = [$data->categories, $data->block, block::ALL_REGIONS];
+            $error = get_string('cantuseallregions', 'tool_blocksmanager');
         } else {
-            // Check if All regions has been already used for the block.
             $select = $DB->sql_compare_text('categories') . " = ? AND block = ? AND region = ? ";
-            if ($records = block::get_records_select($select, [$data->categories, $data->block, block::ALL_REGIONS])) {
-                $newerrors['region'] = get_string('cantusespecificregion', 'tool_blocksmanager');
-            }
+            $params = [$data->categories, $data->block, block::ALL_REGIONS];
+            $error = get_string('cantusespecificregion', 'tool_blocksmanager');
+        }
+
+        if (!empty($id)) {
+            $select .= ' AND id <> ?';
+            $params[] = $id;
+        }
+
+        if ($records = block::get_records_select($select, $params)) {
+            $newerrors['region'] = $error;
         }
 
         // Check duplicates.
         $select = $DB->sql_compare_text('categories') . " = ? AND block = ? AND region = ?";
-        if ($records = block::get_records_select($select, [$data->categories, $data->block, $data->region])) {
+        $params = [$data->categories, $data->block, $data->region];
+
+        if (!empty($id)) {
+            $select .= ' AND id <> ?';
+            $params[] = $id;
+        }
+
+        if ($records = block::get_records_select($select, $params)) {
             $newerrors['region'] = get_string('duplicaterule', 'tool_blocksmanager');
         }
 

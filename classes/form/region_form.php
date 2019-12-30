@@ -103,6 +103,8 @@ class region_form extends \core\form\persistent {
     protected function extra_validation($data, $files, array &$errors) {
         global $DB;
 
+        $id = optional_param('id', null, PARAM_INT);
+
         $newerrors = array();
 
         if (empty($data->region)) {
@@ -111,7 +113,14 @@ class region_form extends \core\form\persistent {
 
         // Check duplicates.
         $select = $DB->sql_compare_text('categories') . " = ? AND region = ?";
-        if ($records = region::get_records_select($select, [$data->categories, $data->region])) {
+        $params = [$data->categories, $data->region];
+
+        if (!empty($id)) {
+            $select .= ' AND id <> ?';
+            $params[] = $id;
+        }
+
+        if ($records = region::get_records_select($select, $params)) {
             $newerrors['region'] = get_string('duplicaterule', 'tool_blocksmanager');
         }
 
