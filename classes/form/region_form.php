@@ -115,7 +115,6 @@ class region_form extends \core\form\persistent {
             $newerrors['region'] = get_string('duplicaterule', 'tool_blocksmanager');
         }
 
-
         return $newerrors;
     }
 }
