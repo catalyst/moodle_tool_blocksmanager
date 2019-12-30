@@ -93,7 +93,6 @@ class block_form extends \core\form\persistent {
     protected function get_default_data() {
         $data = parent::get_default_data();
 
-        // Convert the single properties into a group.
         $data->categories = explode(',', $data->categories);
 
         return $data;
