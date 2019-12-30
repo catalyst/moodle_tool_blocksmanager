@@ -102,17 +102,20 @@ class region_form extends \core\form\persistent {
      * @return array of additional errors, or overridden errors.
      */
     protected function extra_validation($data, $files, array &$errors) {
+        global $DB;
+
         $newerrors = array();
 
         if (empty($data->region)) {
             $newerrors['region'] = get_string('regionrequired', 'tool_blocksmanager');
         }
 
-        if (empty($data->id)) {
-            if ($records = region::get_records(['region' => $data->region, 'categories' => $data->categories])) {
-                $newerrors['region'] = get_string('duplicaterule', 'tool_blocksmanager');
-            }
+        // Check duplicates.
+        $select = $DB->sql_compare_text('categories') . " = ? AND region = ?";
+        if ($records = region::get_records_select($select, [$data->categories, $data->region])) {
+            $newerrors['region'] = get_string('duplicaterule', 'tool_blocksmanager');
         }
+
 
         return $newerrors;
     }

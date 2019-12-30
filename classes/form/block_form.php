@@ -108,16 +108,32 @@ class block_form extends \core\form\persistent {
      * @return array of additional errors, or overridden errors.
      */
     protected function extra_validation($data, $files, array &$errors) {
+        global $DB;
+
         $newerrors = array();
 
         if (empty($data->region)) {
             $newerrors['region'] = get_string('regionrequired', 'tool_blocksmanager');
         }
 
-        if (empty($data->id)) {
-            if ($records = block::get_records(['block' => $data->block, 'categories' => $data->categories])) {
-                $newerrors['region'] = get_string('duplicaterule', 'tool_blocksmanager');
+        // Check if can use All regions and no.
+        if ($data->region == block::ALL_REGIONS) {
+            $select = $DB->sql_compare_text('categories') . " = ? AND block = ? AND region <> ?";
+            if ($records = block::get_records_select($select, [$data->categories, $data->block, block::ALL_REGIONS])) {
+                $newerrors['region'] = get_string('cantuseallregions', 'tool_blocksmanager');
             }
+        } else {
+            // Check if All regions has been already used for the block.
+            $select = $DB->sql_compare_text('categories') . " = ? AND block = ? AND region = ? ";
+            if ($records = block::get_records_select($select, [$data->categories, $data->block, block::ALL_REGIONS])) {
+                $newerrors['region'] = get_string('cantusespecificregion', 'tool_blocksmanager');
+            }
+        }
+
+        // Check duplicates.
+        $select = $DB->sql_compare_text('categories') . " = ? AND block = ? AND region = ?";
+        if ($records = block::get_records_select($select, [$data->categories, $data->block, $data->region])) {
+            $newerrors['region'] = get_string('duplicaterule', 'tool_blocksmanager');
         }
 
         return $newerrors;

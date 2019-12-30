@@ -62,3 +62,5 @@ $string['field_movein'] = 'Allow to Add?';
 $string['field_move'] = 'Allow to Move?';
 $string['availableregions'] = 'Potentially available regions:';
 $string['duplicaterule'] = 'The same rule is already exist.';
+$string['cantuseallregions'] = 'All regions cannot be selected. There is already an existing rule for this block with a specific region.';
+$string['cantusespecificregion'] = 'Can\'t use specific region. There is already an existing All rule for this block.';
