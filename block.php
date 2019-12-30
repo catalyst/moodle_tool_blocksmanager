@@ -15,21 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lib functions.
+ *  Block editing page.
  *
- * @package    tool_blocksmanager
- * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
- * @copyright  Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     tool_blocksmanager
+ * @copyright   2019 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require_once('../../../config.php');
+require_once($CFG->libdir . '/adminlib.php');
 
-/**
- * Call back tool_blocksmanager_after_config.
- */
-function tool_blocksmanager_after_config() {
-    global $CFG;
+$action = optional_param('action', 'view', PARAM_ALPHANUMEXT);
 
-    $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
-}
+$PAGE->set_context(context_system::instance());
+
+$manager = new \tool_blocksmanager\block_controller();
+$manager->execute($action);

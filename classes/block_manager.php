@@ -37,7 +37,7 @@ use core_tag_tag;
 
 defined('MOODLE_INTERNAL') || die();
 
-class blocks extends \block_manager {
+class block_manager extends \block_manager {
 
     /**
      * A list of locked categories.
@@ -184,16 +184,24 @@ class blocks extends \block_manager {
             // Blocks Manager custom code.
             $warning = false;
 
-            if (!$this->is_locked_region($data->bui_defaultregion) && !$this->is_locked_course_category($this->page->category)) {
-                $bi->defaultregion = $data->bui_defaultregion;
-            } else if ($block->instance->defaultregion != $data->bui_defaultregion) {
-                $warning = true;
+            // Changing default region.
+            if ($block->instance->defaultregion != $data->bui_defaultregion) {
+                if ($this->get_locking_manager()->can_move_in($block->instance->blockname, $data->bui_defaultregion) &&
+                    $this->get_locking_manager()->can_move_out($block->instance->blockname, $block->instance->defaultregion)
+                ) {
+                    $bi->defaultregion = $data->bui_defaultregion;
+                } else {
+                    $warning = true;
+                }
             }
 
-            if (!$this->is_locked_region($data->bui_defaultregion) && !$this->is_locked_course_category($this->page->category)) {
-                $bi->defaultweight = $data->bui_defaultweight;
-            } else if ($block->instance->defaultweight != $data->bui_defaultweight) {
-                $warning = true;
+            // Changing default weight.
+            if ($block->instance->defaultweight != $data->bui_defaultweight) {
+                if ($this->get_locking_manager()->can_move($block->instance->blockname, $block->instance->defaultregion)) {
+                    $bi->defaultregion = $data->bui_defaultregion;
+                } else {
+                    $warning = true;
+                }
             }
             // Blocks Manager custom code.
 
@@ -215,12 +223,16 @@ class blocks extends \block_manager {
             $block->instance_config_save($config);
 
             $bp = new stdClass;
+            $bp->visible = $block->instance->visible;
 
             // Blocks Manager custom code.
-            if (!$this->is_locked_region($data->bui_region) && !$this->is_locked_course_category($this->page->category)) {
-                $bp->visible = $data->bui_visible;
-            } else {
-                if ($this->can_change_visibility($block)) {
+            // Change visibility.
+            if ($block->instance->visible != $data->bui_visible) {
+                if ($this->get_locking_manager()->can_hide(
+                    $block->instance->blockname,
+                    $block->instance->region,
+                    $this->page->category)
+                ) {
                     $bp->visible = $data->bui_visible;
                 } else {
                     $bp->visible = $block->instance->visible;
@@ -228,20 +240,29 @@ class blocks extends \block_manager {
                 }
             }
 
-            if (!$this->is_locked_region($data->bui_region) && !$this->is_locked_course_category($this->page->category)) {
-                $bp->region = $data->bui_region;
-            } else {
-                $warning = true;
-                $bp->region = $block->instance->region;
+            // Move regions.
+            if ($block->instance->region != $data->bui_region) {
+                if ($this->get_locking_manager()->can_move_in($block->instance->blockname, $data->bui_region) &&
+                    $this->get_locking_manager()->can_move_out($block->instance->blockname, $block->instance->region)
+                ) {
+                    $bp->region = $data->bui_region;
+                } else {
+                    $warning = true;
+                    $bp->region = $block->instance->region;
+                }
             }
 
-            if (!$this->is_locked_region($data->bui_region) && !$this->is_locked_course_category($this->page->category)) {
-                $bp->weight = $data->bui_weight;
-            } else {
-                $warning = true;
-                $bp->weight = $block->instance->weight;
+            // Move inside region.
+            if ($block->instance->weight != $data->bui_weight) {
+                if ($this->get_locking_manager()->can_move($block->instance->blockname, $data->bui_weight)) {
+                    $bp->weight = $data->bui_weight;
+                } else {
+                    $warning = true;
+                    $bp->weight = $block->instance->weight;
+                }
             }
             // Blocks Manager custom code.
+
             $needbprecord = !$data->bui_visible || $data->bui_region != $data->bui_defaultregion ||
                 $data->bui_weight != $data->bui_defaultweight;
 
@@ -310,7 +331,7 @@ class blocks extends \block_manager {
     public function add_block_at_end_of_default_region($blockname) {
         $defaulregion = $this->get_default_region();
 
-        if ($this->is_locked_region($defaulregion) && $this->is_locked_course_category($this->page->category)) {
+        if (!$this->get_locking_manager()->can_move_in($blockname, $defaulregion)) {
             redirect($this->page->url,
                 get_string('error:lockedefaultregion', 'tool_blocksmanager'),
                 null,
@@ -324,53 +345,139 @@ class blocks extends \block_manager {
     /**
      * Override standard block control display.
      *
-     * - If block is in locked region - don't display any controls.
-     *
      * @param $block
      *
      * @return \an|array
      */
     public function edit_controls($block) {
-        if ($this->is_locked_region($block->instance->region) && $this->is_locked_course_category($this->page->category)) {
-            $controls = [];
+        global $CFG;
 
-            $actionurl = $this->page->url->out(false, array('sesskey' => sesskey()));
-            $blocktitle = $block->title;
-            if (empty($blocktitle)) {
-                $blocktitle = $block->arialabel;
-            }
-
-            if ((get_config('tool_blocksmanager', 'unlockconfig')) && ($this->page->user_can_edit_blocks() || $block->user_can_edit())) {
-                // Edit config icon - always show - needed for positioning UI.
-                $str = new \lang_string('configureblock', 'block', $blocktitle);
-                $controls[] = new \action_menu_link_secondary(
-                    new moodle_url($actionurl, array('bui_editid' => $block->instance->id)),
-                    new \pix_icon('t/edit', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
-                    $str,
-                    array('class' => 'editing_edit')
-                );
-            }
-
-            if ($this->can_change_visibility($block)) {
-                // Show/hide icon.
-                if ($block->instance->visible) {
-                    $str = new \lang_string('hideblock', 'block', $blocktitle);
-                    $url = new moodle_url($actionurl, array('bui_hideid' => $block->instance->id));
-                    $icon = new \pix_icon('t/hide', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
-                    $attributes = array('class' => 'editing_hide');
-                } else {
-                    $str = new \lang_string('showblock', 'block', $blocktitle);
-                    $url = new moodle_url($actionurl, array('bui_showid' => $block->instance->id));
-                    $icon = new \pix_icon('t/show', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
-                    $attributes = array('class' => 'editing_show');
-                }
-                $controls[] = new \action_menu_link_secondary($url, $icon, $str, $attributes);
-            }
-
-            return $controls;
+        $controls = array();
+        $actionurl = $this->page->url->out(false, array('sesskey' => sesskey()));
+        $blocktitle = $block->title;
+        if (empty($blocktitle)) {
+            $blocktitle = $block->arialabel;
         }
 
-        return parent::edit_controls($block);
+        if ($this->page->user_can_edit_blocks() &&
+            $this->get_locking_manager()->can_move($block->instance->blockname, $block->instance->region)
+        ) {
+            // Move icon.
+            $str = new \lang_string('moveblock', 'block', $blocktitle);
+            $controls[] = new \action_menu_link_primary(
+                new moodle_url($actionurl, array('bui_moveid' => $block->instance->id)),
+                new \pix_icon('t/move', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
+                $str,
+                array('class' => 'editing_move')
+            );
+
+        }
+
+        if (($this->page->user_can_edit_blocks() || $block->user_can_edit()) &&
+            $this->get_locking_manager()->can_configure($block->instance->blockname, $block->instance->region)
+        ) {
+            // Edit config icon - always show - needed for positioning UI.
+            $str = new \lang_string('configureblock', 'block', $blocktitle);
+            $controls[] = new \action_menu_link_secondary(
+                new moodle_url($actionurl, array('bui_editid' => $block->instance->id)),
+                new \pix_icon('t/edit', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
+                $str,
+                array('class' => 'editing_edit')
+            );
+        }
+
+        if ($this->page->user_can_edit_blocks() && $block->instance_can_be_hidden() &&
+            $this->get_locking_manager()->can_hide($block->instance->blockname, $block->instance->region)
+        ) {
+            // Show/hide icon.
+            if ($block->instance->visible) {
+                $str = new \lang_string('hideblock', 'block', $blocktitle);
+                $url = new moodle_url($actionurl, array('bui_hideid' => $block->instance->id));
+                $icon = new \pix_icon('t/hide', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
+                $attributes = array('class' => 'editing_hide');
+            } else {
+                $str = new \lang_string('showblock', 'block', $blocktitle);
+                $url = new moodle_url($actionurl, array('bui_showid' => $block->instance->id));
+                $icon = new \pix_icon('t/show', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
+                $attributes = array('class' => 'editing_show');
+            }
+            $controls[] = new \action_menu_link_secondary($url, $icon, $str, $attributes);
+        }
+
+        // Assign roles.
+        if (get_assignable_roles($block->context, ROLENAME_SHORT)) {
+            $rolesurl = new moodle_url('/admin/roles/assign.php', array('contextid' => $block->context->id,
+                'returnurl' => $this->page->url->out_as_local_url()));
+            $str = new \lang_string('assignrolesinblock', 'block', $blocktitle);
+            $controls[] = new \action_menu_link_secondary(
+                $rolesurl,
+                new \pix_icon('i/assignroles', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
+                $str, array('class' => 'editing_assignroles')
+            );
+        }
+
+        // Permissions.
+        if (has_capability('moodle/role:review', $block->context) or get_overridable_roles($block->context)) {
+            $rolesurl = new moodle_url('/admin/roles/permissions.php', array('contextid' => $block->context->id,
+                'returnurl' => $this->page->url->out_as_local_url()));
+            $str = get_string('permissions', 'role');
+            $controls[] = new \action_menu_link_secondary(
+                $rolesurl,
+                new \pix_icon('i/permissions', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
+                $str, array('class' => 'editing_permissions')
+            );
+        }
+
+        // Change permissions.
+        if (has_any_capability(array('moodle/role:safeoverride', 'moodle/role:override', 'moodle/role:assign'), $block->context)) {
+            $rolesurl = new moodle_url('/admin/roles/check.php', array('contextid' => $block->context->id,
+                'returnurl' => $this->page->url->out_as_local_url()));
+            $str = get_string('checkpermissions', 'role');
+            $controls[] = new \action_menu_link_secondary(
+                $rolesurl,
+                new \pix_icon('i/checkpermissions', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
+                $str, array('class' => 'editing_checkroles')
+            );
+        }
+
+        if ($this->user_can_delete_block($block) &&
+            $this->get_locking_manager()->can_remove($block->instance->blockname, $block->instance->region)
+        ) {
+            // Delete icon.
+            $str = new \lang_string('deleteblock', 'block', $blocktitle);
+            $controls[] = new \action_menu_link_secondary(
+                new moodle_url($actionurl, array('bui_deleteid' => $block->instance->id)),
+                new \pix_icon('t/delete', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
+                $str,
+                array('class' => 'editing_delete')
+            );
+        }
+
+        if (!empty($CFG->contextlocking) && has_capability('moodle/site:managecontextlocks', $block->context)) {
+            $parentcontext = $block->context->get_parent_context();
+            if (empty($parentcontext) || empty($parentcontext->locked)) {
+                if ($block->context->locked) {
+                    $lockicon = 'i/unlock';
+                    $lockstring = get_string('managecontextunlock', 'admin');
+                } else {
+                    $lockicon = 'i/lock';
+                    $lockstring = get_string('managecontextlock', 'admin');
+                }
+                $controls[] = new \action_menu_link_secondary(
+                    new moodle_url(
+                        '/admin/lock.php',
+                        [
+                            'id' => $block->context->id,
+                        ]
+                    ),
+                    new \pix_icon($lockicon, $lockstring, 'moodle', array('class' => 'iconsmall', 'title' => '')),
+                    $lockstring,
+                    ['class' => 'editing_lock']
+                );
+            }
+        }
+
+        return $controls;
     }
 
     /**
@@ -390,7 +497,7 @@ class blocks extends \block_manager {
 
         $block = $this->page->blocks->find_instance($blockid);
 
-        if (!$this->can_change_visibility($block)) {
+        if (!$this->get_locking_manager()->can_hide($block->instance->blockname, $block->instance->region)) {
             return false;
         }
 
@@ -398,17 +505,25 @@ class blocks extends \block_manager {
     }
 
     /**
-     * Check if visibility can be changed.
-     *
-     * @param \block_base $block Block instance.
-     *
-     * @return bool
-     * @throws \dml_exception
+     * Handle deleting a block.
+     * @return boolean true if anything was done. False if not.
      */
-    public function can_change_visibility($block) {
-        return  get_config('tool_blocksmanager', 'unlockvisibility')
-            && $this->page->user_can_edit_blocks()
-            && $block->instance_can_be_hidden();
+    public function process_url_delete() {
+        $blockid = optional_param('bui_deleteid', null, PARAM_INT);
+
+        if (!$blockid) {
+            return false;
+        }
+
+        require_sesskey();
+        $block = $this->page->blocks->find_instance($blockid);
+        if ($this->user_can_delete_block($block) &&
+            !$this->get_locking_manager()->can_remove($block->instance->blockname, $block->instance->region)
+        ) {
+            return false;
+        }
+
+        return parent::process_url_delete();
     }
 
     /**
@@ -421,98 +536,48 @@ class blocks extends \block_manager {
      * @throws \moodle_exception
      */
     public function process_url_move() {
-        $newregion = optional_param('bui_newregion', '', PARAM_ALPHANUMEXT);
+        $blockid = optional_param('bui_moveid', null, PARAM_INT);
+        if (!$blockid) {
+            return false;
+        }
 
-        if ($this->is_locked_region($newregion) && $this->is_locked_course_category($this->page->category)) {
+        require_sesskey();
+
+        $block = $this->find_instance($blockid);
+
+        if (!$this->page->user_can_edit_blocks()) {
+            throw new moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
+        }
+
+        $newregion = optional_param('bui_newregion', '', PARAM_ALPHANUMEXT);
+        $newweight = optional_param('bui_newweight', null, PARAM_FLOAT);
+
+        // Moving inside region -> check can move.
+        if ($newregion == $block->instance->region &&
+            !$this->get_locking_manager()->can_move($block->instance->blockname, $block->instance->region)
+        ) {
             throw new \moodle_exception('error:lockedregion', 'tool_blocksmanager');
+        }
+
+        // Moving outside region -> check move in a new region and move out from the old region.
+        if ($newregion != $block->instance->region) {
+            if (!$this->get_locking_manager()->can_move_in($block->instance->blockname, $newregion)  ||
+                !$this->get_locking_manager()->can_move_out($block->instance->blockname, $block->instance->region)
+            ) {
+                throw new \moodle_exception('error:lockedregion', 'tool_blocksmanager');
+            }
         }
 
         parent::process_url_move();
     }
 
     /**
-     * Check if provided region is locked.
+     * Return locking manager.
      *
-     * @param string $region Region name.
-     *
-     * @return bool
-     * @throws \dml_exception
+     * @return \tool_blocksmanager\locking_manager
      */
-    public function is_locked_region(string $region) {
-        return $this->value_is_in_config($region, 'lockedregions');
-    }
-
-    /**
-     * Check if provided value in config.
-     *
-     * This method will check comma separated list of values stored in config text field.
-     *
-     * @param $value
-     * @param $configname
-     *
-     * @return bool
-     * @throws \dml_exception
-     */
-    protected function value_is_in_config(string $value, string $configname) {
-        $result = false;
-
-        $configvalue = get_config('tool_blocksmanager', $configname);
-        if (!empty($value) && !empty($configvalue)) {
-            $configvalue = explode(',', $configvalue);
-            $configvalue = array_map('trim', $configvalue);
-            $result = in_array($value, $configvalue);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Check if the provided course category is locked.
-     *
-     * @param stdClass | null $category Course category.
-     *
-     * @return bool
-     */
-    public function is_locked_course_category($category) {
-        if (empty($category)) {
-            return false;
-        } else {
-            if (empty($category->id)) {
-                throw new \coding_exception('Course category must have id');
-            }
-
-            return in_array($category->id, $this->get_locked_categories());
-        }
-    }
-
-    /**
-     * Get list of locked categories.
-     *
-     * @return array
-     * @throws \dml_exception
-     * @throws \moodle_exception
-     */
-    protected function get_locked_categories() {
-        if (isset($this->lockedcategories) && is_array($this->lockedcategories)) {
-            return $this->lockedcategories;
-        }
-
-        $this->lockedcategories = [];
-        $lockedcats = get_config('tool_blocksmanager', 'lockedcategories');
-
-        if (!empty($lockedcats)) {
-            $lockedcats = explode(',', $lockedcats);
-
-            foreach ($lockedcats as $cat) {
-                $this->lockedcategories[] = $cat;
-                $this->lockedcategories = array_merge(
-                    $this->lockedcategories,
-                    \core_course_category::get($cat)->get_all_children_ids()
-                );
-            }
-        }
-
-        return $this->lockedcategories;
+    public function get_locking_manager() {
+        return new locking_manager($this->page);
     }
 
 }

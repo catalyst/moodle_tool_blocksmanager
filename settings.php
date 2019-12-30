@@ -26,46 +26,24 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $settings = new admin_settingpage('tool_blocksmanager_settings', get_string('pluginname', 'tool_blocksmanager'));
+    $settings = new admin_category('tool_blocksmanager_settings', get_string('pluginname', 'tool_blocksmanager'));
     $ADMIN->add('tools', $settings);
-    if (!during_initial_install()) {
 
-        // Region locking.
-        $settings->add(new admin_setting_heading('tool_blocksmanager/lockingheading',
-                new lang_string('lockingheading', 'tool_blocksmanager'),
-                '')
-        );
+    $ADMIN->add(
+        'tool_blocksmanager_settings',
+        new admin_externalpage(
+            'tool_blocksmanager/block',
+            get_string('manageblocklocking', 'tool_blocksmanager'),
+            new moodle_url('/admin/tool/blocksmanager/block.php')
+        )
+    );
 
-        // Course categories to apply locking.
-        $settings->add(new admin_setting_configmultiselect('tool_blocksmanager/lockedcategories',
-                new lang_string('lockedcategories', 'tool_blocksmanager'),
-                new lang_string('lockedcategories_desc', 'tool_blocksmanager'),
-                [],
-                \core_course_category::make_categories_list()
-            )
-        );
-
-        // Regions to lock.
-        $regions = implode(', ', array_keys($PAGE->theme->get_all_block_regions()));
-        $settings->add(new admin_setting_configtext('tool_blocksmanager/lockedregions',
-                new lang_string('lockedregions', 'tool_blocksmanager'),
-                new lang_string('lockedregions_desc', 'tool_blocksmanager', $regions),
-                '')
-        );
-
-        // Visibility can be changed?
-        $settings->add(new admin_setting_configcheckbox('tool_blocksmanager/unlockvisibility',
-                new lang_string('unlockvisibility', 'tool_blocksmanager'),
-                new lang_string('unlockvisibility_desc', 'tool_blocksmanager'),
-                1)
-        );
-
-        // Can be configured?
-        $settings->add(new admin_setting_configcheckbox('tool_blocksmanager/unlockconfig',
-                new lang_string('unlockconfig', 'tool_blocksmanager'),
-                new lang_string('unlockconfig_desc', 'tool_blocksmanager'),
-                1)
-        );
-
-    }
+    $ADMIN->add(
+        'tool_blocksmanager_settings',
+        new admin_externalpage(
+            'tool_blocksmanager/region',
+            get_string('manageregionlocking', 'tool_blocksmanager'),
+            new moodle_url('/admin/tool/blocksmanager/region.php')
+        )
+    );
 }

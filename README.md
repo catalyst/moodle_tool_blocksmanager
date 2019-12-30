@@ -3,11 +3,10 @@
 An admin tool that allows you to control a block layout across units.
 
 ## Features ##
-* Lock down functionality of a block region.
-  - Set **Locked course categories** (Block regions in courses from the selected course categories (including child categories) will be locked according to "Locked regions" settings).
-  - Set **Locked regions** (blocks cannot be added/deleted or moved/reordered within these regions).
-  - Unlock **Visibility settings** (visibility settings will be available for the blocks in the locked regions).
-  - Unlock **Block configuration** (configuration of the blocks will be available in the locked regions). 
+* Lock down functionality for the blocks in the regions.
+  - Create locking rules for the regions in the specific course categories (block regions in courses from the selected course categories (including child categories) will be locked according to configured rules).
+  - Create locking rules for specific blocks in the specific regions of the specific course categories (block rules will override region rules).
+  - There is Bypass blocks locking ('tool/blocksmanager:bypasslocking') capability  that allows users to bypass created locking rules. 
 * TODO: Add a specific set of blocks to ALL units, in a region.
 * TODO: Define default region and weight for every block type, so that existing blocks in units are placed in those regions and weighted accordingly.
 
@@ -17,7 +16,7 @@ An admin tool that allows you to control a block layout across units.
 3. Add following line to your config.php.
 
 ```php
- $CFG->blockmanagerclass = '\\tool_blocksmanager\\blocks';
+ $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
 ```
 
 # Crafted by Catalyst IT
