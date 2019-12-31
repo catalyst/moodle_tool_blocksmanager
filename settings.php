@@ -46,4 +46,13 @@ if ($hassiteconfig) {
             new moodle_url('/admin/tool/blocksmanager/region.php')
         )
     );
+
+    $ADMIN->add(
+        'tool_blocksmanager_settings',
+        new admin_externalpage(
+            'tool_blocksmanager/setup',
+            get_string('setuptitle', 'tool_blocksmanager'),
+            new moodle_url('/admin/tool/blocksmanager/index.php')
+        )
+    );
 }
