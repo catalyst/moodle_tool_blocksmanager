@@ -32,7 +32,7 @@ class setup_item {
     /**
      * Data delimiter.
      */
-    const DATA_DELIMITER = ':';
+    const DATA_DELIMITER = '||';
 
     /**
      * Region it put the block to.
@@ -77,7 +77,7 @@ class setup_item {
             throw new invalid_setup_item_exception('Incorrect data: not all required fields provided');
         }
 
-        $values = explode(':', trim($data));
+        $values = explode(self::DATA_DELIMITER, trim($data));
 
         $this->region = trim($values[0]);
 

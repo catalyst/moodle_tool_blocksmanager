@@ -26,32 +26,37 @@ defined('MOODLE_INTERNAL') || die();
 
 class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
 
+    public function setUp() {
+        parent::setUp();
+        $this->resetAfterTest();
+    }
+
     public function test_delimiter() {
-        $this->assertSame(':', \tool_blocksmanager\setup_item::DATA_DELIMITER);
+        $this->assertSame('||', \tool_blocksmanager\setup_item::DATA_DELIMITER);
     }
 
     public function test_exception_if_not_all_required_fileds() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: not all required fields provided');
 
-        $item = new \tool_blocksmanager\setup_item('region:1');
+        $item = new \tool_blocksmanager\setup_item('region||1');
     }
 
     public function test_exception_if_incorrect_category_provided() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: incorrect category id provided');
 
-        $item = new \tool_blocksmanager\setup_item('region:1,category:test');
+        $item = new \tool_blocksmanager\setup_item('region||1,category||test');
     }
 
     public function test_weight_and_visible_defaults() {
-        $item = new \tool_blocksmanager\setup_item('region:1:test');
+        $item = new \tool_blocksmanager\setup_item('region||1||test');
         $this->assertSame(0, $item->get_weight());
         $this->assertSame(1, $item->get_visible());
     }
 
     public function test_categories_are_empty_if_not_found() {
-        $item = new \tool_blocksmanager\setup_item('region:777:test');
+        $item = new \tool_blocksmanager\setup_item('region||777||test');
         $this->assertSame([], $item->get_categories());
     }
 
@@ -60,7 +65,7 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $category11 = $this->getDataGenerator()->create_category(['parent' => $category1->id]);
         $category111 = $this->getDataGenerator()->create_category(['parent' => $category11->id]);
 
-        $item = new \tool_blocksmanager\setup_item('region:' .$category1->id . ':test_name:-13:0');
+        $item = new \tool_blocksmanager\setup_item('region||' .$category1->id . '||test_name||-13||0');
         $this->assertSame('region', $item->get_region());
         $this->assertSame('test_name', $item->get_blockname());
         $this->assertSame([$category1->id, $category11->id, $category111->id], $item->get_categories());
