@@ -64,3 +64,11 @@ $string['availableregions'] = 'Potentially available regions:';
 $string['duplicaterule'] = 'The same rule is already exist.';
 $string['cantuseallregions'] = 'All regions cannot be selected. There is already an existing rule for this block with a specific region.';
 $string['cantusespecificregion'] = 'Can\'t use specific region. There is already an existing All rule for this block.';
+$string['addnew'] = 'Add new line';
+$string['setofblocks'] = 'Set of blocks';
+$string['applydesc'] = 'After clicking "Apply" button a new background task to apply provided set of blocks will be created.';
+$string['notallrequired'] = 'Incorrect data: not all required fields provided';
+$string['incorrectcategory'] = 'Incorrect data: incorrect category id provided';
+$string['setuptitle'] = 'Set up blocks';
+$string['setupheading'] = 'Add specific set of blocks';
+
