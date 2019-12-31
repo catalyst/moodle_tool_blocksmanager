@@ -28,5 +28,13 @@ namespace tool_blocksmanager;
 defined('MOODLE_INTERNAL') || die();
 
 class invalid_setup_item_exception extends \moodle_exception {
+    /**
+     * Constructor.
+     *
+     * @param string $errorcode Error string.
+     */
+    public function __construct(string $errorcode) {
+        parent::__construct($errorcode, 'tool_blocksmanager');
+    }
 
 }

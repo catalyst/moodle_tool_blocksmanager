@@ -74,7 +74,7 @@ class setup_item {
     public function __construct(string $data) {
         // Should be at least 3 values.
         if (substr_count($data, self::DATA_DELIMITER) < 2) {
-            throw new invalid_setup_item_exception('Incorrect data: not all required fields provided');
+            throw new invalid_setup_item_exception('notallrequired');
         }
 
         $values = explode(self::DATA_DELIMITER, trim($data));
@@ -85,7 +85,7 @@ class setup_item {
             $catids = explode(',', trim($values[1]));
             foreach ($catids as $catid) {
                 if (!is_numeric($catid)) {
-                    throw new invalid_setup_item_exception('Incorrect data: incorrect category id provided');
+                    throw new invalid_setup_item_exception('incorrectcategory');
                 }
             }
         }
