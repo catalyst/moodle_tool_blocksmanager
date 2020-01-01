@@ -33,13 +33,15 @@ $PAGE->requires->js_call_amd('tool_blocksmanager/setup_form', 'init', [\tool_blo
 
 $formdata = $mform->get_data();
 
-if (!empty($formdata)) {
-    // TODO: process form:
-    // 1. Create ad-hoc task.
+if (!empty($formdata->data)) {
+    $task = new \tool_blocksmanager\task\apply_blocks_set_up();
+    $task->set_custom_data_as_string($formdata->data);
+    if (\core\task\manager::queue_adhoc_task($task)) {
+        \core\notification::success('Queued successfully');
+        redirect($returnurl);
+    }
 } else {
-
     echo $OUTPUT->header();
     $mform->display();
     echo $OUTPUT->footer();
-
 }
