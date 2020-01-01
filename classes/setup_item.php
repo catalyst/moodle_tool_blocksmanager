@@ -81,6 +81,10 @@ class setup_item {
 
         $this->region = trim($values[0]);
 
+        if (empty($this->region)) {
+            throw new invalid_setup_item_exception('emptyregion');
+        }
+
         if (!empty($values[1])) {
             $catids = explode(',', trim($values[1]));
             foreach ($catids as $catid) {
@@ -88,10 +92,16 @@ class setup_item {
                     throw new invalid_setup_item_exception('incorrectcategory');
                 }
             }
+        } else {
+            throw new invalid_setup_item_exception('incorrectcategory');
         }
 
         $this->categories = helper::get_categories_and_children(trim($values[1]));
         $this->blockname = trim($values[2]);
+
+        if (empty($this->blockname)) {
+            throw new invalid_setup_item_exception('emptyblockname');
+        }
 
         if (isset($values[3]) && is_numeric($values[3])) {
             $this->weight = trim($values[3]);

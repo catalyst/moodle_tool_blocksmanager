@@ -42,11 +42,32 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('region||1');
     }
 
+    public function test_exception_if_empty_region_provided() {
+        $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
+        $this->expectExceptionMessage('Incorrect data: empty region is not allowed');
+
+        $item = new \tool_blocksmanager\setup_item('||1,2||test');
+    }
+
     public function test_exception_if_incorrect_category_provided() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: incorrect category id provided');
 
         $item = new \tool_blocksmanager\setup_item('region||1,category||test');
+    }
+
+    public function test_exception_if_empty_categories_provided() {
+        $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
+        $this->expectExceptionMessage('Incorrect data: incorrect category id provided');
+
+        $item = new \tool_blocksmanager\setup_item('region||||test');
+    }
+
+    public function test_exception_if_empty_blockname_provided() {
+        $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
+        $this->expectExceptionMessage('Incorrect data: empty block name is not allowed');
+
+        $item = new \tool_blocksmanager\setup_item('region||1,2||');
     }
 
     public function test_weight_and_visible_defaults() {

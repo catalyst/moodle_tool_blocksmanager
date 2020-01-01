@@ -68,7 +68,8 @@ $string['addnew'] = 'Add new line';
 $string['setofblocks'] = 'Set of blocks';
 $string['applydesc'] = 'After clicking "Apply" button a new background task to apply provided set of blocks will be created.';
 $string['notallrequired'] = 'Incorrect data: not all required fields provided';
+$string['emptyregion'] = 'Incorrect data: empty region is not allowed';
+$string['emptyblockname'] = 'Incorrect data: empty block name is not allowed';
 $string['incorrectcategory'] = 'Incorrect data: incorrect category id provided';
 $string['setuptitle'] = 'Set up blocks';
 $string['setupheading'] = 'Add specific set of blocks';
-
