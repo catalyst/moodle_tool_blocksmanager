@@ -61,6 +61,11 @@ class tool_blocksmanager_helper_testcase extends advanced_testcase {
             [$category2->id],
             \tool_blocksmanager\helper::get_categories_and_children($category2->id)
         );
+
+        $this->assertSame(
+            [$category1->id, $category11->id, $category111->id],
+            \tool_blocksmanager\helper::get_categories_and_children($category1->id . ',' . $category11->id)
+        );
     }
 
 }

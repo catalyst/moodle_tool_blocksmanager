@@ -54,7 +54,7 @@ class helper {
             }
         }
 
-        return $result;
+        return array_unique($result);
     }
 
 }
