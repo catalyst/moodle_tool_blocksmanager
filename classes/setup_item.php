@@ -71,6 +71,12 @@ class setup_item {
     protected $reposition = 0;
 
     /**
+     * Should we try to add a new instance?
+     * @var int
+     */
+    protected $add = 0;
+
+    /**
      * Block config data.
      * @var
      */
@@ -101,8 +107,9 @@ class setup_item {
      *  4 - visible
      *  5 - reposition
      *  6 - config data
-     *  7 - second region
-     *  8 - second weight
+     *  7 - add
+     *  8 - second region
+     *  9 - second weight
      *
      * @throws \tool_blocksmanager\invalid_setup_item_exception
      */
@@ -154,16 +161,24 @@ class setup_item {
             $this->configdata = (string) trim($values[6]);
         }
 
-        if (isset($values[7])) {
-            $this->secondregion = (string) trim($values[7]);
+        if (isset($values[7]) && is_numeric($values[7])) {
+            $this->add = (int) trim($values[7]);
         }
 
         if (isset($values[8])) {
-            $this->secondweight = (int) trim($values[8]);
+            $this->secondregion = (string) trim($values[8]);
+        }
+
+        if (isset($values[9])) {
+            $this->secondweight = (int) trim($values[9]);
         }
 
         if (!empty($this->reposition) && empty($this->secondregion)) {
             throw new invalid_setup_item_exception('emptysecondregion');
+        }
+
+        if (!empty($this->reposition) && !empty($this->add)) {
+            throw new invalid_setup_item_exception('conflictreposition');
         }
     }
 
@@ -228,6 +243,15 @@ class setup_item {
      */
     public function get_reposition(): bool {
         return (bool) $this->reposition;
+    }
+
+    /**
+     * Returns should we add a new block.
+     *
+     * @return bool
+     */
+    public function get_add() {
+        return (bool) $this->add;
     }
 
     /**

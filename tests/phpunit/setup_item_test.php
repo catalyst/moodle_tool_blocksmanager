@@ -77,6 +77,13 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('region||1,2||block||1||1||1');
     }
 
+    public function test_exception_if_reposition_and_add_new_block_at_the_same_time() {
+        $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
+        $this->expectExceptionMessage('Incorrect data: you should either reposition or add a new block');
+
+        $item = new \tool_blocksmanager\setup_item('Region||4||activity_modules||-10||1||1||configdata||1||Secondary region||-10');
+    }
+
     public function test_defaults() {
         $item = new \tool_blocksmanager\setup_item('region||1||test');
         $this->assertSame(0, $item->get_weight());
@@ -98,7 +105,7 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $category111 = $this->getDataGenerator()->create_category(['parent' => $category11->id]);
 
         $item = new \tool_blocksmanager\setup_item(
-            'region||' .$category1->id . '||test_name||-13||0||1||Config data||secondary region||13'
+            'region||' .$category1->id . '||test_name||-13||0||1||Config data||0||secondary region||13'
         );
         $this->assertSame('region', $item->get_region());
         $this->assertSame('test_name', $item->get_blockname());
@@ -107,6 +114,7 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $this->assertSame(false, $item->get_visible());
         $this->assertSame(true, $item->get_reposition());
         $this->assertSame('Config data', $item->get_config_data());
+        $this->assertSame(false, $item->get_add());
         $this->assertSame('secondary region', $item->get_second_region());
         $this->assertSame(13, $item->get_second_weight());
     }

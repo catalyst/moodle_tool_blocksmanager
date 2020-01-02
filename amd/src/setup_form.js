@@ -42,8 +42,10 @@ define(
             CONFIG_DATA: '#id_configdata',
             VISIBLE: '#id_visible',
             REPOSITION: '#id_reposition',
+            ADD: '#id_add',
             SECOND_REGION: '#id_secondregion',
             SECOND_WEIGHT: '#id_secondweight',
+
         };
 
         /**
@@ -58,6 +60,7 @@ define(
                 var configdata = $(SELECTORS.CONFIG_DATA).val();
                 var visible = $(SELECTORS.VISIBLE).val();
                 var reposition = $(SELECTORS.REPOSITION).val();
+                var add = $(SELECTORS.ADD).val();
                 var secondregion = $(SELECTORS.SECOND_REGION).val();
                 var secondweight = $(SELECTORS.SECOND_WEIGHT).val();
                 var textArea = $(SELECTORS.DATA_TEXT_AREA);
@@ -67,11 +70,9 @@ define(
                     + block + delimiter
                     + weight + delimiter
                     + visible + delimiter
-                    + reposition;
-
-                if (configdata !== '') {
-                    newLine = newLine + delimiter + configdata;
-                }
+                    + reposition + delimiter
+                    + configdata + delimiter
+                    + add;
 
                 if (reposition === '1') {
                     newLine = newLine + delimiter + secondregion;
