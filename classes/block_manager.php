@@ -250,6 +250,8 @@ class block_manager extends \block_manager {
                     $warning = true;
                     $bp->region = $block->instance->region;
                 }
+            } else {
+                $bp->region = $block->instance->region;
             }
 
             // Move inside region.
@@ -260,6 +262,8 @@ class block_manager extends \block_manager {
                     $warning = true;
                     $bp->weight = $block->instance->weight;
                 }
+            } else {
+                $bp->weight = $block->instance->weight;
             }
             // Blocks Manager custom code.
 
