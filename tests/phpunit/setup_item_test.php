@@ -70,10 +70,21 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('region||1,2||');
     }
 
-    public function test_weight_and_visible_defaults() {
+    public function test_exception_if_reposition_and_empty_region_provided() {
+        $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
+        $this->expectExceptionMessage('Incorrect data: empty secondary region is not allowed, if repositioning is enabled');
+
+        $item = new \tool_blocksmanager\setup_item('region||1,2||block||1||1||1');
+    }
+
+    public function test_defaults() {
         $item = new \tool_blocksmanager\setup_item('region||1||test');
         $this->assertSame(0, $item->get_weight());
-        $this->assertSame(1, $item->get_visible());
+        $this->assertSame(true, $item->get_visible());
+        $this->assertSame(false, $item->get_reposition());
+        $this->assertSame('', $item->get_config_data());
+        $this->assertSame('', $item->get_second_region());
+        $this->assertSame(0, $item->get_second_weight());
     }
 
     public function test_categories_are_empty_if_not_found() {
@@ -86,12 +97,18 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $category11 = $this->getDataGenerator()->create_category(['parent' => $category1->id]);
         $category111 = $this->getDataGenerator()->create_category(['parent' => $category11->id]);
 
-        $item = new \tool_blocksmanager\setup_item('region||' .$category1->id . '||test_name||-13||0');
+        $item = new \tool_blocksmanager\setup_item(
+            'region||' .$category1->id . '||test_name||-13||0||1||Config data||secondary region||13'
+        );
         $this->assertSame('region', $item->get_region());
         $this->assertSame('test_name', $item->get_blockname());
         $this->assertSame([$category1->id, $category11->id, $category111->id], $item->get_categories());
         $this->assertSame(-13, $item->get_weight());
-        $this->assertSame(0, $item->get_visible());
+        $this->assertSame(false, $item->get_visible());
+        $this->assertSame(true, $item->get_reposition());
+        $this->assertSame('Config data', $item->get_config_data());
+        $this->assertSame('secondary region', $item->get_second_region());
+        $this->assertSame(13, $item->get_second_weight());
     }
 
 }

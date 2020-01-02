@@ -60,6 +60,14 @@ class setup_form extends \moodleform {
         $this->_form->addElement('select', 'categories', get_string('field_categories', 'tool_blocksmanager'),
             \core_course_category::make_categories_list(), ['multiple' => true]);
         $this->_form->addElement('select', 'weight', get_string('weight', 'block'), $weightoptions);
+        $this->_form->addElement('text', 'configdata', get_string('field_configdata', 'tool_blocksmanager'));
+        $this->_form->addElement('select', 'visible', 'Visible?', [1 => get_string('yes'), 0 => get_string('no')]);
+        $this->_form->addElement('select', 'reposition',  get_string('field_reposition', 'tool_blocksmanager'),
+            [0 => get_string('no'), 1 => get_string('yes')]);
+        $this->_form->addElement('text', 'secondregion', get_string('field_secondregion', 'tool_blocksmanager'));
+        $this->_form->addElement('select', 'secondweight', get_string('field_secondweight', 'tool_blocksmanager'), $weightoptions);
+        $this->_form->hideIf('secondregion', 'reposition', 'eq', 0);
+        $this->_form->hideIf('secondweight', 'reposition', 'eq', 0);
         $this->_form->addElement('button', 'addline', get_string('addnew', 'tool_blocksmanager'));
         $this->_form->addElement('textarea', 'data', get_string('setofblocks', 'tool_blocksmanager'), 'cols="80" rows="20"');
         $this->_form->addRule('data', null, 'required');
@@ -67,7 +75,6 @@ class setup_form extends \moodleform {
 
         $this->add_action_buttons(false, 'Apply set of blocks');
         $this->_form->addElement('static', 'availableregions', null, get_string('applydesc', 'tool_blocksmanager'));
-
     }
 
     /**

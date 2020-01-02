@@ -39,6 +39,11 @@ define(
             BLOCK: '#id_block',
             CATEGORIES: '#id_categories',
             WEIGHT: '#id_weight',
+            CONFIG_DATA: '#id_configdata',
+            VISIBLE: '#id_visible',
+            REPOSITION: '#id_reposition',
+            SECOND_REGION: '#id_secondregion',
+            SECOND_WEIGHT: '#id_secondweight',
         };
 
         /**
@@ -50,8 +55,31 @@ define(
                 var block = $(SELECTORS.BLOCK).val();
                 var categories = $(SELECTORS.CATEGORIES).val();
                 var weight = $(SELECTORS.WEIGHT).val();
+                var configdata = $(SELECTORS.CONFIG_DATA).val();
+                var visible = $(SELECTORS.VISIBLE).val();
+                var reposition = $(SELECTORS.REPOSITION).val();
+                var secondregion = $(SELECTORS.SECOND_REGION).val();
+                var secondweight = $(SELECTORS.SECOND_WEIGHT).val();
                 var textArea = $(SELECTORS.DATA_TEXT_AREA);
-                var newLine = region + delimiter + categories + delimiter + block + delimiter + weight + '\n';
+
+                var newLine = region + delimiter
+                    + categories + delimiter
+                    + block + delimiter
+                    + weight + delimiter
+                    + visible + delimiter
+                    + reposition;
+
+                if (configdata !== '') {
+                    newLine = newLine + delimiter + configdata;
+                }
+
+                if (reposition === '1') {
+                    newLine = newLine + delimiter + secondregion;
+                    newLine = newLine + delimiter + secondweight;
+
+                }
+
+                newLine = newLine + '\n';
 
                 textArea.val(textArea.val() + newLine);
             });
