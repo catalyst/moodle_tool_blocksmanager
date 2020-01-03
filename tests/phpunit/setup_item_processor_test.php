@@ -51,7 +51,6 @@ class tool_blocksmanager_setup_item_processor_testcase extends advanced_testcase
         $category1 = $this->getDataGenerator()->create_category();
         $course1 = $this->getDataGenerator()->create_course(['category' => $category1->id]);
 
-
         $this->expectException('coding_exception');
         $this->expectExceptionMessage('Coding error detected, it must be fixed by a programmer: ' .
             'Terminate processing. Block manager class is not configured in config.php');
