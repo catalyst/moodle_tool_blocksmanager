@@ -77,7 +77,6 @@ define(
                 if (reposition === '1') {
                     newLine = newLine + delimiter + secondregion;
                     newLine = newLine + delimiter + secondweight;
-
                 }
 
                 newLine = newLine + '\n';
