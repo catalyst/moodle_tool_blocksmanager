@@ -159,5 +159,4 @@ class setup_item_processor {
         }
     }
 
-
 }
