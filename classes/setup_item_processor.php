@@ -125,6 +125,9 @@ class setup_item_processor {
                             $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
                                 . ' The block is not addable for the course page of course ' . $course->id);
                         }
+                    } else {
+                        $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
+                            . ' The block is already exist in the course ' . $course->id);
                     }
                 }
             } catch (\Exception $exception) {
