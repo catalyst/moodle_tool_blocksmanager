@@ -65,9 +65,9 @@ class tool_blocksmanager_setup_item_processor_testcase extends advanced_testcase
      * Test basic processing.
      */
     public function test_process() {
-        global $CFG, $DB;
+        global $DB;
 
-        $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
+        set_config('blockmanagerclass', '\\tool_blocksmanager\\block_manager');
 
         $category1 = $this->getDataGenerator()->create_category();
         $category2 = $this->getDataGenerator()->create_category();
