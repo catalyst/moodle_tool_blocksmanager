@@ -25,7 +25,9 @@
 namespace tool_blocksmanager\task;
 
 use tool_blocksmanager\invalid_setup_item_exception;
+use tool_blocksmanager\mtrace_logger;
 use tool_blocksmanager\setup_item;
+use tool_blocksmanager\setup_item_processor;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,6 +38,8 @@ class apply_blocks_set_up extends \core\task\adhoc_task {
      * @inheritdoc
      */
     public function execute() {
+        $loger = new mtrace_logger();
+
         $todo = [];
         $items = $this->get_custom_data_as_string();
         $items = explode("\n", $items);
@@ -46,12 +50,13 @@ class apply_blocks_set_up extends \core\task\adhoc_task {
                 try {
                     $todo[] = new setup_item($item);
                 } catch (invalid_setup_item_exception $exception) {
-                    mtrace('Invalid blocks setup item: ' . $exception->getMessage());
+                    $loger->log_message('Invalid blocks setup item: ' . $exception->getMessage());
                 }
             }
         }
 
-        // TODO: apply each setup item.
+        $processor = new setup_item_processor($loger);
+        $processor->process_bulk($todo);
     }
 
 }

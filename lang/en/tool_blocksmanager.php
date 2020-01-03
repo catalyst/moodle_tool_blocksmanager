@@ -81,3 +81,4 @@ $string['emptyblockname'] = 'Incorrect data: empty block name is not allowed';
 $string['incorrectcategory'] = 'Incorrect data: incorrect category id provided';
 $string['setuptitle'] = 'Set up blocks';
 $string['setupheading'] = 'Add specific set of blocks';
+$string['queued'] = 'Set up task has been queued successfully';

@@ -37,7 +37,7 @@ if (!empty($formdata->data)) {
     $task = new \tool_blocksmanager\task\apply_blocks_set_up();
     $task->set_custom_data_as_string($formdata->data);
     if (\core\task\manager::queue_adhoc_task($task)) {
-        \core\notification::success('Queued successfully');
+        \core\notification::success(get_string('queued', 'tool_blocksmanager'));
         redirect($returnurl);
     }
 } else {
