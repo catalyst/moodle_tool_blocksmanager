@@ -48,6 +48,8 @@ class tool_blocksmanager_setup_item_processor_testcase extends advanced_testcase
      * Test that processing is terminated if blockmanagerclass is not overridden.
      */
     public function test_thrown_exception_if_blockmanagerclass_is_not_overridden() {
+        set_config('blockmanagerclass', '');
+
         $category1 = $this->getDataGenerator()->create_category();
         $course1 = $this->getDataGenerator()->create_course(['category' => $category1->id]);
 
