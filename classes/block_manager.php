@@ -576,6 +576,89 @@ class block_manager extends \block_manager {
     }
 
     /**
+     * Override core function to be able to return block instance.
+     *
+     * @inheritdoc
+     *
+     * @return stdClass
+     */
+    public function add_block($blockname, $region, $weight, $showinsubcontexts, $pagetypepattern = null, $subpagepattern = null) {
+        global $DB;
+        // Allow invisible blocks because this is used when adding default page blocks, which
+        // might include invisible ones if the user makes some default blocks invisible.
+        $this->check_known_block_type($blockname, true);
+        $this->check_region_is_known($region);
+
+        if (empty($pagetypepattern)) {
+            $pagetypepattern = $this->page->pagetype;
+        }
+
+        $blockinstance = new stdClass;
+        $blockinstance->blockname = $blockname;
+        $blockinstance->parentcontextid = $this->page->context->id;
+        $blockinstance->showinsubcontexts = !empty($showinsubcontexts);
+        $blockinstance->pagetypepattern = $pagetypepattern;
+        $blockinstance->subpagepattern = $subpagepattern;
+        $blockinstance->defaultregion = $region;
+        $blockinstance->defaultweight = $weight;
+        $blockinstance->configdata = '';
+        $blockinstance->timecreated = time();
+        $blockinstance->timemodified = $blockinstance->timecreated;
+        $blockinstance->id = $DB->insert_record('block_instances', $blockinstance);
+
+        // Ensure the block context is created.
+        \context_block::instance($blockinstance->id);
+
+        // If the new instance was created, allow it to do additional setup.
+        if ($block = block_instance($blockname, $blockinstance)) {
+            $block->instance_create();
+        }
+
+        return $blockinstance;
+    }
+
+    /**
+     * Get a list of existing block instances by block name.
+     *
+     * @param string $blockname A name of the block.
+     *
+     * @return array
+     */
+    public function get_blocks_by_name(string $blockname) {
+
+        if (empty($this->blockinstances)) {
+            return [];
+        }
+
+        $blocks = [];
+
+        foreach ($this->blockinstances as $region) {
+            foreach ($region as $instance) {
+                if (empty($instance->instance->blockname)) {
+                    continue;
+                }
+                if ($instance->instance->blockname == $blockname) {
+                    $blocks[] = $instance->instance;
+                }
+            }
+        }
+        return $blocks;
+    }
+
+    /**
+     * Update block config data.
+     *
+     * @param object $block Block instance.
+     * @param string $configdata Config data to set.
+     */
+    public function update_block_config_data($block, string $configdata) {
+        global $DB;
+
+        $block->configdata = $configdata;
+        $DB->update_record('block_instances', $block);
+    }
+
+    /**
      * Return locking manager.
      *
      * @return \tool_blocksmanager\locking_manager

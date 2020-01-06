@@ -217,23 +217,7 @@ class locking_manager {
      * @return array
      */
     protected function get_locked_categories(string $lockedcats) {
-        $result = [];
-
-        if (!empty($lockedcats)) {
-            $lockedcats = explode(',', $lockedcats);
-
-            foreach ($lockedcats as $cat) {
-                if ($category = \core_course_category::get($cat, IGNORE_MISSING)) {
-                    $result[] = $cat;
-                    $result = array_merge(
-                        $result,
-                        $category->get_all_children_ids()
-                    );
-                }
-            }
-        }
-
-        return $result;
+        return helper::get_categories_and_children($lockedcats);
     }
 
     /**

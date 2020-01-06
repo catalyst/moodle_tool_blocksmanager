@@ -7,8 +7,11 @@ An admin tool that allows you to control a block layout across units.
   - Create locking rules for the regions in the specific course categories (block regions in courses from the selected course categories (including child categories) will be locked according to configured rules).
   - Create locking rules for specific blocks in the specific regions of the specific course categories (block rules will override region rules).
   - There is Bypass blocks locking ('tool/blocksmanager:bypasslocking') capability  that allows users to bypass created locking rules. 
-* TODO: Add a specific set of blocks to ALL units, in a region.
-* TODO: Define default region and weight for every block type, so that existing blocks in units are placed in those regions and weighted accordingly.
+* Add a specific set of blocks to the courses in the specific course categories:
+  - Define region and weight for every block type.
+  - Set visibility for each block type.
+  - Reposition or add another block instance if it's already exist in the course.
+  - Set up config data as a string if required. 
 
 ## Installation ##
 1. Download files or clone the repository to /admin/tool/blocksmanager
