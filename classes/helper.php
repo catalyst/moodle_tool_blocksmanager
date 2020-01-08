@@ -44,7 +44,7 @@ class helper {
             $catids = explode(',', $catids);
 
             foreach ($catids as $cat) {
-                if ($category = \core_course_category::get($cat, IGNORE_MISSING)) {
+                if ($category = \core_course_category::get($cat, IGNORE_MISSING, true)) {
                     $result[] = $cat;
                     $result = array_merge(
                         $result,
