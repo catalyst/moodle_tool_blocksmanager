@@ -256,7 +256,7 @@ class block_manager extends \block_manager {
 
             // Move inside region.
             if ($block->instance->weight != $data->bui_weight) {
-                if ($this->get_locking_manager()->can_move($block->instance->blockname, $data->bui_weight)) {
+                if ($this->get_locking_manager()->can_move($block->instance->blockname, $data->bui_region)) {
                     $bp->weight = $data->bui_weight;
                 } else {
                     $warning = true;
