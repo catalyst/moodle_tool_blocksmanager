@@ -56,11 +56,13 @@ class setup_form extends \moodleform {
 
         $this->_form->addElement('static', 'availableregions', get_string('availableregions', 'tool_blocksmanager'), $regions);
         $this->_form->addElement('text', 'region', get_string('field_region', 'tool_blocksmanager'));
+        $this->_form->setType('region', PARAM_TEXT);
         $this->_form->addElement('select', 'block', get_string('field_block', 'tool_blocksmanager'), $blocks);
         $this->_form->addElement('select', 'categories', get_string('field_categories', 'tool_blocksmanager'),
             \core_course_category::make_categories_list(), ['multiple' => true]);
         $this->_form->addElement('select', 'weight', get_string('weight', 'block'), $weightoptions);
         $this->_form->addElement('text', 'configdata', get_string('field_configdata', 'tool_blocksmanager'));
+        $this->_form->setType('configdata', PARAM_TEXT);
         $this->_form->addElement('select', 'visible', 'Visible?', [1 => get_string('yes'), 0 => get_string('no')]);
         $this->_form->addElement('select', 'reposition',  get_string('field_reposition', 'tool_blocksmanager'),
             [0 => get_string('no'), 1 => get_string('yes')]);
@@ -69,6 +71,7 @@ class setup_form extends \moodleform {
         $this->_form->hideIf('add', 'reposition', 'eq', 1);
         $this->_form->disabledIf('reposition', 'add', 'eq', 1);
         $this->_form->addElement('text', 'secondregion', get_string('field_secondregion', 'tool_blocksmanager'));
+        $this->_form->setType('secondregion', PARAM_TEXT);
         $this->_form->addElement('select', 'secondweight', get_string('field_secondweight', 'tool_blocksmanager'), $weightoptions);
         $this->_form->hideIf('secondregion', 'reposition', 'eq', 0);
         $this->_form->hideIf('secondweight', 'reposition', 'eq', 0);
