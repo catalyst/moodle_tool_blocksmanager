@@ -75,11 +75,16 @@ class setup_form extends \moodleform {
         $this->_form->addElement('select', 'secondweight', get_string('field_secondweight', 'tool_blocksmanager'), $weightoptions);
         $this->_form->hideIf('secondregion', 'reposition', 'eq', 0);
         $this->_form->hideIf('secondweight', 'reposition', 'eq', 0);
+        $this->_form->addElement('selectyesno', 'showinsubcontexts', get_string('field_showinsubcontexts', 'tool_blocksmanager'));
+        $this->_form->addHelpButton('showinsubcontexts', 'field_showinsubcontexts', 'tool_blocksmanager');
+        $this->_form->addElement('text', 'pagetypepattern', get_string('field_pagetypepattern', 'tool_blocksmanager'));
+        $this->_form->addHelpButton('pagetypepattern', 'field_pagetypepattern', 'tool_blocksmanager');
+        $this->_form->setType('pagetypepattern', PARAM_TEXT);
+        $this->_form->setDefault('pagetypepattern', 'course-view-*');
         $this->_form->addElement('button', 'addline', get_string('addnew', 'tool_blocksmanager'));
         $this->_form->addElement('textarea', 'data', get_string('setofblocks', 'tool_blocksmanager'), 'cols="80" rows="20"');
         $this->_form->addRule('data', null, 'required');
         $this->_form->setType('data', PARAM_RAW);
-
         $this->add_action_buttons(false, 'Apply set of blocks');
         $this->_form->addElement('static', 'availableregions', null, get_string('applydesc', 'tool_blocksmanager'));
     }

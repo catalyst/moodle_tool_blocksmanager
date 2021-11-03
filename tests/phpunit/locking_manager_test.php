@@ -29,7 +29,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
     /**
      * Initial set up.
      */
-    public function setUp() {
+    public function setUp(): void {
         $this->resetAfterTest();
     }
 

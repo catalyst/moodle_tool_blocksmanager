@@ -38,7 +38,7 @@ class tool_blocksmanager_setup_item_processor_testcase extends advanced_testcase
     /**
      * Initial set up.
      */
-    public function setUp() {
+    public function setUp(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->logger = new blocks_manager_dummy_logger();
@@ -57,7 +57,7 @@ class tool_blocksmanager_setup_item_processor_testcase extends advanced_testcase
         $this->expectExceptionMessage('Coding error detected, it must be fixed by a programmer: ' .
             'Terminate processing. Block manager class is not configured in config.php');
 
-        $data = 'side-pre||' . $category1->id .'||search_forums||-10||1||1||Config data||Secondary region||-10';
+        $data = 'side-pre||' . $category1->id .'||search_forums||-10||1||1||Config data||0||Secondary region||-10||0||*';
         $item = new \tool_blocksmanager\setup_item($data);
         $processor = new \tool_blocksmanager\setup_item_processor($this->logger);
         $processor->process($item);
@@ -80,7 +80,7 @@ class tool_blocksmanager_setup_item_processor_testcase extends advanced_testcase
 
         $this->assertSame(0, $DB->count_records('block_instances', ['blockname' => 'search_forums']));
 
-        $data = 'side-pre||' . $category1->id .'||search_forums||-10||1||1||Config data||Secondary region||-10';
+        $data = 'side-pre||' . $category1->id .'||search_forums||-10||1||1||Config data||0||Secondary region||-10||0||*';
         $item = new \tool_blocksmanager\setup_item($data);
         $processor = new \tool_blocksmanager\setup_item_processor($this->logger);
         $processor->process($item);
@@ -89,7 +89,7 @@ class tool_blocksmanager_setup_item_processor_testcase extends advanced_testcase
         $this->assertCount(2, $blocks);
 
         foreach ($blocks as $block) {
-            $this->assertEquals('course-view-*', $block->pagetypepattern);
+            $this->assertEquals('*', $block->pagetypepattern);
             $this->assertEquals('side-pre', $block->defaultregion);
             $this->assertEquals('-10', $block->defaultweight);
             $this->assertEquals('Config data', $block->configdata);

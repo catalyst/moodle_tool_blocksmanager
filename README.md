@@ -11,7 +11,9 @@ An admin tool that allows you to control a block layout across units.
   - Define region and weight for every block type.
   - Set visibility for each block type.
   - Reposition or add another block instance if it's already exist in the course.
-  - Set up config data as a string if required. 
+  - Set up config data as a string if required.
+  - Set whether to show the block in subcontexts.
+  - Set the page type pattern.
 
 ## Installation ##
 1. Download files or clone the repository to /admin/tool/blocksmanager
