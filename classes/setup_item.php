@@ -34,6 +34,8 @@ class setup_item {
      */
     const DATA_DELIMITER = '||';
 
+    const PAGE_TYPE_PATTERN_DEFAULT = 'course-view-*';
+
     /**
      * Region it put the block to.
      * @var string
@@ -94,6 +96,17 @@ class setup_item {
      */
     protected $secondweight = 0;
 
+    /**
+     * Show block in subcontexts..
+     * @var int
+     */
+    protected $showinsubcontexts = 0;
+
+    /**
+     * Page type pattern.
+     * @var int
+     */
+    protected $pagetypepattern = self::PAGE_TYPE_PATTERN_DEFAULT;
 
     /**
      * Constructor.
@@ -108,8 +121,18 @@ class setup_item {
      *  5 - reposition
      *  6 - config data
      *  7 - add
+     *
+     *  If reposition = 0
+     *
+     *  8 - show in subcontexts
+     *  9 - page type pattern
+     *
+     *  If reposition = 1
+     *
      *  8 - second region
      *  9 - second weight
+     *  10 - show in subcontexts
+     *  11 - page type pattern
      *
      * @throws \tool_blocksmanager\invalid_setup_item_exception
      */
@@ -165,12 +188,17 @@ class setup_item {
             $this->add = (int) trim($values[7]);
         }
 
-        if (isset($values[8])) {
-            $this->secondregion = (string) trim($values[8]);
-        }
+        if ($this->reposition == 1) {
+            if (isset($values[8])) {
+                $this->secondregion = (string) trim($values[8]);
+            }
 
-        if (isset($values[9])) {
-            $this->secondweight = (int) trim($values[9]);
+            if (isset($values[9])) {
+                $this->secondweight = (int) trim($values[9]);
+            }
+            $showinsubcontextindex = 10;
+        } else {
+            $showinsubcontextindex = 8;
         }
 
         if (!empty($this->reposition) && empty($this->secondregion)) {
@@ -180,6 +208,18 @@ class setup_item {
         if (!empty($this->reposition) && !empty($this->add)) {
             throw new invalid_setup_item_exception('conflictreposition');
         }
+
+        if (isset($values[$showinsubcontextindex]) && is_numeric($values[$showinsubcontextindex])) {
+            $this->showinsubcontexts = (int) trim($values[$showinsubcontextindex]);
+        }
+
+        if (isset($values[$showinsubcontextindex + 1])) {
+            $this->pagetypepattern = (string) trim($values[$showinsubcontextindex + 1]);
+            if (empty($this->pagetypepattern)) {
+                throw new invalid_setup_item_exception('emptypagetypepattern');
+            }
+        }
+
     }
 
     /**
@@ -252,6 +292,24 @@ class setup_item {
      */
     public function get_add() {
         return (bool) $this->add;
+    }
+
+    /**
+     * Returns should be shown in subcontexts.
+     *
+     * @return bool
+     */
+    public function get_showinsubcontexts() {
+        return (bool) $this->showinsubcontexts;
+    }
+
+    /**
+     * Returns the page type pattern.
+     *
+     * @return string
+     */
+    public function get_pagetypepattern() {
+        return  $this->pagetypepattern;
     }
 
     /**

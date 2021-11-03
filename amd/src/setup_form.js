@@ -43,6 +43,8 @@ define(
             VISIBLE: '#id_visible',
             REPOSITION: '#id_reposition',
             ADD: '#id_add',
+            SHOWINSUBCONTEXTS: '#id_showinsubcontexts',
+            PAGETYPEPATTERN: '#id_pagetypepattern',
             SECOND_REGION: '#id_secondregion',
             SECOND_WEIGHT: '#id_secondweight',
 
@@ -50,9 +52,11 @@ define(
 
         /**
          * Initialise the class.
+         *
+         * @param {string} delimiter
          */
         SetUpForm.init = function(delimiter) {
-            $(SELECTORS.ADD_LINE_BUTTON).click(function () {
+            $(SELECTORS.ADD_LINE_BUTTON).click(function() {
                 var region = $(SELECTORS.REGION).val();
                 var block = $(SELECTORS.BLOCK).val();
                 var categories = $(SELECTORS.CATEGORIES).val();
@@ -61,6 +65,8 @@ define(
                 var visible = $(SELECTORS.VISIBLE).val();
                 var reposition = $(SELECTORS.REPOSITION).val();
                 var add = $(SELECTORS.ADD).val();
+                var showinsubcontexts = $(SELECTORS.SHOWINSUBCONTEXTS).val();
+                var pagetypepattern = $(SELECTORS.PAGETYPEPATTERN).val();
                 var secondregion = $(SELECTORS.SECOND_REGION).val();
                 var secondweight = $(SELECTORS.SECOND_WEIGHT).val();
                 var textArea = $(SELECTORS.DATA_TEXT_AREA);
@@ -79,7 +85,10 @@ define(
                     newLine = newLine + delimiter + secondweight;
                 }
 
-                newLine = newLine + '\n';
+                newLine = newLine + delimiter
+                    + showinsubcontexts + delimiter
+                    + pagetypepattern
+                    + '\n';
 
                 textArea.val(textArea.val() + newLine);
             });
