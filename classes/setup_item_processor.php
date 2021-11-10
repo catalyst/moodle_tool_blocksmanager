@@ -150,8 +150,8 @@ class setup_item_processor {
             $item->get_blockname(),
             $item->get_region(),
             $item->get_weight(),
-            false,
-            'course-view-*',
+            $item->get_showinsubcontexts(),
+            $item->get_pagetypepattern(),
             null
         );
         // Set visibility and position.

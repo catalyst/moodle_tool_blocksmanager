@@ -17,13 +17,12 @@
  * JavaScript for set up form.
  *
  * @module    tool_blocksmanager/setup_form
- * @package   tool_blocksmanager
  * @copyright 2019 Dmitrii Metelkin (dmitriim@catalyst-au.net)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 define(
-    ['jquery'], function($) {
+    function() {
         /**
          * Module level variables.
          */
@@ -33,37 +32,42 @@ define(
          * Selectors used in the code.
          */
         var SELECTORS = {
-            DATA_TEXT_AREA: '#id_data',
-            ADD_LINE_BUTTON: '#id_addline',
-            REGION: '#id_region',
-            BLOCK: '#id_block',
-            CATEGORIES: '#id_categories',
-            WEIGHT: '#id_weight',
-            CONFIG_DATA: '#id_configdata',
-            VISIBLE: '#id_visible',
-            REPOSITION: '#id_reposition',
-            ADD: '#id_add',
-            SECOND_REGION: '#id_secondregion',
-            SECOND_WEIGHT: '#id_secondweight',
-
+            DATA_TEXT_AREA: 'id_data',
+            ADD_LINE_BUTTON: 'id_addline',
+            REGION: 'id_region',
+            BLOCK: 'id_block',
+            CATEGORIES: 'id_categories',
+            WEIGHT: 'id_weight',
+            CONFIG_DATA: 'id_configdata',
+            VISIBLE: 'id_visible',
+            REPOSITION: 'id_reposition',
+            ADD: 'id_add',
+            SHOWINSUBCONTEXTS: 'id_showinsubcontexts',
+            PAGETYPEPATTERN: 'id_pagetypepattern',
+            SECOND_REGION: 'id_secondregion',
+            SECOND_WEIGHT: 'id_secondweight',
         };
 
         /**
          * Initialise the class.
+         *
+         * @param {string} delimiter
          */
         SetUpForm.init = function(delimiter) {
-            $(SELECTORS.ADD_LINE_BUTTON).click(function () {
-                var region = $(SELECTORS.REGION).val();
-                var block = $(SELECTORS.BLOCK).val();
-                var categories = $(SELECTORS.CATEGORIES).val();
-                var weight = $(SELECTORS.WEIGHT).val();
-                var configdata = $(SELECTORS.CONFIG_DATA).val();
-                var visible = $(SELECTORS.VISIBLE).val();
-                var reposition = $(SELECTORS.REPOSITION).val();
-                var add = $(SELECTORS.ADD).val();
-                var secondregion = $(SELECTORS.SECOND_REGION).val();
-                var secondweight = $(SELECTORS.SECOND_WEIGHT).val();
-                var textArea = $(SELECTORS.DATA_TEXT_AREA);
+            document.getElementById(SELECTORS.ADD_LINE_BUTTON).addEventListener('click', function() {
+                var region = document.getElementById(SELECTORS.REGION).value;
+                var block = document.getElementById(SELECTORS.BLOCK).value;
+                var categories = document.getElementById(SELECTORS.CATEGORIES).value;
+                var weight = document.getElementById(SELECTORS.WEIGHT).value;
+                var configdata = document.getElementById(SELECTORS.CONFIG_DATA).value;
+                var visible = document.getElementById(SELECTORS.VISIBLE).value;
+                var reposition = document.getElementById(SELECTORS.REPOSITION).value;
+                var add = document.getElementById(SELECTORS.ADD).value;
+                var showinsubcontexts = document.getElementById(SELECTORS.SHOWINSUBCONTEXTS).value;
+                var pagetypepattern = document.getElementById(SELECTORS.PAGETYPEPATTERN).value;
+                var secondregion = document.getElementById(SELECTORS.SECOND_REGION).value;
+                var secondweight = document.getElementById(SELECTORS.SECOND_WEIGHT).value;
+                var textArea = document.getElementById(SELECTORS.DATA_TEXT_AREA);
 
                 var newLine = region + delimiter
                     + categories + delimiter
@@ -79,11 +83,16 @@ define(
                     newLine = newLine + delimiter + secondweight;
                 }
 
-                newLine = newLine + '\n';
+                newLine = newLine + delimiter
+                    + showinsubcontexts + delimiter
+                    + pagetypepattern
+                    + '\n';
 
-                textArea.val(textArea.val() + newLine);
+                textArea.value = textArea.value + newLine;
             });
         };
 
         return SetUpForm;
-    });
+    }
+);
+

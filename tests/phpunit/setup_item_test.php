@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
 
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
@@ -70,6 +70,16 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('region||1,2||');
     }
 
+    /**
+     * Test that no pagetypepattern results in an excpetion.
+     */
+    public function test_exception_if_empty_pagetypepattern_provided() {
+        $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
+        $this->expectExceptionMessage('Incorrect data: empty page type pattern is not allowed');
+
+        $item = new \tool_blocksmanager\setup_item('region||1,2||block||0||0||0||configdata||0||0||');
+    }
+
     public function test_exception_if_reposition_and_empty_region_provided() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: empty secondary region is not allowed, if repositioning is enabled');
@@ -92,6 +102,8 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $this->assertSame('', $item->get_config_data());
         $this->assertSame('', $item->get_second_region());
         $this->assertSame(0, $item->get_second_weight());
+        $this->assertSame(false, $item->get_showinsubcontexts());
+        $this->assertSame(\tool_blocksmanager\setup_item::PAGE_TYPE_PATTERN_DEFAULT, $item->get_pagetypepattern());
     }
 
     public function test_categories_are_empty_if_not_found() {
@@ -105,7 +117,7 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $category111 = $this->getDataGenerator()->create_category(['parent' => $category11->id]);
 
         $item = new \tool_blocksmanager\setup_item(
-            'region||' .$category1->id . '||test_name||-13||0||1||Config data||0||secondary region||13'
+            'region||' .$category1->id . '||test_name||-13||0||1||Config data||0||secondary region||13||1||*'
         );
         $this->assertSame('region', $item->get_region());
         $this->assertSame('test_name', $item->get_blockname());
@@ -117,6 +129,7 @@ class tool_blocksmanager_setup_item_testcase extends advanced_testcase {
         $this->assertSame(false, $item->get_add());
         $this->assertSame('secondary region', $item->get_second_region());
         $this->assertSame(13, $item->get_second_weight());
+        $this->assertSame(true, $item->get_showinsubcontexts());
+        $this->assertSame('*', $item->get_pagetypepattern());
     }
-
 }
