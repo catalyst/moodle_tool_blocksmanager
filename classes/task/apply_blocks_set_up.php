@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Ad-hoc task to apply blocks set up rules.
- *
- * @package     tool_blocksmanager
- * @copyright   2019 Catalyst IT
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_blocksmanager\task;
 
 use tool_blocksmanager\invalid_setup_item_exception;
@@ -29,9 +21,13 @@ use tool_blocksmanager\mtrace_logger;
 use tool_blocksmanager\setup_item;
 use tool_blocksmanager\setup_item_processor;
 
-defined('MOODLE_INTERNAL') || die();
-
-
+/**
+ * Ad-hoc task to apply blocks set up rules.
+ *
+ * @package     tool_blocksmanager
+ * @copyright   2019 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class apply_blocks_set_up extends \core\task\adhoc_task {
 
     /**

@@ -21,9 +21,6 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
 class tool_blocksmanager_block_list_testcase extends advanced_testcase {
 
     /**
@@ -87,7 +84,7 @@ class tool_blocksmanager_block_list_testcase extends advanced_testcase {
     public function test_display_not_existing_category() {
         global $PAGE;
 
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new \moodle_url('/'));
         $category1 = $this->getDataGenerator()->create_category();
         $table = new \tool_blocksmanager\table\block_list();
 

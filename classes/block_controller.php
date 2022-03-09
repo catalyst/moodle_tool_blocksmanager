@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_blocksmanager;
+
+use tool_blocksmanager\table\block_list;
+
 /**
  * Block manager class for manipulating with blocks on the edit page.
  *
@@ -21,15 +25,6 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_blocksmanager;
-
-
-use tool_blocksmanager\table\block_list;
-
-defined('MOODLE_INTERNAL') || die();
-
-
 class block_controller extends base_controller {
 
     /**

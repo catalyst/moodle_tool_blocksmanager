@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_blocksmanager;
+
 /**
  * Logger class used for logging processing using simple mtrace. This suitable for cron processing.
  *
@@ -21,11 +23,6 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_blocksmanager;
-
-defined('MOODLE_INTERNAL') || die();
-
 class mtrace_logger implements logger_interface {
 
     /**

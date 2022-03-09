@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_blocksmanager\form;
+
+use tool_blocksmanager\block;
+
 /**
  * Form to manipulate with blocks.
  *
@@ -21,13 +25,6 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_blocksmanager\form;
-
-use tool_blocksmanager\block;
-
-defined('MOODLE_INTERNAL') || die();
-
 class block_form extends \core\form\persistent {
 
     /** @var string Persistent class name. */

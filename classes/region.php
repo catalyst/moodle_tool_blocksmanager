@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_blocksmanager;
+
+use core\persistent;
+
 /**
  * Region instance class.
  *
@@ -21,14 +25,6 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-
-namespace tool_blocksmanager;
-
-defined('MOODLE_INTERNAL') || die();
-
-use core\persistent;
-
 class region extends persistent {
 
     /** Table name for the persistent. */

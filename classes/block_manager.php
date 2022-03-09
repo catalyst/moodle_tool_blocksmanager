@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Custom block manager.
- *
- * @package    tool_blocksmanager
- * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
- * @copyright  2019 Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_blocksmanager;
 
 use core\output\notification;
@@ -35,8 +26,14 @@ use context_course;
 use moodle_url;
 use core_tag_tag;
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Custom block manager.
+ *
+ * @package    tool_blocksmanager
+ * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
+ * @copyright  2019 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class block_manager extends \block_manager {
 
     /**
