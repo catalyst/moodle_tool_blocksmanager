@@ -15,20 +15,42 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Code to be executed after the plugin's database scheme has been installed is defined here.
+ * Dummy logger class for testing
  *
  * @package     tool_blocksmanager
- * @category    upgrade
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class blocks_manager_dummy_logger implements \tool_blocksmanager\logger_interface {
 
-defined('MOODLE_INTERNAL') || die();
+    /**
+     * A list of log messages.
+     * @var array
+     */
+    protected $logs = [];
 
-/**
- * Custom code to be run on installing the plugin.
- */
-function xmldb_tool_blocksmanager_install() {
+    /**
+     * @inheritdoc
+     */
+    public function log_messages(array $messages) {
+        foreach ($messages as $message) {
+            $this->log_message($message);
+        }
+    }
 
-    return true;
+    /**
+     * @inheritdoc
+     */
+    public function log_message(string $message) {
+        $this->logs[] = $message;
+    }
+
+    /**
+     * Return a list of log messages.
+     * @return array
+     */
+    public function get_logs() {
+        return $this->logs;
+    }
+
 }

@@ -21,9 +21,6 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
 class tool_blocksmanager_block_testcase extends advanced_testcase {
 
     /**

@@ -25,7 +25,7 @@
 namespace tool_blocksmanager\table;
 
 use core\persistent;
-use tool_blocksmanager\block_controller;
+use tool_blocksmanager\blocks_controller;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -65,7 +65,7 @@ class block_list extends region_list {
      * @return string
      */
     protected function get_base_url() {
-        return block_controller::get_base_url();
+        return blocks_controller::get_base_url();
     }
 
     /**

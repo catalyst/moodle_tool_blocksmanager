@@ -15,16 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tests for region list class.
+ * Tests for block_list class.
  *
  * @package     tool_blocksmanager
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-class tool_blocksmanager_region_list_testcase extends advanced_testcase {
+class tool_blocksmanager_block_list_testcase extends advanced_testcase {
 
     /**
      * Initial set up.
@@ -42,42 +39,42 @@ class tool_blocksmanager_region_list_testcase extends advanced_testcase {
         $PAGE->set_url(new moodle_url('/'));
         $category1 = $this->getDataGenerator()->create_category();
         $category2 = $this->getDataGenerator()->create_category();
-        $table = new \tool_blocksmanager\table\region_list();
+        $table = new \tool_blocksmanager\table\block_list();
 
         // Test Yes display.
-        $region = new \tool_blocksmanager\region(0, (object)[
+        $region = new \tool_blocksmanager\block(0, (object)[
             'region' => 'Test region 1',
+            'block' => 'Test block 1',
             'categories' => $category1->id . ',' . $category2->id,
             'config' => 1,
             'remove' => 1,
             'hide' => 1,
-            'movein' => 1,
             'move' => 1,
         ]);
         $this->assertEquals('Test region 1', $table->col_region($region));
+        $this->assertEquals('Test block 1', $table->col_block($region));
         $this->assertEquals($category1->name . '<BR />' . $category2->name, $table->col_categories($region));
         $this->assertEquals('Yes', $table->col_config($region));
         $this->assertEquals('Yes', $table->col_delete($region));
         $this->assertEquals('Yes', $table->col_hide($region));
-        $this->assertEquals('Yes', $table->col_add($region));
         $this->assertEquals('Yes', $table->col_move($region));
 
         // Test No display.
-        $region = new \tool_blocksmanager\region(0, (object)[
+        $region = new \tool_blocksmanager\block(0, (object)[
             'region' => 'Test region 2',
+            'block' => 'Test block 2',
             'categories' => $category1->id . ',' . $category2->id,
             'config' => 0,
             'remove' => 0,
             'hide' => 0,
-            'movein' => 0,
             'move' => 0,
         ]);
         $this->assertEquals('Test region 2', $table->col_region($region));
+        $this->assertEquals('Test block 2', $table->col_block($region));
         $this->assertEquals($category1->name . '<BR />' . $category2->name, $table->col_categories($region));
         $this->assertEquals('No', $table->col_config($region));
         $this->assertEquals('No', $table->col_delete($region));
         $this->assertEquals('No', $table->col_hide($region));
-        $this->assertEquals('No', $table->col_add($region));
         $this->assertEquals('No', $table->col_move($region));
     }
 
@@ -87,18 +84,19 @@ class tool_blocksmanager_region_list_testcase extends advanced_testcase {
     public function test_display_not_existing_category() {
         global $PAGE;
 
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new \moodle_url('/'));
         $category1 = $this->getDataGenerator()->create_category();
-        $category2 = $this->getDataGenerator()->create_category();
-        $table = new \tool_blocksmanager\table\region_list();
+        $table = new \tool_blocksmanager\table\block_list();
 
         // Test Yes display.
-        $region = new \tool_blocksmanager\region(0, (object)[
-            'region' => 'Test region 1',
+        $region = new \tool_blocksmanager\block(0, (object)[
+            'region' => 'Test region',
+            'block' => 'Test block',
             'categories' => $category1->id . ',777,999',
         ]);
-        $this->assertEquals('Test region 1', $table->col_region($region));
-        $this->assertEquals($category1->name, $table->col_categories($region));
+        $this->assertEquals('Test region', $table->col_region($region));
+        $this->assertEquals('Test block', $table->col_block($region));
 
+        $this->assertEquals($category1->name, $table->col_categories($region));
     }
 }

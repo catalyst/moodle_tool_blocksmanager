@@ -1,3 +1,5 @@
+![Build Status](https://github.com/catalyst/moodle_tool_blocksmanager/actions/workflows/ci.yml/badge.svg?branch=master)
+
 # Block Manager #
 
 An admin tool that allows you to control a block layout across units.
