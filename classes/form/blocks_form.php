@@ -25,7 +25,7 @@ use tool_blocksmanager\block;
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_form extends \core\form\persistent {
+class blocks_form extends \core\form\persistent {
 
     /** @var string Persistent class name. */
     protected static $persistentclass = 'tool_blocksmanager\\block';
