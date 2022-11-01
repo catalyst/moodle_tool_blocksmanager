@@ -21,7 +21,7 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class blocks_manager_dummy_logger implements \tool_blocksmanager\logger_interface {
+class dummy_logger implements \tool_blocksmanager\logger_interface {
 
     /**
      * A list of log messages.
