@@ -32,6 +32,11 @@ class block_list_test extends advanced_testcase {
 
     /**
      * Test display correct data.
+     *
+     * @covers \tool_blocksmanager\table\block_list
+     * @covers \tool_blocksmanager\block
+     * @test
+     * @return void
      */
     public function test_display_values() {
         // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal
@@ -82,6 +87,11 @@ class block_list_test extends advanced_testcase {
 
     /**
      * Test display correct data if category is not exist.
+     *
+     * @covers \tool_blocksmanager\table\block_list
+     * @covers \tool_blocksmanager\block
+     * @test
+     * @return void
      */
     public function test_display_not_existing_category() {
         // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal

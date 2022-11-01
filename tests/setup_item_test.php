@@ -28,10 +28,25 @@ class setup_item_test extends advanced_testcase {
         $this->resetAfterTest();
     }
 
+    /**
+     * Test delimiter.
+     *
+     * @covers \tool_blocksmanager\setup_item::DATA_DELIMITER
+     * @test
+     * @return void
+     */
     public function test_delimiter() {
         $this->assertSame('||', \tool_blocksmanager\setup_item::DATA_DELIMITER);
     }
 
+    /**
+     * Test exception for not all required fields provided.
+     *
+     * @covers \tool_blocksmanager\invalid_setup_item_exception
+     * @covers \tool_blocksmanager\setup_item
+     * @test
+     * @return void
+     */
     public function test_exception_if_not_all_required_fileds() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: not all required fields provided');
@@ -39,6 +54,14 @@ class setup_item_test extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('region||1');
     }
 
+    /**
+     * Test exception for empty region.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\invalid_setup_item_exception
+     * @test
+     * @return void
+     */
     public function test_exception_if_empty_region_provided() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: empty region is not allowed');
@@ -46,6 +69,14 @@ class setup_item_test extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('||1,2||test');
     }
 
+    /**
+     * Test exception for incorrect category.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\invalid_setup_item_exception
+     * @test
+     * @return void
+     */
     public function test_exception_if_incorrect_category_provided() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: incorrect category id provided');
@@ -53,6 +84,14 @@ class setup_item_test extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('region||1,category||test');
     }
 
+    /**
+     * Test exception for empty categories.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\invalid_setup_item_exception
+     * @test
+     * @return void
+     */
     public function test_exception_if_empty_categories_provided() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: incorrect category id provided');
@@ -60,6 +99,14 @@ class setup_item_test extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('region||||test');
     }
 
+    /**
+     * Test exception for empty block name.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\invalid_setup_item_exception
+     * @test
+     * @return void
+     */
     public function test_exception_if_empty_blockname_provided() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: empty block name is not allowed');
@@ -69,6 +116,11 @@ class setup_item_test extends advanced_testcase {
 
     /**
      * Test that no pagetypepattern results in an excpetion.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\invalid_setup_item_exception
+     * @test
+     * @return void
      */
     public function test_exception_if_empty_pagetypepattern_provided() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
@@ -77,6 +129,14 @@ class setup_item_test extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('region||1,2||block||0||0||0||configdata||0||0||');
     }
 
+    /**
+     * Test exception for not all required fields provided.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\invalid_setup_item_exception
+     * @test
+     * @return void
+     */
     public function test_exception_if_reposition_and_empty_region_provided() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: empty secondary region is not allowed, if repositioning is enabled');
@@ -84,6 +144,14 @@ class setup_item_test extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('region||1,2||block||1||1||1');
     }
 
+    /**
+     * Test exception for not all required fields provided.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\invalid_setup_item_exception
+     * @test
+     * @return void
+     */
     public function test_exception_if_reposition_and_add_new_block_at_the_same_time() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: you should either reposition or add a new block');
@@ -91,6 +159,14 @@ class setup_item_test extends advanced_testcase {
         $item = new \tool_blocksmanager\setup_item('Region||4||activity_modules||-10||1||1||configdata||1||Secondary region||-10');
     }
 
+    /**
+     * Test exception for not all required fields provided.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\setup_item::PAGE_TYPE_PATTERN_DEFAULT
+     * @test
+     * @return void
+     */
     public function test_defaults() {
         $item = new \tool_blocksmanager\setup_item('region||1||test');
         $this->assertSame(0, $item->get_weight());
@@ -103,11 +179,25 @@ class setup_item_test extends advanced_testcase {
         $this->assertSame(\tool_blocksmanager\setup_item::PAGE_TYPE_PATTERN_DEFAULT, $item->get_pagetypepattern());
     }
 
+    /**
+     * Test exception for not all required fields provided.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @test
+     * @return void
+     */
     public function test_categories_are_empty_if_not_found() {
         $item = new \tool_blocksmanager\setup_item('region||777||test');
         $this->assertSame([], $item->get_categories());
     }
 
+    /**
+     * Test exception for not all required fields provided.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @test
+     * @return void
+     */
     public function test_correct_data() {
         $category1 = $this->getDataGenerator()->create_category();
         $category11 = $this->getDataGenerator()->create_category(['parent' => $category1->id]);

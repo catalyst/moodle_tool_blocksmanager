@@ -53,6 +53,11 @@ class setup_item_processor_test extends advanced_testcase {
 
     /**
      * Test that processing is terminated if blockmanagerclass is not overridden.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\setup_item_processor
+     * @test
+     * @return void
      */
     public function test_thrown_exception_if_blockmanagerclass_is_not_overridden() {
         set_config('blockmanagerclass', '');
@@ -72,6 +77,11 @@ class setup_item_processor_test extends advanced_testcase {
 
     /**
      * Test basic processing.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\setup_item_processor
+     * @test
+     * @return void
      */
     public function test_process() {
         global $DB;
