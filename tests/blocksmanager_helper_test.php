@@ -21,7 +21,7 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class helper_test extends advanced_testcase {
+class blocksmanager_helper_test extends advanced_testcase {
 
     /**
      * Initial set up.
