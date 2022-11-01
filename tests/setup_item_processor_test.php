@@ -38,7 +38,7 @@ class setup_item_processor_test extends advanced_testcase {
 
     /**
      * Logger for testing
-     * @var \blocks_manager_dummy_logger
+     * @var \dummy_logger
      */
     protected $logger;
 
@@ -48,7 +48,7 @@ class setup_item_processor_test extends advanced_testcase {
     public function setUp(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->logger = new blocks_manager_dummy_logger();
+        $this->logger = new dummy_logger();
     }
 
     /**
