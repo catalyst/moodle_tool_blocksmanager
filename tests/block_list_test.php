@@ -55,7 +55,7 @@ class block_list_test extends advanced_testcase {
         $this->assertEquals('Test block 1', $table->col_block($region));
         $this->assertEquals($category1->name . '<BR />' . $category2->name, $table->col_categories($region));
         $this->assertEquals('Yes', $table->col_config($region));
-        $this->assertEquals('Yes', $table->col_delete($region));
+        $this->assertEquals('Yes', $table->col_remove($region));
         $this->assertEquals('Yes', $table->col_hide($region));
         $this->assertEquals('Yes', $table->col_move($region));
 
@@ -73,7 +73,7 @@ class block_list_test extends advanced_testcase {
         $this->assertEquals('Test block 2', $table->col_block($region));
         $this->assertEquals($category1->name . '<BR />' . $category2->name, $table->col_categories($region));
         $this->assertEquals('No', $table->col_config($region));
-        $this->assertEquals('No', $table->col_delete($region));
+        $this->assertEquals('No', $table->col_remove($region));
         $this->assertEquals('No', $table->col_hide($region));
         $this->assertEquals('No', $table->col_move($region));
     }

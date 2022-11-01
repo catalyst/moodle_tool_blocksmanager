@@ -54,9 +54,9 @@ class region_list_test extends advanced_testcase {
         $this->assertEquals('Test region 1', $table->col_region($region));
         $this->assertEquals($category1->name . '<BR />' . $category2->name, $table->col_categories($region));
         $this->assertEquals('Yes', $table->col_config($region));
-        $this->assertEquals('Yes', $table->col_delete($region));
+        $this->assertEquals('Yes', $table->col_remove($region));
         $this->assertEquals('Yes', $table->col_hide($region));
-        $this->assertEquals('Yes', $table->col_add($region));
+        $this->assertEquals('Yes', $table->col_movein($region));
         $this->assertEquals('Yes', $table->col_move($region));
 
         // Test No display.
@@ -72,9 +72,9 @@ class region_list_test extends advanced_testcase {
         $this->assertEquals('Test region 2', $table->col_region($region));
         $this->assertEquals($category1->name . '<BR />' . $category2->name, $table->col_categories($region));
         $this->assertEquals('No', $table->col_config($region));
-        $this->assertEquals('No', $table->col_delete($region));
+        $this->assertEquals('No', $table->col_remove($region));
         $this->assertEquals('No', $table->col_hide($region));
-        $this->assertEquals('No', $table->col_add($region));
+        $this->assertEquals('No', $table->col_movein($region));
         $this->assertEquals('No', $table->col_move($region));
     }
 
