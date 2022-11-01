@@ -34,8 +34,10 @@ class block_list_test extends advanced_testcase {
      * Test display correct data.
      */
     public function test_display_values() {
+        // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal
         global $PAGE;
 
+        // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal
         $PAGE->set_url(new moodle_url('/'));
         $category1 = $this->getDataGenerator()->create_category();
         $category2 = $this->getDataGenerator()->create_category();
@@ -82,8 +84,10 @@ class block_list_test extends advanced_testcase {
      * Test display correct data if category is not exist.
      */
     public function test_display_not_existing_category() {
+        // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal
         global $PAGE;
 
+        // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal
         $PAGE->set_url(new \moodle_url('/'));
         $category1 = $this->getDataGenerator()->create_category();
         $table = new \tool_blocksmanager\table\block_list();
