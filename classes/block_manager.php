@@ -361,9 +361,13 @@ class block_manager extends \block_manager {
         if (empty($blocktitle)) {
             $blocktitle = $block->arialabel;
         }
+        $blockregion = $block->instance->region;
+        if (empty($blockregion)) {
+            $blockregion = $block->instance->defaultregion;
+        }
 
         if ($this->page->user_can_edit_blocks() &&
-            $this->get_locking_manager()->can_move($block->instance->blockname, $block->instance->region)
+            $this->get_locking_manager()->can_move($block->instance->blockname, $blockregion)
         ) {
             // Move icon.
             $str = new \lang_string('moveblock', 'block', $blocktitle);
@@ -377,7 +381,7 @@ class block_manager extends \block_manager {
         }
 
         if (($this->page->user_can_edit_blocks() || $block->user_can_edit()) &&
-            $this->get_locking_manager()->can_configure($block->instance->blockname, $block->instance->region)
+            $this->get_locking_manager()->can_configure($block->instance->blockname, $blockregion)
         ) {
             // Edit config icon - always show - needed for positioning UI.
             $str = new \lang_string('configureblock', 'block', $blocktitle);
@@ -390,7 +394,7 @@ class block_manager extends \block_manager {
         }
 
         if ($this->page->user_can_edit_blocks() && $block->instance_can_be_hidden() &&
-            $this->get_locking_manager()->can_hide($block->instance->blockname, $block->instance->region)
+            $this->get_locking_manager()->can_hide($block->instance->blockname, $blockregion)
         ) {
             // Show/hide icon.
             if ($block->instance->visible) {
@@ -444,7 +448,7 @@ class block_manager extends \block_manager {
         }
 
         if ($this->user_can_delete_block($block) &&
-            $this->get_locking_manager()->can_remove($block->instance->blockname, $block->instance->region)
+            $this->get_locking_manager()->can_remove($block->instance->blockname, $blockregion)
         ) {
             // Delete icon.
             $str = new \lang_string('deleteblock', 'block', $blocktitle);
