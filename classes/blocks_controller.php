@@ -28,14 +28,14 @@ use tool_blocksmanager\table\block_list;
 class blocks_controller extends base_controller {
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function get_instance($id = 0, \stdClass $data = null) {
         return new block($id, $data);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function get_form($instance) {
         global $PAGE;
@@ -44,7 +44,7 @@ class blocks_controller extends base_controller {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function display_all_records() {
         $records = block::get_records();
@@ -54,42 +54,42 @@ class blocks_controller extends base_controller {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function get_create_button_text() {
         return get_string('addblocklocking', 'tool_blocksmanager');
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function set_external_page() {
         admin_externalpage_setup('tool_blocksmanager/block');
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function get_base_url() {
         return '/admin/tool/blocksmanager/block.php';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function get_view_heading() {
         return get_string('manageblocklocking', 'tool_blocksmanager');
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function get_new_heading() {
         return get_string('newblocklocking', 'tool_blocksmanager');
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function get_edit_heading() {
         return get_string('editblocklocking', 'tool_blocksmanager');

@@ -36,7 +36,7 @@ class block extends persistent {
     const ALL_REGIONS = "All*";
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected static function define_properties() {
         return [

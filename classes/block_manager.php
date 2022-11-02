@@ -581,7 +581,7 @@ class block_manager extends \block_manager {
     /**
      * Override core function to be able to return block instance.
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @return stdClass
      */

@@ -275,7 +275,7 @@ class region_list extends \flexible_table {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function print_nothing_to_display() {
         echo \html_writer::div(get_string('no_regions', 'tool_blocksmanager'));

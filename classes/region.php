@@ -31,7 +31,7 @@ class region extends persistent {
     const TABLE = 'tool_blocksmanager_region';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected static function define_properties() {
         return [

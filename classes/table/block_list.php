@@ -76,7 +76,7 @@ class block_list extends region_list {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function print_nothing_to_display() {
         echo \html_writer::div(get_string('no_blocks', 'tool_blocksmanager'));

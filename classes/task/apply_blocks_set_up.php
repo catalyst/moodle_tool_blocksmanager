@@ -31,7 +31,7 @@ use tool_blocksmanager\setup_item_processor;
 class apply_blocks_set_up extends \core\task\adhoc_task {
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function execute() {
         $loger = new mtrace_logger();
