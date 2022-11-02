@@ -16,7 +16,7 @@
 
 namespace tool_blocksmanager;
 
-use tool_blocksmanager\dummy_logger;
+use tool_blocksmanager\dummy_logger as Logger;
 
 /**
  * Tests for region persistent class.
@@ -29,7 +29,7 @@ class setup_item_processor_test extends \advanced_testcase {
 
     /**
      * Logger for testing
-     * @var \dummy_logger
+     * @var Logger
      */
     protected $logger;
 
@@ -39,7 +39,7 @@ class setup_item_processor_test extends \advanced_testcase {
     public function setUp(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->logger = new \tool_blocksmanager\dummy_logger();
+        $this->logger = new Logger();
     }
 
     /**
