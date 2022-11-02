@@ -29,6 +29,11 @@ class region_controller extends base_controller {
 
     /**
      * {@inheritdoc}
+     *
+     * @param int $id
+     * @param \stdClass|null $data
+     *
+     * @return \core\persistent
      */
     protected function get_instance($id = 0, \stdClass $data = null) {
         return new region($id, $data);
@@ -36,6 +41,10 @@ class region_controller extends base_controller {
 
     /**
      * {@inheritdoc}
+     *
+     * @param \core\persistent|null $instance
+     *
+     * @return \core\form\persistent
      */
     protected function get_form($instance) {
         global $PAGE;
