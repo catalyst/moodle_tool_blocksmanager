@@ -28,14 +28,14 @@ use tool_blocksmanager\table\region_list;
 class region_controller extends base_controller {
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function get_instance($id = 0, \stdClass $data = null) {
         return new region($id, $data);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function get_form($instance) {
         global $PAGE;
@@ -44,7 +44,7 @@ class region_controller extends base_controller {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function display_all_records() {
         $records = region::get_records();
@@ -54,42 +54,42 @@ class region_controller extends base_controller {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function get_create_button_text() {
         return get_string('addregionlocking', 'tool_blocksmanager');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function set_external_page() {
         admin_externalpage_setup('tool_blocksmanager/region');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     public static function get_base_url() {
         return '/admin/tool/blocksmanager/region.php';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function get_view_heading() {
         return get_string('manageregionlocking', 'tool_blocksmanager');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function get_new_heading() {
         return get_string('newregionlocking', 'tool_blocksmanager');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function get_edit_heading() {
         return get_string('editregionlocking', 'tool_blocksmanager');

@@ -30,7 +30,7 @@ use tool_blocksmanager\setup_item;
 class setup_form extends \moodleform {
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function definition() {
         global $PAGE;
@@ -87,7 +87,7 @@ class setup_form extends \moodleform {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);

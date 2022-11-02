@@ -31,7 +31,7 @@ class region_form extends \core\form\persistent {
     protected static $persistentclass = 'tool_blocksmanager\\region';
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function definition() {
         global $PAGE;

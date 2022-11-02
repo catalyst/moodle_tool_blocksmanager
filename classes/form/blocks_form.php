@@ -31,7 +31,7 @@ class blocks_form extends \core\form\persistent {
     protected static $persistentclass = 'tool_blocksmanager\\block';
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     protected function definition() {
         global $PAGE;

@@ -30,7 +30,7 @@ class dummy_logger implements \tool_blocksmanager\logger_interface {
     protected $logs = [];
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     public function log_messages(array $messages) {
         foreach ($messages as $message) {
@@ -39,7 +39,7 @@ class dummy_logger implements \tool_blocksmanager\logger_interface {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     public function log_message(string $message) {
         $this->logs[] = $message;
