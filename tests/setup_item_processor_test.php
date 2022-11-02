@@ -16,10 +16,7 @@
 
 namespace tool_blocksmanager;
 
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once('dummy_logger.php');
+use tool_blocksmanager\dummy_logger;
 
 /**
  * Tests for region persistent class.
