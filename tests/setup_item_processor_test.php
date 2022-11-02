@@ -16,7 +16,10 @@
 
 namespace tool_blocksmanager;
 
-use tool_blocksmanager\dummy_logger as Logger;
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once('dummy_logger.php');
 
 /**
  * Tests for region persistent class.
@@ -29,7 +32,7 @@ class setup_item_processor_test extends \advanced_testcase {
 
     /**
      * Logger for testing
-     * @var Logger
+     * @var \dummy_logger
      */
     protected $logger;
 
@@ -39,7 +42,7 @@ class setup_item_processor_test extends \advanced_testcase {
     public function setUp(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->logger = new Logger();
+        $this->logger = new dummy_logger();
     }
 
     /**
