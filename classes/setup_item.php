@@ -31,6 +31,9 @@ class setup_item {
      */
     const DATA_DELIMITER = '||';
 
+    /**
+     * Default pattern for page type.
+     */
     const PAGE_TYPE_PATTERN_DEFAULT = 'course-view-*';
 
     /**

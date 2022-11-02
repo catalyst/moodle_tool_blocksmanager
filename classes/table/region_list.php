@@ -32,6 +32,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/tablelib.php');
 
+/**
+ * Region list instance class.
+ *
+ * @package     tool_blocksmanager
+ * @copyright   2019 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class region_list extends \flexible_table {
 
     /**
