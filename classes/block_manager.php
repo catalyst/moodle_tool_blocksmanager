@@ -72,7 +72,7 @@ class block_manager extends \block_manager {
             throw new moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
         }
 
-        $editpage = new moodle_page();
+        $editpage = new \moodle_page();
         $editpage->set_pagelayout('admin');
         $editpage->blocks->show_only_fake_blocks(true);
         $editpage->set_course($this->page->course);
@@ -307,7 +307,7 @@ class block_manager extends \block_manager {
             $bits = explode('-', $this->page->pagetype);
             if ($bits[0] == 'tag' && !empty($this->page->subpage)) {
                 // better navbar for tag pages
-                $editpage->navbar->add(get_string('tags'), new moodle_url('/tag/'));
+                $editpage->navbar->add(get_string('tags'), new \moodle_url('/tag/'));
                 $tag = core_tag_tag::get($this->page->subpage);
                 // tag search page doesn't have subpageid
                 if ($tag) {
@@ -372,7 +372,7 @@ class block_manager extends \block_manager {
             // Move icon.
             $str = new \lang_string('moveblock', 'block', $blocktitle);
             $controls[] = new \action_menu_link_primary(
-                new moodle_url($actionurl, array('bui_moveid' => $block->instance->id)),
+                new \moodle_url($actionurl, array('bui_moveid' => $block->instance->id)),
                 new \pix_icon('t/move', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str,
                 array('class' => 'editing_move')
@@ -386,7 +386,7 @@ class block_manager extends \block_manager {
             // Edit config icon - always show - needed for positioning UI.
             $str = new \lang_string('configureblock', 'block', $blocktitle);
             $controls[] = new \action_menu_link_secondary(
-                new moodle_url($actionurl, array('bui_editid' => $block->instance->id)),
+                new \moodle_url($actionurl, array('bui_editid' => $block->instance->id)),
                 new \pix_icon('t/edit', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str,
                 array('class' => 'editing_edit')
@@ -399,12 +399,12 @@ class block_manager extends \block_manager {
             // Show/hide icon.
             if ($block->instance->visible) {
                 $str = new \lang_string('hideblock', 'block', $blocktitle);
-                $url = new moodle_url($actionurl, array('bui_hideid' => $block->instance->id));
+                $url = new \moodle_url($actionurl, array('bui_hideid' => $block->instance->id));
                 $icon = new \pix_icon('t/hide', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
                 $attributes = array('class' => 'editing_hide');
             } else {
                 $str = new \lang_string('showblock', 'block', $blocktitle);
-                $url = new moodle_url($actionurl, array('bui_showid' => $block->instance->id));
+                $url = new \moodle_url($actionurl, array('bui_showid' => $block->instance->id));
                 $icon = new \pix_icon('t/show', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
                 $attributes = array('class' => 'editing_show');
             }
@@ -413,7 +413,7 @@ class block_manager extends \block_manager {
 
         // Assign roles.
         if (get_assignable_roles($block->context, ROLENAME_SHORT)) {
-            $rolesurl = new moodle_url('/admin/roles/assign.php', array('contextid' => $block->context->id,
+            $rolesurl = new \moodle_url('/admin/roles/assign.php', array('contextid' => $block->context->id,
                 'returnurl' => $this->page->url->out_as_local_url()));
             $str = new \lang_string('assignrolesinblock', 'block', $blocktitle);
             $controls[] = new \action_menu_link_secondary(
@@ -425,7 +425,7 @@ class block_manager extends \block_manager {
 
         // Permissions.
         if (has_capability('moodle/role:review', $block->context) or get_overridable_roles($block->context)) {
-            $rolesurl = new moodle_url('/admin/roles/permissions.php', array('contextid' => $block->context->id,
+            $rolesurl = new \moodle_url('/admin/roles/permissions.php', array('contextid' => $block->context->id,
                 'returnurl' => $this->page->url->out_as_local_url()));
             $str = get_string('permissions', 'role');
             $controls[] = new \action_menu_link_secondary(
@@ -437,7 +437,7 @@ class block_manager extends \block_manager {
 
         // Change permissions.
         if (has_any_capability(array('moodle/role:safeoverride', 'moodle/role:override', 'moodle/role:assign'), $block->context)) {
-            $rolesurl = new moodle_url('/admin/roles/check.php', array('contextid' => $block->context->id,
+            $rolesurl = new \moodle_url('/admin/roles/check.php', array('contextid' => $block->context->id,
                 'returnurl' => $this->page->url->out_as_local_url()));
             $str = get_string('checkpermissions', 'role');
             $controls[] = new \action_menu_link_secondary(
@@ -453,7 +453,7 @@ class block_manager extends \block_manager {
             // Delete icon.
             $str = new \lang_string('deleteblock', 'block', $blocktitle);
             $controls[] = new \action_menu_link_secondary(
-                new moodle_url($actionurl, array('bui_deleteid' => $block->instance->id)),
+                new \moodle_url($actionurl, array('bui_deleteid' => $block->instance->id)),
                 new \pix_icon('t/delete', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str,
                 array('class' => 'editing_delete')
@@ -471,7 +471,7 @@ class block_manager extends \block_manager {
                     $lockstring = get_string('managecontextlock', 'admin');
                 }
                 $controls[] = new \action_menu_link_secondary(
-                    new moodle_url(
+                    new \moodle_url(
                         '/admin/lock.php',
                         [
                             'id' => $block->context->id,

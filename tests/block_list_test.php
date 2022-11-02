@@ -44,7 +44,7 @@ class block_list_test extends \advanced_testcase {
         global $PAGE;
 
         // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new \moodle_url('/'));
         $category1 = $this->getDataGenerator()->create_category();
         $category2 = $this->getDataGenerator()->create_category();
         $table = new \tool_blocksmanager\table\block_list();

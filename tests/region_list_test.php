@@ -41,7 +41,7 @@ class region_list_test extends \advanced_testcase {
     public function test_display_values() {
         global $PAGE;
 
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new \moodle_url('/'));
         $category1 = $this->getDataGenerator()->create_category();
         $category2 = $this->getDataGenerator()->create_category();
         $table = new \tool_blocksmanager\table\region_list();
@@ -92,7 +92,7 @@ class region_list_test extends \advanced_testcase {
     public function test_display_not_existing_category() {
         global $PAGE;
 
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new \moodle_url('/'));
         $category1 = $this->getDataGenerator()->create_category();
         $category2 = $this->getDataGenerator()->create_category();
         $table = new \tool_blocksmanager\table\region_list();

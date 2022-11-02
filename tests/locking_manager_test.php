@@ -86,7 +86,7 @@ class locking_manager_test extends \advanced_testcase {
         $category111 = $this->getDataGenerator()->create_category(['parent' => $category11->id]);
         $this->create_region_rule(['categories' => $category11->id, 'region' => 'region1']);
 
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category1->id);
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertTrue($locking->can_move('block', 'region1'));
@@ -96,7 +96,7 @@ class locking_manager_test extends \advanced_testcase {
         $this->assertTrue($locking->can_move_in('block', 'region1'));
         $this->assertTrue($locking->can_configure('block', 'region1'));
 
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category11->id);
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertFalse($locking->can_move('block', 'region1'));
@@ -106,7 +106,7 @@ class locking_manager_test extends \advanced_testcase {
         $this->assertFalse($locking->can_move_in('block', 'region1'));
         $this->assertFalse($locking->can_configure('block', 'region1'));
 
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category111->id);
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertFalse($locking->can_move('block', 'region1'));
@@ -128,7 +128,7 @@ class locking_manager_test extends \advanced_testcase {
 
         // Create region rule that locks everything.
         $this->create_region_rule(['region' => 'region1', 'categories' => $category->id]);
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category->id);
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertFalse($locking->can_move('block', 'region1'));
@@ -140,7 +140,7 @@ class locking_manager_test extends \advanced_testcase {
 
         // Create a block rule that allows everything.
         $this->create_block_rule(['region' => 'region1', 'block' => 'block1', 'categories' => $category->id]);
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category->id);
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertTrue($locking->can_move('block1', 'region1'));
@@ -159,7 +159,7 @@ class locking_manager_test extends \advanced_testcase {
      */
     public function test_can_do_all_actions_with_required_caps() {
         $category = $this->getDataGenerator()->create_category();
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category->id);
 
         $this->create_region_rule(['categories' => $category->id]);

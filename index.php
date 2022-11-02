@@ -29,12 +29,12 @@ require_once($CFG->libdir.'/moodlelib.php');
 
 admin_externalpage_setup('tool_blocksmanager/setup');
 
-$url = new moodle_url('/admin/tool/blocksmanager/index.php');
+$url = new \moodle_url('/admin/tool/blocksmanager/index.php');
 $PAGE->set_url($url);
 $PAGE->set_title(get_string('setuptitle', 'tool_blocksmanager'));
 $PAGE->set_heading(get_string('setupheading', 'tool_blocksmanager'));
 
-$returnurl = new moodle_url('/admin/tool/blocksmanager/index.php');
+$returnurl = new \moodle_url('/admin/tool/blocksmanager/index.php');
 
 $mform = new \tool_blocksmanager\form\setup_form();
 $PAGE->requires->js_call_amd('tool_blocksmanager/setup_form', 'init', [\tool_blocksmanager\setup_item::DATA_DELIMITER]);
