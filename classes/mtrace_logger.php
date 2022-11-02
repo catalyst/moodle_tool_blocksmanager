@@ -27,6 +27,8 @@ class mtrace_logger implements logger_interface {
 
     /**
      * {@inheritdoc}
+     *
+     * @param array $messages A list of messages.
      */
     public function log_messages(array $messages) {
         foreach ($messages as $message) {
@@ -36,6 +38,8 @@ class mtrace_logger implements logger_interface {
 
     /**
      * {@inheritdoc}
+     *
+     * @param string $message A message to log.
      */
     public function log_message(string $message) {
         mtrace($message);

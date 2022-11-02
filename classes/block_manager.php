@@ -329,7 +329,7 @@ class block_manager extends \block_manager {
      *
      * - If default region is locked - don't add any blocks.
      *
-     * @param $blockname
+     * @param string $blockname Name of the block.
      */
     public function add_block_at_end_of_default_region($blockname) {
         $defaulregion = $this->get_default_region();
@@ -348,7 +348,7 @@ class block_manager extends \block_manager {
     /**
      * Override standard block control display.
      *
-     * @param $block
+     * @param object $block Block instance.
      *
      * @return \an|array
      */
@@ -582,6 +582,13 @@ class block_manager extends \block_manager {
      * Override core function to be able to return block instance.
      *
      * {@inheritdoc}
+     *
+     * @param string $blockname The type of block to add.
+     * @param string $region the block region on this page to add the block to.
+     * @param integer $weight determines the order where this block appears in the region.
+     * @param boolean $showinsubcontexts whether this block appears in subcontexts, or just the current context.
+     * @param string|null $pagetypepattern which page types this block should appear on. Defaults to just the current page type.
+     * @param string|null $subpagepattern which subpage this block should appear on. NULL = any (the default), otherwise only the specified subpage.
      *
      * @return stdClass
      */
