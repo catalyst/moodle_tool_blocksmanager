@@ -34,7 +34,6 @@ class region_test extends advanced_testcase {
      * Test list of properties.
      *
      * @covers \tool_blocksmanager\region::properties_definition
-     * @test
      * @return void
      */
     public function test_properties() {
@@ -102,7 +101,6 @@ class region_test extends advanced_testcase {
      * Test required properties.
      *
      * @covers \tool_blocksmanager\region::is_property_required
-     * @test
      * @return void
      */
     public function test_required_properties() {
@@ -119,7 +117,6 @@ class region_test extends advanced_testcase {
      * Test that can get action fields.
      *
      * @covers \tool_blocksmanager\region::get_action_fields
-     * @test
      * @return void
      */
     public function test_get_action_fields() {

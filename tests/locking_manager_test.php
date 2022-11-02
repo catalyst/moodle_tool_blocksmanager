@@ -76,7 +76,6 @@ class locking_manager_test extends advanced_testcase {
      * Test locking works trough the category children.
      *
      * @covers \tool_blocksmanager\locking_manager
-     * @test
      * @return void
      */
     public function test_locked_in_child_category() {
@@ -120,7 +119,6 @@ class locking_manager_test extends advanced_testcase {
      * Test that block locking rules override region locking rules.
      *
      * @covers \tool_blocksmanager\locking_manager
-     * @test
      * @return void
      */
     public function test_block_values_override_region() {
@@ -155,7 +153,6 @@ class locking_manager_test extends advanced_testcase {
      * Test that can bypass locking.
      *
      * @covers \tool_blocksmanager\locking_manager
-     * @test
      * @return void
      */
     public function test_can_do_all_actions_with_required_caps() {

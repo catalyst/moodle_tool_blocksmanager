@@ -34,7 +34,6 @@ class region_list_test extends advanced_testcase {
      * Test display correct data.
      *
      * @covers \tool_blocksmanager\table\region_list
-     * @test
      * @return void
      */
     public function test_display_values() {
@@ -86,7 +85,6 @@ class region_list_test extends advanced_testcase {
      * Test display correct data if category is not exist.
      *
      * @covers \tool_blocksmanager\table\region_list
-     * @test
      * @return void
      */
     public function test_display_not_existing_category() {

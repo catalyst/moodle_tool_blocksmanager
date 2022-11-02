@@ -35,7 +35,6 @@ class block_list_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\table\block_list
      * @covers \tool_blocksmanager\block
-     * @test
      * @return void
      */
     public function test_display_values() {
@@ -90,7 +89,6 @@ class block_list_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\table\block_list
      * @covers \tool_blocksmanager\block
-     * @test
      * @return void
      */
     public function test_display_not_existing_category() {

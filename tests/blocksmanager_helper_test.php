@@ -34,7 +34,6 @@ class blocksmanager_helper_test extends advanced_testcase {
      * Test can get categories and their children.
      *
      * @covers \tool_blocksmanager\helper::get_categories_and_children
-     * @test
      * @return void
      */
     public function test_get_categories_and_children() {

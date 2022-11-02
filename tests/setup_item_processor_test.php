@@ -56,7 +56,6 @@ class setup_item_processor_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\setup_item
      * @covers \tool_blocksmanager\setup_item_processor
-     * @test
      * @return void
      */
     public function test_thrown_exception_if_blockmanagerclass_is_not_overridden() {
@@ -80,7 +79,6 @@ class setup_item_processor_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\setup_item
      * @covers \tool_blocksmanager\setup_item_processor
-     * @test
      * @return void
      */
     public function test_process() {

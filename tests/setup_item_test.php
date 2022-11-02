@@ -32,7 +32,6 @@ class setup_item_test extends advanced_testcase {
      * Test delimiter.
      *
      * @covers \tool_blocksmanager\setup_item::DATA_DELIMITER
-     * @test
      * @return void
      */
     public function test_delimiter() {
@@ -44,7 +43,6 @@ class setup_item_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\invalid_setup_item_exception
      * @covers \tool_blocksmanager\setup_item
-     * @test
      * @return void
      */
     public function test_exception_if_not_all_required_fileds() {
@@ -59,7 +57,6 @@ class setup_item_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\setup_item
      * @covers \tool_blocksmanager\invalid_setup_item_exception
-     * @test
      * @return void
      */
     public function test_exception_if_empty_region_provided() {
@@ -74,7 +71,6 @@ class setup_item_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\setup_item
      * @covers \tool_blocksmanager\invalid_setup_item_exception
-     * @test
      * @return void
      */
     public function test_exception_if_incorrect_category_provided() {
@@ -89,7 +85,6 @@ class setup_item_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\setup_item
      * @covers \tool_blocksmanager\invalid_setup_item_exception
-     * @test
      * @return void
      */
     public function test_exception_if_empty_categories_provided() {
@@ -104,7 +99,6 @@ class setup_item_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\setup_item
      * @covers \tool_blocksmanager\invalid_setup_item_exception
-     * @test
      * @return void
      */
     public function test_exception_if_empty_blockname_provided() {
@@ -119,7 +113,6 @@ class setup_item_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\setup_item
      * @covers \tool_blocksmanager\invalid_setup_item_exception
-     * @test
      * @return void
      */
     public function test_exception_if_empty_pagetypepattern_provided() {
@@ -134,7 +127,6 @@ class setup_item_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\setup_item
      * @covers \tool_blocksmanager\invalid_setup_item_exception
-     * @test
      * @return void
      */
     public function test_exception_if_reposition_and_empty_region_provided() {
@@ -149,7 +141,6 @@ class setup_item_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\setup_item
      * @covers \tool_blocksmanager\invalid_setup_item_exception
-     * @test
      * @return void
      */
     public function test_exception_if_reposition_and_add_new_block_at_the_same_time() {
@@ -164,7 +155,6 @@ class setup_item_test extends advanced_testcase {
      *
      * @covers \tool_blocksmanager\setup_item
      * @covers \tool_blocksmanager\setup_item::PAGE_TYPE_PATTERN_DEFAULT
-     * @test
      * @return void
      */
     public function test_defaults() {
@@ -183,7 +173,6 @@ class setup_item_test extends advanced_testcase {
      * Test exception for not all required fields provided.
      *
      * @covers \tool_blocksmanager\setup_item
-     * @test
      * @return void
      */
     public function test_categories_are_empty_if_not_found() {
@@ -195,7 +184,6 @@ class setup_item_test extends advanced_testcase {
      * Test exception for not all required fields provided.
      *
      * @covers \tool_blocksmanager\setup_item
-     * @test
      * @return void
      */
     public function test_correct_data() {
