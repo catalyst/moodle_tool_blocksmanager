@@ -23,7 +23,7 @@ namespace tool_blocksmanager;
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class setup_item_test extends advanced_testcase {
+class setup_item_test extends \advanced_testcase {
 
     public function setUp(): void {
         parent::setUp();

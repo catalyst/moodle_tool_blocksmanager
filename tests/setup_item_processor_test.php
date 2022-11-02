@@ -28,7 +28,7 @@ require_once('dummy_logger.php');
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class setup_item_processor_test extends advanced_testcase {
+class setup_item_processor_test extends \advanced_testcase {
 
     /**
      * Logger for testing

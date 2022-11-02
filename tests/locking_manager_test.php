@@ -23,7 +23,7 @@ namespace tool_blocksmanager;
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class locking_manager_test extends advanced_testcase {
+class locking_manager_test extends \advanced_testcase {
 
     /**
      * Initial set up.
