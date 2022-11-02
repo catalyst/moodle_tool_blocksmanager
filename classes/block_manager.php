@@ -23,7 +23,6 @@ use moodle_exception;
 use moodle_page;
 use stdClass;
 use context;
-use context_system;
 use context_course;
 use moodle_url;
 use core_tag_tag;
@@ -69,7 +68,7 @@ class block_manager extends \block_manager {
         $block = $this->find_instance($blockid);
 
         if (!$block->user_can_edit() && !$this->page->user_can_edit_blocks()) {
-            throw new moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
+            throw new \moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
         }
 
         $editpage = new \moodle_page();
@@ -121,7 +120,7 @@ class block_manager extends \block_manager {
                 $bi->subpagepattern = $data->bui_subpagepattern;
             }
 
-            $systemcontext = context_system::instance();
+            $systemcontext = \context_system::instance();
             $frontpagecontext = context_course::instance(SITEID);
             $parentcontext = context::instance_by_id($data->bui_parentcontextid);
 
@@ -553,7 +552,7 @@ class block_manager extends \block_manager {
         $block = $this->find_instance($blockid);
 
         if (!$this->page->user_can_edit_blocks()) {
-            throw new moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
+            throw new \moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
         }
 
         $newregion = optional_param('bui_newregion', '', PARAM_ALPHANUMEXT);

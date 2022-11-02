@@ -179,7 +179,7 @@ class locking_manager_test extends \advanced_testcase {
 
         // Create role and assign "bypasslocking" cap.
         $roleid = $this->getDataGenerator()->create_role();
-        assign_capability('tool/blocksmanager:bypasslocking', CAP_ALLOW, $roleid, context_system::instance());
+        assign_capability('tool/blocksmanager:bypasslocking', CAP_ALLOW, $roleid, \context_system::instance());
         $this->getDataGenerator()->role_assign($roleid, $user->id);
 
         // Can do everything now.

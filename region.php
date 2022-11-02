@@ -29,7 +29,7 @@ $action = optional_param('action', 'view', PARAM_ALPHANUMEXT);
 
 require_login();
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(\context_system::instance());
 
 $manager = new \tool_blocksmanager\region_controller();
 $manager->execute($action);
