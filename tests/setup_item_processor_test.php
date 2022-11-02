@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_blocksmanager;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once('dummy_logger.php');
-
-namespace tool_blocksmanager;
 
 /**
  * Tests for region persistent class.
