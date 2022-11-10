@@ -356,14 +356,8 @@ class block_manager extends \block_manager {
 
         $controls = array();
         $actionurl = $this->page->url->out(false, array('sesskey' => sesskey()));
-        $blocktitle = $block->title;
-        if (empty($blocktitle)) {
-            $blocktitle = $block->arialabel;
-        }
-        $blockregion = $block->instance->region;
-        if (empty($blockregion)) {
-            $blockregion = $block->instance->defaultregion;
-        }
+        $blocktitle = !empty($block->title) ? $block->title : $block->arialabel;
+        $blockregion = !empty($block->instance->region) ? $block->instance->region : $block->instance->defaultregion;
 
         if ($this->page->user_can_edit_blocks() &&
             $this->get_locking_manager()->can_move($block->instance->blockname, $blockregion)
