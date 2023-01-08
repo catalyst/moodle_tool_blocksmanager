@@ -34,7 +34,7 @@ if ($hassiteconfig) {
         new admin_externalpage(
             'tool_blocksmanager/block',
             get_string('manageblocklocking', 'tool_blocksmanager'),
-            new moodle_url('/admin/tool/blocksmanager/block.php')
+            new \moodle_url('/admin/tool/blocksmanager/block.php')
         )
     );
 
@@ -43,7 +43,7 @@ if ($hassiteconfig) {
         new admin_externalpage(
             'tool_blocksmanager/region',
             get_string('manageregionlocking', 'tool_blocksmanager'),
-            new moodle_url('/admin/tool/blocksmanager/region.php')
+            new \moodle_url('/admin/tool/blocksmanager/region.php')
         )
     );
 
@@ -52,7 +52,7 @@ if ($hassiteconfig) {
         new admin_externalpage(
             'tool_blocksmanager/setup',
             get_string('setuptitle', 'tool_blocksmanager'),
-            new moodle_url('/admin/tool/blocksmanager/index.php')
+            new \moodle_url('/admin/tool/blocksmanager/index.php')
         )
     );
 }

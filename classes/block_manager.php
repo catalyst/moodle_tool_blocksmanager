@@ -23,7 +23,6 @@ use moodle_exception;
 use moodle_page;
 use stdClass;
 use context;
-use context_system;
 use context_course;
 use moodle_url;
 use core_tag_tag;
@@ -69,10 +68,10 @@ class block_manager extends \block_manager {
         $block = $this->find_instance($blockid);
 
         if (!$block->user_can_edit() && !$this->page->user_can_edit_blocks()) {
-            throw new moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
+            throw new \moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
         }
 
-        $editpage = new moodle_page();
+        $editpage = new \moodle_page();
         $editpage->set_pagelayout('admin');
         $editpage->blocks->show_only_fake_blocks(true);
         $editpage->set_course($this->page->course);
@@ -121,7 +120,7 @@ class block_manager extends \block_manager {
                 $bi->subpagepattern = $data->bui_subpagepattern;
             }
 
-            $systemcontext = context_system::instance();
+            $systemcontext = \context_system::instance();
             $frontpagecontext = context_course::instance(SITEID);
             $parentcontext = context::instance_by_id($data->bui_parentcontextid);
 
@@ -307,7 +306,7 @@ class block_manager extends \block_manager {
             $bits = explode('-', $this->page->pagetype);
             if ($bits[0] == 'tag' && !empty($this->page->subpage)) {
                 // better navbar for tag pages
-                $editpage->navbar->add(get_string('tags'), new moodle_url('/tag/'));
+                $editpage->navbar->add(get_string('tags'), new \moodle_url('/tag/'));
                 $tag = core_tag_tag::get($this->page->subpage);
                 // tag search page doesn't have subpageid
                 if ($tag) {
@@ -329,7 +328,7 @@ class block_manager extends \block_manager {
      *
      * - If default region is locked - don't add any blocks.
      *
-     * @param $blockname
+     * @param string $blockname Name of the block.
      */
     public function add_block_at_end_of_default_region($blockname) {
         $defaulregion = $this->get_default_region();
@@ -348,7 +347,7 @@ class block_manager extends \block_manager {
     /**
      * Override standard block control display.
      *
-     * @param $block
+     * @param object $block Block instance.
      *
      * @return \an|array
      */
@@ -357,18 +356,16 @@ class block_manager extends \block_manager {
 
         $controls = array();
         $actionurl = $this->page->url->out(false, array('sesskey' => sesskey()));
-        $blocktitle = $block->title;
-        if (empty($blocktitle)) {
-            $blocktitle = $block->arialabel;
-        }
+        $blocktitle = !empty($block->title) ? $block->title : $block->arialabel;
+        $blockregion = !empty($block->instance->region) ? $block->instance->region : $block->instance->defaultregion;
 
         if ($this->page->user_can_edit_blocks() &&
-            $this->get_locking_manager()->can_move($block->instance->blockname, $block->instance->region)
+            $this->get_locking_manager()->can_move($block->instance->blockname, $blockregion)
         ) {
             // Move icon.
             $str = new \lang_string('moveblock', 'block', $blocktitle);
             $controls[] = new \action_menu_link_primary(
-                new moodle_url($actionurl, array('bui_moveid' => $block->instance->id)),
+                new \moodle_url($actionurl, array('bui_moveid' => $block->instance->id)),
                 new \pix_icon('t/move', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str,
                 array('class' => 'editing_move')
@@ -377,12 +374,12 @@ class block_manager extends \block_manager {
         }
 
         if (($this->page->user_can_edit_blocks() || $block->user_can_edit()) &&
-            $this->get_locking_manager()->can_configure($block->instance->blockname, $block->instance->region)
+            $this->get_locking_manager()->can_configure($block->instance->blockname, $blockregion)
         ) {
             // Edit config icon - always show - needed for positioning UI.
             $str = new \lang_string('configureblock', 'block', $blocktitle);
             $controls[] = new \action_menu_link_secondary(
-                new moodle_url($actionurl, array('bui_editid' => $block->instance->id)),
+                new \moodle_url($actionurl, array('bui_editid' => $block->instance->id)),
                 new \pix_icon('t/edit', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str,
                 array('class' => 'editing_edit')
@@ -390,17 +387,17 @@ class block_manager extends \block_manager {
         }
 
         if ($this->page->user_can_edit_blocks() && $block->instance_can_be_hidden() &&
-            $this->get_locking_manager()->can_hide($block->instance->blockname, $block->instance->region)
+            $this->get_locking_manager()->can_hide($block->instance->blockname, $blockregion)
         ) {
             // Show/hide icon.
             if ($block->instance->visible) {
                 $str = new \lang_string('hideblock', 'block', $blocktitle);
-                $url = new moodle_url($actionurl, array('bui_hideid' => $block->instance->id));
+                $url = new \moodle_url($actionurl, array('bui_hideid' => $block->instance->id));
                 $icon = new \pix_icon('t/hide', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
                 $attributes = array('class' => 'editing_hide');
             } else {
                 $str = new \lang_string('showblock', 'block', $blocktitle);
-                $url = new moodle_url($actionurl, array('bui_showid' => $block->instance->id));
+                $url = new \moodle_url($actionurl, array('bui_showid' => $block->instance->id));
                 $icon = new \pix_icon('t/show', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
                 $attributes = array('class' => 'editing_show');
             }
@@ -409,7 +406,7 @@ class block_manager extends \block_manager {
 
         // Assign roles.
         if (get_assignable_roles($block->context, ROLENAME_SHORT)) {
-            $rolesurl = new moodle_url('/admin/roles/assign.php', array('contextid' => $block->context->id,
+            $rolesurl = new \moodle_url('/admin/roles/assign.php', array('contextid' => $block->context->id,
                 'returnurl' => $this->page->url->out_as_local_url()));
             $str = new \lang_string('assignrolesinblock', 'block', $blocktitle);
             $controls[] = new \action_menu_link_secondary(
@@ -421,7 +418,7 @@ class block_manager extends \block_manager {
 
         // Permissions.
         if (has_capability('moodle/role:review', $block->context) or get_overridable_roles($block->context)) {
-            $rolesurl = new moodle_url('/admin/roles/permissions.php', array('contextid' => $block->context->id,
+            $rolesurl = new \moodle_url('/admin/roles/permissions.php', array('contextid' => $block->context->id,
                 'returnurl' => $this->page->url->out_as_local_url()));
             $str = get_string('permissions', 'role');
             $controls[] = new \action_menu_link_secondary(
@@ -433,7 +430,7 @@ class block_manager extends \block_manager {
 
         // Change permissions.
         if (has_any_capability(array('moodle/role:safeoverride', 'moodle/role:override', 'moodle/role:assign'), $block->context)) {
-            $rolesurl = new moodle_url('/admin/roles/check.php', array('contextid' => $block->context->id,
+            $rolesurl = new \moodle_url('/admin/roles/check.php', array('contextid' => $block->context->id,
                 'returnurl' => $this->page->url->out_as_local_url()));
             $str = get_string('checkpermissions', 'role');
             $controls[] = new \action_menu_link_secondary(
@@ -444,12 +441,12 @@ class block_manager extends \block_manager {
         }
 
         if ($this->user_can_delete_block($block) &&
-            $this->get_locking_manager()->can_remove($block->instance->blockname, $block->instance->region)
+            $this->get_locking_manager()->can_remove($block->instance->blockname, $blockregion)
         ) {
             // Delete icon.
             $str = new \lang_string('deleteblock', 'block', $blocktitle);
             $controls[] = new \action_menu_link_secondary(
-                new moodle_url($actionurl, array('bui_deleteid' => $block->instance->id)),
+                new \moodle_url($actionurl, array('bui_deleteid' => $block->instance->id)),
                 new \pix_icon('t/delete', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str,
                 array('class' => 'editing_delete')
@@ -467,7 +464,7 @@ class block_manager extends \block_manager {
                     $lockstring = get_string('managecontextlock', 'admin');
                 }
                 $controls[] = new \action_menu_link_secondary(
-                    new moodle_url(
+                    new \moodle_url(
                         '/admin/lock.php',
                         [
                             'id' => $block->context->id,
@@ -549,7 +546,7 @@ class block_manager extends \block_manager {
         $block = $this->find_instance($blockid);
 
         if (!$this->page->user_can_edit_blocks()) {
-            throw new moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
+            throw new \moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
         }
 
         $newregion = optional_param('bui_newregion', '', PARAM_ALPHANUMEXT);
@@ -577,7 +574,14 @@ class block_manager extends \block_manager {
     /**
      * Override core function to be able to return block instance.
      *
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @param string $blockname The type of block to add.
+     * @param string $region the block region on this page to add the block to.
+     * @param integer $weight determines the order where this block appears in the region.
+     * @param boolean $showinsubcontexts whether this block appears in subcontexts, or just the current context.
+     * @param string|null $pagetypepattern which page types this block should appear on. Defaults to just the current page type.
+     * @param string|null $subpagepattern which subpage this block should appear on. NULL = any (the default), otherwise only the specified subpage.
      *
      * @return stdClass
      */

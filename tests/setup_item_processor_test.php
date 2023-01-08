@@ -14,24 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Tests for locking manager class.
- *
- * @package     tool_blocksmanager
- * @copyright   2019 Catalyst IT
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+namespace tool_blocksmanager;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once('dummy_logger.php');
 
-class tool_blocksmanager_setup_item_processor_testcase extends advanced_testcase {
+/**
+ * Tests for region persistent class.
+ *
+ * @package     tool_blocksmanager
+ * @copyright   2019 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class setup_item_processor_test extends \advanced_testcase {
 
     /**
      * Logger for testing
-     * @var \blocks_manager_dummy_logger
+     * @var \dummy_logger
      */
     protected $logger;
 
@@ -41,11 +42,15 @@ class tool_blocksmanager_setup_item_processor_testcase extends advanced_testcase
     public function setUp(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->logger = new blocks_manager_dummy_logger();
+        $this->logger = new dummy_logger();
     }
 
     /**
      * Test that processing is terminated if blockmanagerclass is not overridden.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\setup_item_processor
+     * @return void
      */
     public function test_thrown_exception_if_blockmanagerclass_is_not_overridden() {
         set_config('blockmanagerclass', '');
@@ -65,6 +70,10 @@ class tool_blocksmanager_setup_item_processor_testcase extends advanced_testcase
 
     /**
      * Test basic processing.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\setup_item_processor
+     * @return void
      */
     public function test_process() {
         global $DB;

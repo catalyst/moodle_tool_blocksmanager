@@ -30,13 +30,13 @@ class block extends persistent {
     /** Table name for the persistent. */
     const TABLE = 'tool_blocksmanager_block';
 
-    /*
+    /**
      * Value to indicate all regions.
      */
     const ALL_REGIONS = "All*";
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected static function define_properties() {
         return [

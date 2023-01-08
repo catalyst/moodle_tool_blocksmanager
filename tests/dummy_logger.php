@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_blocksmanager;
+
 /**
  * Dummy logger class for testing
  *
@@ -21,7 +23,7 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class blocks_manager_dummy_logger implements \tool_blocksmanager\logger_interface {
+class dummy_logger implements \tool_blocksmanager\logger_interface {
 
     /**
      * A list of log messages.
@@ -30,7 +32,9 @@ class blocks_manager_dummy_logger implements \tool_blocksmanager\logger_interfac
     protected $logs = [];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @param array $messages A list of messages.
      */
     public function log_messages(array $messages) {
         foreach ($messages as $message) {
@@ -39,7 +43,9 @@ class blocks_manager_dummy_logger implements \tool_blocksmanager\logger_interfac
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @param string $message A message to log.
      */
     public function log_message(string $message) {
         $this->logs[] = $message;

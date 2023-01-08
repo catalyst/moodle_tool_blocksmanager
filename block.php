@@ -27,7 +27,9 @@ require_once($CFG->libdir . '/adminlib.php');
 
 $action = optional_param('action', 'view', PARAM_ALPHANUMEXT);
 
-$PAGE->set_context(context_system::instance());
+require_login();
+
+$PAGE->set_context(\context_system::instance());
 
 $manager = new \tool_blocksmanager\blocks_controller();
 $manager->execute($action);

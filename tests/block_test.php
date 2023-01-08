@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_blocksmanager;
+
 /**
  * Tests for region persistent class.
  *
@@ -21,7 +23,7 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_blocksmanager_block_testcase extends advanced_testcase {
+class block_test extends \advanced_testcase {
 
     /**
      * Initial set up.
@@ -32,6 +34,9 @@ class tool_blocksmanager_block_testcase extends advanced_testcase {
 
     /**
      * Test list of properties.
+     *
+     * @covers \tool_blocksmanager\block::properties_definition
+     * @return void
      */
     public function test_properties() {
         $actual = \tool_blocksmanager\block::properties_definition();
@@ -95,6 +100,9 @@ class tool_blocksmanager_block_testcase extends advanced_testcase {
 
     /**
      * Test required properties.
+     *
+     * @covers \tool_blocksmanager\block::is_property_required
+     * @return void
      */
     public function test_required_properties() {
         $this->assertTrue(\tool_blocksmanager\block::is_property_required('region'));
@@ -108,6 +116,9 @@ class tool_blocksmanager_block_testcase extends advanced_testcase {
 
     /**
      * Test that can get action fields.
+     *
+     * @covers \tool_blocksmanager\block::get_action_fields
+     * @return void
      */
     public function test_get_action_fields() {
         $this->assertEquals(['config', 'remove', 'hide', 'move'], \tool_blocksmanager\block::get_action_fields());

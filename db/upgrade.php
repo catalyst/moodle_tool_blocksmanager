@@ -25,6 +25,9 @@
 
 /**
  * Custom code to be run on installing the plugin.
+ *
+ * @param int $oldversion
+ * @return bool
  */
 function xmldb_tool_blocksmanager_upgrade($oldversion) {
     global $DB;

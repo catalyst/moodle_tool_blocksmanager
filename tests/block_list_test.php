@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_blocksmanager;
+
 /**
  * Tests for block_list class.
  *
@@ -21,7 +23,7 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_blocksmanager_block_list_testcase extends advanced_testcase {
+class block_list_test extends \advanced_testcase {
 
     /**
      * Initial set up.
@@ -32,11 +34,17 @@ class tool_blocksmanager_block_list_testcase extends advanced_testcase {
 
     /**
      * Test display correct data.
+     *
+     * @covers \tool_blocksmanager\table\block_list
+     * @covers \tool_blocksmanager\block
+     * @return void
      */
     public function test_display_values() {
+        // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal
         global $PAGE;
 
-        $PAGE->set_url(new moodle_url('/'));
+        // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal
+        $PAGE->set_url(new \moodle_url('/'));
         $category1 = $this->getDataGenerator()->create_category();
         $category2 = $this->getDataGenerator()->create_category();
         $table = new \tool_blocksmanager\table\block_list();
@@ -55,7 +63,7 @@ class tool_blocksmanager_block_list_testcase extends advanced_testcase {
         $this->assertEquals('Test block 1', $table->col_block($region));
         $this->assertEquals($category1->name . '<BR />' . $category2->name, $table->col_categories($region));
         $this->assertEquals('Yes', $table->col_config($region));
-        $this->assertEquals('Yes', $table->col_delete($region));
+        $this->assertEquals('Yes', $table->col_remove($region));
         $this->assertEquals('Yes', $table->col_hide($region));
         $this->assertEquals('Yes', $table->col_move($region));
 
@@ -73,17 +81,23 @@ class tool_blocksmanager_block_list_testcase extends advanced_testcase {
         $this->assertEquals('Test block 2', $table->col_block($region));
         $this->assertEquals($category1->name . '<BR />' . $category2->name, $table->col_categories($region));
         $this->assertEquals('No', $table->col_config($region));
-        $this->assertEquals('No', $table->col_delete($region));
+        $this->assertEquals('No', $table->col_remove($region));
         $this->assertEquals('No', $table->col_hide($region));
         $this->assertEquals('No', $table->col_move($region));
     }
 
     /**
      * Test display correct data if category is not exist.
+     *
+     * @covers \tool_blocksmanager\table\block_list
+     * @covers \tool_blocksmanager\block
+     * @return void
      */
     public function test_display_not_existing_category() {
+        // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal
         global $PAGE;
 
+        // phpcs:ignore moodle.PHP.ForbiddenGlobalUse.BadGlobal
         $PAGE->set_url(new \moodle_url('/'));
         $category1 = $this->getDataGenerator()->create_category();
         $table = new \tool_blocksmanager\table\block_list();

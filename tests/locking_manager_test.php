@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_blocksmanager;
+
 /**
  * Tests for locking manager class.
  *
@@ -21,7 +23,7 @@
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
+class locking_manager_test extends \advanced_testcase {
 
     /**
      * Initial set up.
@@ -74,6 +76,9 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
 
     /**
      * Test locking works trough the category children.
+     *
+     * @covers \tool_blocksmanager\locking_manager
+     * @return void
      */
     public function test_locked_in_child_category() {
         $category1 = $this->getDataGenerator()->create_category();
@@ -81,7 +86,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
         $category111 = $this->getDataGenerator()->create_category(['parent' => $category11->id]);
         $this->create_region_rule(['categories' => $category11->id, 'region' => 'region1']);
 
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category1->id);
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertTrue($locking->can_move('block', 'region1'));
@@ -91,7 +96,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
         $this->assertTrue($locking->can_move_in('block', 'region1'));
         $this->assertTrue($locking->can_configure('block', 'region1'));
 
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category11->id);
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertFalse($locking->can_move('block', 'region1'));
@@ -101,7 +106,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
         $this->assertFalse($locking->can_move_in('block', 'region1'));
         $this->assertFalse($locking->can_configure('block', 'region1'));
 
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category111->id);
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertFalse($locking->can_move('block', 'region1'));
@@ -114,13 +119,16 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
 
     /**
      * Test that block locking rules override region locking rules.
+     *
+     * @covers \tool_blocksmanager\locking_manager
+     * @return void
      */
     public function test_block_values_override_region() {
         $category = $this->getDataGenerator()->create_category();
 
         // Create region rule that locks everything.
         $this->create_region_rule(['region' => 'region1', 'categories' => $category->id]);
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category->id);
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertFalse($locking->can_move('block', 'region1'));
@@ -132,7 +140,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
 
         // Create a block rule that allows everything.
         $this->create_block_rule(['region' => 'region1', 'block' => 'block1', 'categories' => $category->id]);
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category->id);
         $locking = new \tool_blocksmanager\locking_manager($page);
         $this->assertTrue($locking->can_move('block1', 'region1'));
@@ -145,10 +153,13 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
 
     /**
      * Test that can bypass locking.
+     *
+     * @covers \tool_blocksmanager\locking_manager
+     * @return void
      */
     public function test_can_do_all_actions_with_required_caps() {
         $category = $this->getDataGenerator()->create_category();
-        $page = new moodle_page();
+        $page = new \moodle_page();
         $page->set_category_by_id($category->id);
 
         $this->create_region_rule(['categories' => $category->id]);
@@ -168,7 +179,7 @@ class tool_blocksmanager_blocking_manager_testcase extends advanced_testcase {
 
         // Create role and assign "bypasslocking" cap.
         $roleid = $this->getDataGenerator()->create_role();
-        assign_capability('tool/blocksmanager:bypasslocking', CAP_ALLOW, $roleid, context_system::instance());
+        assign_capability('tool/blocksmanager:bypasslocking', CAP_ALLOW, $roleid, \context_system::instance());
         $this->getDataGenerator()->role_assign($roleid, $user->id);
 
         // Can do everything now.

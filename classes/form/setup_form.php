@@ -30,7 +30,7 @@ use tool_blocksmanager\setup_item;
 class setup_form extends \moodleform {
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function definition() {
         global $PAGE;
@@ -87,7 +87,12 @@ class setup_form extends \moodleform {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *         or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
