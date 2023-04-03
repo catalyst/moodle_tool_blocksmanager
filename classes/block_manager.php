@@ -329,8 +329,9 @@ class block_manager extends \block_manager {
      * - If default region is locked - don't add any blocks.
      *
      * @param string $blockname Name of the block.
+     * @param null|string $blockregion If defined add the new block to the specified region.
      */
-    public function add_block_at_end_of_default_region($blockname) {
+    public function add_block_at_end_of_default_region($blockname, $blockregion = null) {
         $defaulregion = $this->get_default_region();
 
         if (!$this->get_locking_manager()->can_move_in($blockname, $defaulregion)) {
