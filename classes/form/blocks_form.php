@@ -17,6 +17,7 @@
 namespace tool_blocksmanager\form;
 
 use tool_blocksmanager\block;
+use tool_blocksmanager\helper;
 
 /**
  * Form to manipulate with blocks.
@@ -44,12 +45,7 @@ class blocks_form extends \core\form\persistent {
         $regions = implode(', ', array_keys([block::ALL_REGIONS => ''] + $PAGE->theme->get_all_block_regions()));
         $mform->addElement('static', 'availableregions', get_string('availableregions', 'tool_blocksmanager'), $regions);
 
-        $blocks = [];
-        foreach ($PAGE->blocks->get_installed_blocks() as $block) {
-            $blocks[$block->name] = $block->name;
-        }
-
-        $mform->addElement('select', 'block', get_string('field_block', 'tool_blocksmanager'), $blocks);
+        $mform->addElement('select', 'block', get_string('field_block', 'tool_blocksmanager'), helper::get_installed_blocks());
 
         $mform->addElement('select',
             'categories',

@@ -17,6 +17,7 @@
 namespace tool_blocksmanager\form;
 
 use tool_blocksmanager\block_manager;
+use tool_blocksmanager\helper;
 use tool_blocksmanager\invalid_setup_item_exception;
 use tool_blocksmanager\setup_item;
 
@@ -35,11 +36,6 @@ class setup_form extends \moodleform {
     protected function definition() {
         global $PAGE;
 
-        $blocks = [];
-        foreach ($PAGE->blocks->get_installed_blocks() as $block) {
-            $blocks[$block->name] = $block->name;
-        }
-
         $weightoptions = [];
         for ($i = -block_manager::MAX_WEIGHT; $i <= block_manager::MAX_WEIGHT; $i++) {
             $weightoptions[$i] = $i;
@@ -54,7 +50,12 @@ class setup_form extends \moodleform {
         $this->_form->addElement('static', 'availableregions', get_string('availableregions', 'tool_blocksmanager'), $regions);
         $this->_form->addElement('text', 'region', get_string('field_region', 'tool_blocksmanager'));
         $this->_form->setType('region', PARAM_TEXT);
-        $this->_form->addElement('select', 'block', get_string('field_block', 'tool_blocksmanager'), $blocks);
+        $this->_form->addElement(
+            'select',
+            'block',
+            get_string('field_block', 'tool_blocksmanager'),
+            helper::get_installed_blocks()
+        );
         $this->_form->addElement('select', 'categories', get_string('field_categories', 'tool_blocksmanager'),
             \core_course_category::make_categories_list(), ['multiple' => true]);
         $this->_form->addElement('select', 'weight', get_string('weight', 'block'), $weightoptions);

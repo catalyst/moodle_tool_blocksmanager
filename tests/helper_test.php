@@ -23,7 +23,7 @@ namespace tool_blocksmanager;
  * @copyright   2019 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class blocksmanager_helper_test extends \advanced_testcase {
+class helper_test extends \advanced_testcase {
 
     /**
      * Initial set up.
@@ -46,28 +46,45 @@ class blocksmanager_helper_test extends \advanced_testcase {
 
         $this->assertSame(
             [$category1->id, $category11->id, $category111->id],
-            \tool_blocksmanager\helper::get_categories_and_children($category1->id)
+            helper::get_categories_and_children($category1->id)
         );
 
         $this->assertSame(
             [$category11->id, $category111->id],
-            \tool_blocksmanager\helper::get_categories_and_children($category11->id)
+            helper::get_categories_and_children($category11->id)
         );
 
         $this->assertSame(
             [$category111->id],
-            \tool_blocksmanager\helper::get_categories_and_children($category111->id)
+            helper::get_categories_and_children($category111->id)
         );
 
         $this->assertSame(
             [$category2->id],
-            \tool_blocksmanager\helper::get_categories_and_children($category2->id)
+            helper::get_categories_and_children($category2->id)
         );
 
         $this->assertSame(
             [$category1->id, $category11->id, $category111->id],
-            \tool_blocksmanager\helper::get_categories_and_children($category1->id . ',' . $category11->id)
+            helper::get_categories_and_children($category1->id . ',' . $category11->id)
         );
+    }
+
+    /**
+     * Test that we can build a list of installed blocks correctly.
+     *
+     * @covers \tool_blocksmanager\helper::get_installed_blocks
+     * @return void
+     */
+    public function test_get_installed_blocks() {
+        global $PAGE;
+
+        $expected = [];
+        foreach ($PAGE->blocks->get_installed_blocks() as $block) {
+            $expected[$block->name] = get_string('pluginname', 'block_' . $block->name);
+        }
+
+        $this->assertSame($expected, helper::get_installed_blocks());
     }
 
 }
