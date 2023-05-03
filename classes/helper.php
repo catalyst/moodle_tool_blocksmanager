@@ -53,4 +53,21 @@ class helper {
         return array_unique($result);
     }
 
+    /**
+     * Returns a list of all installed blocks where key is a short
+     * block name e.g. online_users and value is human readable name e.g. Online users
+     *
+     * @return array
+     */
+    public static function get_installed_blocks(): array {
+        global $PAGE;
+
+        $blocks = [];
+        foreach ($PAGE->blocks->get_installed_blocks() as $block) {
+            $blocks[$block->name] = get_string('pluginname', 'block_' . $block->name);
+        }
+
+        return  $blocks;
+    }
+
 }
