@@ -121,7 +121,7 @@ class setup_item_test extends \advanced_testcase {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
         $this->expectExceptionMessage('Incorrect data: empty page type pattern is not allowed');
 
-        $item = new \tool_blocksmanager\setup_item('region||1,2||block||0||0||0||configdata||0||0||');
+        $item = new \tool_blocksmanager\setup_item('region||1,2||block||0||0||0||configdata||0||0||0||');
     }
 
     /**
@@ -147,9 +147,39 @@ class setup_item_test extends \advanced_testcase {
      */
     public function test_exception_if_reposition_and_add_new_block_at_the_same_time() {
         $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
-        $this->expectExceptionMessage('Incorrect data: you should either reposition or add a new block');
+        $this->expectExceptionMessage('Incorrect data: you should either reposition or add/update a block');
 
-        $item = new \tool_blocksmanager\setup_item('Region||4||activity_modules||-10||1||1||configdata||1||Secondary region||-10');
+        $item = new \tool_blocksmanager\setup_item('Region||4||activity_modules||-10||1||1||configdata||1||0||content||-10');
+    }
+
+    /**
+     * Test exception for not all required fields provided.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\invalid_setup_item_exception
+     * @return void
+     */
+    public function test_exception_if_reposition_and_update_block_at_the_same_time() {
+
+        $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
+        $this->expectExceptionMessage('Incorrect data: you should either reposition or add/update a block');
+
+        $item = new \tool_blocksmanager\setup_item('Region||4||activity_modules||-10||1||1||configdata||0||1||content||-10');
+    }
+
+    /**
+     * Test exception for not all required fields provided.
+     *
+     * @covers \tool_blocksmanager\setup_item
+     * @covers \tool_blocksmanager\invalid_setup_item_exception
+     * @return void
+     */
+    public function test_exception_if_add_and_update_block_at_the_same_time() {
+
+        $this->expectException('\tool_blocksmanager\invalid_setup_item_exception');
+        $this->expectExceptionMessage('Incorrect data: you should either add or update a block');
+
+        $item = new \tool_blocksmanager\setup_item('Region||4||activity_modules||-10||1||0||configdata||1||1');
     }
 
     /**
@@ -168,6 +198,8 @@ class setup_item_test extends \advanced_testcase {
         $this->assertSame('', $item->get_second_region());
         $this->assertSame(0, $item->get_second_weight());
         $this->assertSame(false, $item->get_showinsubcontexts());
+        $this->assertSame(false, $item->get_add());
+        $this->assertSame(false, $item->get_update());
         $this->assertSame(\tool_blocksmanager\setup_item::PAGE_TYPE_PATTERN_DEFAULT, $item->get_pagetypepattern());
     }
 
@@ -194,7 +226,7 @@ class setup_item_test extends \advanced_testcase {
         $category111 = $this->getDataGenerator()->create_category(['parent' => $category11->id]);
 
         $item = new \tool_blocksmanager\setup_item(
-            'region||' .$category1->id . '||test_name||-13||0||1||Config data||0||secondary region||13||1||*'
+            'region||' .$category1->id . '||test_name||-13||0||1||Config data||0||0||secondary region||13||1||*'
         );
         $this->assertSame('region', $item->get_region());
         $this->assertSame('test_name', $item->get_blockname());
@@ -204,6 +236,7 @@ class setup_item_test extends \advanced_testcase {
         $this->assertSame(true, $item->get_reposition());
         $this->assertSame('Config data', $item->get_config_data());
         $this->assertSame(false, $item->get_add());
+        $this->assertSame(false, $item->get_update());
         $this->assertSame('secondary region', $item->get_second_region());
         $this->assertSame(13, $item->get_second_weight());
         $this->assertSame(true, $item->get_showinsubcontexts());

@@ -98,6 +98,11 @@ class setup_item_processor {
                     $this->add_block($page, $item);
                     $this->logger->log_message('Added a new instance of ' . $item->get_blockname() . ' to course ' . $course->id);
                 } else {
+
+                    // We can only either reposition, add a new instance of the existing block or update existing block.
+                    // We can't have the combination of any of these actions together.
+                    // This is controlled by a set up form UI where you select only one of the actions.
+
                     if ($item->get_reposition()) {
                         $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
 
@@ -121,6 +126,14 @@ class setup_item_processor {
                         } else {
                             $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
                                 . ' The block is not addable for the course page of course ' . $course->id);
+                        }
+                    } else if ($item->get_update()) {
+                        $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
+
+                        foreach ($existingblocks as $existingblock) {
+                            $this->update_block($existingblock, $page, $item);
+                            $this->logger->log_message('Updated instance of ' . $item->get_blockname()
+                                . ' in course ' . $course->id);
                         }
                     } else {
                         $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
@@ -157,6 +170,30 @@ class setup_item_processor {
         if (!empty($item->get_config_data())) {
             $page->blocks->update_block_config_data($block, $item->get_config_data());
         }
+    }
+
+    /**
+     * Update existing block on provided page.
+     *
+     * @param \stdClass $block Block record to update.
+     * @param \moodle_page $page Page instance.
+     * @param \tool_blocksmanager\setup_item $item Item with the block info.
+     */
+    protected function update_block(\stdClass $block, \moodle_page $page, setup_item $item) {
+        global $DB;
+
+        // Update Page type pattern and Show in subcontexts via SQL as there is no API.
+        $block->showinsubcontexts = $item->get_showinsubcontexts();
+        $block->pagetypepattern = $item->get_pagetypepattern();
+        $DB->update_record('block_instances', $block);
+
+        // Update config if required.
+        if (!empty($item->get_config_data())) {
+            $page->blocks->update_block_config_data($block, $item->get_config_data());
+        }
+
+        // Set visibility.
+        blocks_set_visibility($block, $page, $item->get_visible());
     }
 
 }

@@ -61,13 +61,29 @@ class setup_form extends \moodleform {
         $this->_form->addElement('select', 'weight', get_string('weight', 'block'), $weightoptions);
         $this->_form->addElement('text', 'configdata', get_string('field_configdata', 'tool_blocksmanager'));
         $this->_form->setType('configdata', PARAM_TEXT);
-        $this->_form->addElement('select', 'visible', 'Visible?', [1 => get_string('yes'), 0 => get_string('no')]);
-        $this->_form->addElement('select', 'reposition',  get_string('field_reposition', 'tool_blocksmanager'),
-            [0 => get_string('no'), 1 => get_string('yes')]);
+
+        $this->_form->addElement('select', 'visible', get_string('field_visible', 'tool_blocksmanager'),
+            [1 => get_string('yes'), 0 => get_string('no')]
+        );
+
         $this->_form->addElement('select', 'add', get_string('field_add', 'tool_blocksmanager'),
             [0 => get_string('no'), 1 => get_string('yes')]);
-        $this->_form->hideIf('add', 'reposition', 'eq', 1);
+
+        $this->_form->addElement('select', 'update', get_string('field_update', 'tool_blocksmanager'),
+            [0 => get_string('no'), 1 => get_string('yes')]);
+
+        $this->_form->addElement('select', 'reposition',  get_string('field_reposition', 'tool_blocksmanager'),
+            [0 => get_string('no'), 1 => get_string('yes')]);
+
+        $this->_form->disabledIf('add', 'reposition', 'eq', 1);
+        $this->_form->disabledIf('add', 'update', 'eq', 1);
+
         $this->_form->disabledIf('reposition', 'add', 'eq', 1);
+        $this->_form->disabledIf('reposition', 'update', 'eq', 1);
+
+        $this->_form->disabledIf('update', 'add', 'eq', 1);
+        $this->_form->disabledIf('update', 'reposition', 'eq', 1);
+
         $this->_form->addElement('text', 'secondregion', get_string('field_secondregion', 'tool_blocksmanager'));
         $this->_form->setType('secondregion', PARAM_TEXT);
         $this->_form->addElement('select', 'secondweight', get_string('field_secondweight', 'tool_blocksmanager'), $weightoptions);
@@ -83,6 +99,14 @@ class setup_form extends \moodleform {
         $this->_form->addElement('textarea', 'data', get_string('setofblocks', 'tool_blocksmanager'), 'cols="80" rows="20"');
         $this->_form->addRule('data', null, 'required');
         $this->_form->setType('data', PARAM_RAW);
+
+        $this->_form->disabledIf('configdata', 'reposition', 'eq', 1);
+        $this->_form->disabledIf('visible', 'reposition', 'eq', 1);
+        $this->_form->disabledIf('showinsubcontexts', 'reposition', 'eq', 1);
+        $this->_form->disabledIf('pagetypepattern', 'reposition', 'eq', 1);
+
+        $this->_form->disabledIf('weight', 'update', 'eq', 1);
+
         $this->add_action_buttons(false, 'Apply set of blocks');
         $this->_form->addElement('static', 'availableregions', null, get_string('applydesc', 'tool_blocksmanager'));
     }

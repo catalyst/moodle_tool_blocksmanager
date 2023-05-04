@@ -79,6 +79,12 @@ class setup_item {
     protected $add = 0;
 
     /**
+     * Should we try to update if an instance exists?
+     * @var int
+     */
+    protected $update = 0;
+
+    /**
      * Block config data.
      * @var
      */
@@ -121,18 +127,19 @@ class setup_item {
      *  5 - reposition
      *  6 - config data
      *  7 - add
+     *  8 - update
      *
      *  If reposition = 0
      *
-     *  8 - show in subcontexts
-     *  9 - page type pattern
+     *  9 - show in subcontexts
+     *  10 - page type pattern
      *
      *  If reposition = 1
      *
-     *  8 - second region
-     *  9 - second weight
-     *  10 - show in subcontexts
-     *  11 - page type pattern
+     *  9 - second region
+     *  10 - second weight
+     *  12 - show in subcontexts
+     *  12 - page type pattern
      *
      * @throws \tool_blocksmanager\invalid_setup_item_exception
      */
@@ -188,27 +195,35 @@ class setup_item {
             $this->add = (int) trim($values[7]);
         }
 
+        if (isset($values[8]) && is_numeric($values[8])) {
+            $this->update = (int) trim($values[8]);
+        }
+
         if ($this->reposition == 1) {
-            if (isset($values[8])) {
-                $this->secondregion = (string) trim($values[8]);
+            if (isset($values[9])) {
+                $this->secondregion = (string) trim($values[9]);
             }
 
-            if (isset($values[9])) {
-                $this->secondweight = (int) trim($values[9]);
+            if (isset($values[10])) {
+                $this->secondweight = (int) trim($values[10]);
             }
-            $showinsubcontextindex = 10;
-            $pagetypepatternindex  = 11;
+            $showinsubcontextindex = 11;
+            $pagetypepatternindex = 12;
         } else {
-            $showinsubcontextindex = 8;
-            $pagetypepatternindex  = 9;
+            $showinsubcontextindex = 9;
+            $pagetypepatternindex = 10;
         }
 
         if (!empty($this->reposition) && empty($this->secondregion)) {
             throw new invalid_setup_item_exception('emptysecondregion');
         }
 
-        if (!empty($this->reposition) && !empty($this->add)) {
+        if (!empty($this->reposition) && (!empty($this->add) || !empty($this->update))) {
             throw new invalid_setup_item_exception('conflictreposition');
+        }
+
+        if (!empty($this->add) && !empty($this->update)) {
+            throw new invalid_setup_item_exception('conflictaddupdate');
         }
 
         if (isset($values[$showinsubcontextindex]) && is_numeric($values[$showinsubcontextindex])) {
@@ -221,7 +236,6 @@ class setup_item {
                 throw new invalid_setup_item_exception('emptypagetypepattern');
             }
         }
-
     }
 
     /**
@@ -297,6 +311,15 @@ class setup_item {
     }
 
     /**
+     * Returns should we update existing block.
+     *
+     * @return bool
+     */
+    public function get_update() {
+        return (bool) $this->update;
+    }
+
+    /**
      * Returns should be shown in subcontexts.
      *
      * @return bool
@@ -331,5 +354,4 @@ class setup_item {
     public function get_second_weight(): int {
         return (int) $this->secondweight;
     }
-
 }

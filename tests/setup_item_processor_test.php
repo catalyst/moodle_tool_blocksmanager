@@ -31,18 +31,11 @@ require_once('dummy_logger.php');
 class setup_item_processor_test extends \advanced_testcase {
 
     /**
-     * Logger for testing
-     * @var \dummy_logger
-     */
-    protected $logger;
-
-    /**
      * Initial set up.
      */
     public function setUp(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->logger = new dummy_logger();
     }
 
     /**
@@ -63,8 +56,8 @@ class setup_item_processor_test extends \advanced_testcase {
             'Terminate processing. Block manager class is not configured in config.php');
 
         $data = 'side-pre||' . $category1->id .'||search_forums||-10||1||1||Config data||0||Secondary region||-10||0||*';
-        $item = new \tool_blocksmanager\setup_item($data);
-        $processor = new \tool_blocksmanager\setup_item_processor($this->logger);
+        $item = new setup_item($data);
+        $processor = new setup_item_processor(new dummy_logger());
         $processor->process($item);
     }
 
@@ -89,10 +82,21 @@ class setup_item_processor_test extends \advanced_testcase {
 
         $this->assertSame(0, $DB->count_records('block_instances', ['blockname' => 'search_forums']));
 
-        $data = 'side-pre||' . $category1->id .'||search_forums||-10||1||1||Config data||0||Secondary region||-10||0||*';
-        $item = new \tool_blocksmanager\setup_item($data);
-        $processor = new \tool_blocksmanager\setup_item_processor($this->logger);
+        // We have to encode and serialize 'Config data' string to make sure blocks API doesn't explode.
+        // See https://github.com/catalyst/moodle_tool_blocksmanager/issues/35 for more context.
+        $configdata = base64_encode(serialize('Config data'));
+
+        // Add search_forums block to category 1. So it should be added to course 1 and course 2.
+        $data = 'side-pre||' . $category1->id .'||search_forums||-10||1||0||' . $configdata . '||0||0||0||*';
+        $item = new setup_item($data);
+        $logger = new dummy_logger();
+        $processor = new setup_item_processor($logger);
         $processor->process($item);
+
+        $logs = $logger->get_logs();
+        $this->assertCount(2, $logs);
+        $this->assertSame('Added a new instance of search_forums to course ' . $course2->id, $logs[0]);
+        $this->assertSame('Added a new instance of search_forums to course ' . $course1->id, $logs[1]);
 
         $blocks = $DB->get_records('block_instances', ['blockname' => 'search_forums']);
         $this->assertCount(2, $blocks);
@@ -101,18 +105,70 @@ class setup_item_processor_test extends \advanced_testcase {
             $this->assertEquals('*', $block->pagetypepattern);
             $this->assertEquals('side-pre', $block->defaultregion);
             $this->assertEquals('-10', $block->defaultweight);
-            $this->assertEquals('Config data', $block->configdata);
+            $this->assertEquals('czoxMToiQ29uZmlnIGRhdGEiOw==', $block->configdata);
 
             $position = $DB->get_record('block_positions', ['blockinstanceid' => $block->id]);
             $this->assertEquals(1, $position->visible);
             $this->assertEquals('side-pre', $position->region);
+            $this->assertEquals('-10', $position->weight);
             $this->assertEquals('course-view-topics', $position->pagetype);
         }
 
-        $logs = $this->logger->get_logs();
-        $this->assertCount(2, $logs);
-        $this->assertSame('Added a new instance of search_forums to course ' . $course2->id, $logs[0]);
-        $this->assertSame('Added a new instance of search_forums to course ' . $course1->id, $logs[1]);
-    }
+        // Now let's reposition just added blocks.
+        $data = 'side-pre||' . $category1->id .'||search_forums||-10||1||1||||0||0||side-pre||10||0||*';
+        $item = new setup_item($data);
+        $logger = new dummy_logger();
+        $processor = new setup_item_processor($logger);
+        $processor->process($item);
 
+        $logs = $logger->get_logs();
+        $this->assertCount(2, $logs);
+        $this->assertSame('Changed position of search_forums in course ' . $course2->id, $logs[0]);
+        $this->assertSame('Changed position of search_forums in course ' . $course1->id, $logs[1]);
+
+        foreach ($blocks as $block) {
+            $this->assertEquals('*', $block->pagetypepattern);
+            $this->assertEquals('side-pre', $block->defaultregion);
+            $this->assertEquals('-10', $block->defaultweight);
+            $this->assertEquals('czoxMToiQ29uZmlnIGRhdGEiOw==', $block->configdata);
+
+            $position = $DB->get_record('block_positions', ['blockinstanceid' => $block->id]);
+            $this->assertEquals(1, $position->visible);
+            $this->assertEquals('side-pre', $position->region);
+            $this->assertEquals('10', $position->weight);
+            $this->assertEquals('course-view-topics', $position->pagetype);
+        }
+
+        // Now update existing blocks. We will change:
+        // - visibility to 0
+        // - page type pattern to 'course-view-*'
+        // - show in subcontexts to 1
+        // - config data to 'New config data'.
+        $configdata = base64_encode(serialize('New config data'));
+        $data = 'side-pre||' . $category1->id . '||search_forums||-10||0||0||' . $configdata . '||0||1|||1||course-view-*';
+
+        $item = new setup_item($data);
+        $logger = new dummy_logger();
+        $processor = new setup_item_processor($logger);
+        $processor->process($item);
+
+        $logs = $logger->get_logs();
+        $this->assertCount(2, $logs);
+        $this->assertSame('Updated instance of search_forums in course ' . $course2->id, $logs[0]);
+        $this->assertSame('Updated instance of search_forums in course ' . $course1->id, $logs[1]);
+
+        $blocks = $DB->get_records('block_instances', ['blockname' => 'search_forums']);
+        $this->assertCount(2, $blocks);
+        foreach ($blocks as $block) {
+            $this->assertEquals('course-view-*', $block->pagetypepattern);
+            $this->assertEquals('side-pre', $block->defaultregion);
+            $this->assertEquals('-10', $block->defaultweight);
+            $this->assertEquals('czoxNToiTmV3IGNvbmZpZyBkYXRhIjs=', $block->configdata);
+
+            $position = $DB->get_record('block_positions', ['blockinstanceid' => $block->id]);
+            $this->assertEquals(0, $position->visible);
+            $this->assertEquals('side-pre', $position->region);
+            $this->assertEquals('course-view-topics', $position->pagetype);
+        }
+    }
 }
