@@ -138,7 +138,7 @@ class setup_item {
      *
      *  9 - second region
      *  10 - second weight
-     *  12 - show in subcontexts
+     *  11 - show in subcontexts
      *  12 - page type pattern
      *
      * @throws \tool_blocksmanager\invalid_setup_item_exception
