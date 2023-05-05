@@ -42,6 +42,7 @@ define(
             VISIBLE: 'id_visible',
             REPOSITION: 'id_reposition',
             ADD: 'id_add',
+            UPDATE: 'id_update',
             SHOWINSUBCONTEXTS: 'id_showinsubcontexts',
             PAGETYPEPATTERN: 'id_pagetypepattern',
             SECOND_REGION: 'id_secondregion',
@@ -63,6 +64,7 @@ define(
                 var visible = document.getElementById(SELECTORS.VISIBLE).value;
                 var reposition = document.getElementById(SELECTORS.REPOSITION).value;
                 var add = document.getElementById(SELECTORS.ADD).value;
+                var update = document.getElementById(SELECTORS.UPDATE).value;
                 var showinsubcontexts = document.getElementById(SELECTORS.SHOWINSUBCONTEXTS).value;
                 var pagetypepattern = document.getElementById(SELECTORS.PAGETYPEPATTERN).value;
                 var secondregion = document.getElementById(SELECTORS.SECOND_REGION).value;
@@ -76,7 +78,8 @@ define(
                     + visible + delimiter
                     + reposition + delimiter
                     + configdata + delimiter
-                    + add;
+                    + add + delimiter
+                    + update;
 
                 if (reposition === '1') {
                     newLine = newLine + delimiter + secondregion;
