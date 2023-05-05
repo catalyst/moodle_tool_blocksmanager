@@ -26,6 +26,7 @@ namespace tool_blocksmanager\table;
 
 use core\persistent;
 use tool_blocksmanager\base_controller;
+use tool_blocksmanager\helper;
 use tool_blocksmanager\region_controller;
 
 defined('MOODLE_INTERNAL') || die();
@@ -183,6 +184,10 @@ class region_list extends \flexible_table {
 
                 $display = implode('<BR />', $categories);
 
+                break;
+            case 'block':
+                $allblocks = helper::get_installed_blocks();
+                $display = $allblocks[$value] ?? $value;
                 break;
 
             case 'config':
