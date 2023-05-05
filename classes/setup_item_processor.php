@@ -66,7 +66,16 @@ class setup_item_processor {
             $coursecat = \core_course_category::get($catid, IGNORE_MISSING);
             if (!empty($coursecat) && $coursecat->has_courses()) {
                 foreach ($coursecat->get_courses() as $course) {
-                    $courses[] = $course;
+
+                    // This is a workaround https://tracker.moodle.org/browse/MDL-77397.
+                    // We need to reset to stdClass to make core happy.
+                    $record = new \stdClass();
+                    foreach ($course as $key => $value) {
+                        $record->$key = $value;
+                        $record->format = $course->format;
+                    }
+
+                    $courses[] = $record;
                 }
             }
         }
