@@ -1,4 +1,4 @@
-![Build Status](https://github.com/catalyst/moodle_tool_blocksmanager/actions/workflows/ci.yml/badge.svg?branch=master)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/catalyst/moodle_tool_blocksmanager/ci.yml?branch=master)
 
 # Block Manager #
 
