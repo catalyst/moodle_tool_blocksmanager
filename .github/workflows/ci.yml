@@ -1,9 +1,8 @@
-name: Run all tests for Moodle 39+
+# .github/workflows/ci.yml
+name: ci
 
 on: [push, pull_request]
 
 jobs:
-  workflow_group_39_plus_ci:
-    uses: catalyst/catalyst-moodle-workflows/.github/workflows/group-39-plus-ci.yml@main
-    with:
-      disable_behat: true
+  ci:
+    uses: catalyst/catalyst-moodle-workflows/.github/workflows/ci.yml@mainodle-workflows/.github/workflows/ci.yml@main

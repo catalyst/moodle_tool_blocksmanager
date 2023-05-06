@@ -28,4 +28,5 @@ $plugin->component = 'tool_blocksmanager';
 $plugin->release = '0.1.1';
 $plugin->version = 2023050400;
 $plugin->requires = 2018051700;
+$plugin->supported = [39, 401];
 $plugin->maturity = MATURITY_STABLE;
