@@ -16,6 +16,8 @@
 
 namespace tool_blocksmanager;
 
+require_once($CFG->dirroot.'/course/lib.php');
+
 /**
  * A class to apply set up item.
  *
@@ -59,10 +61,7 @@ class setup_item_processor {
      * @param \tool_blocksmanager\setup_item $item Set up item to process.
      */
     public function process(setup_item $item) {
-        global $CFG;
         $courses = [];
-
-        require_once($CFG->dirroot.'/course/lib.php');
 
         // Build a list of courses we need to go through.
         foreach ($item->get_categories() as $catid) {
