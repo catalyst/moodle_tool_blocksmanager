@@ -59,7 +59,10 @@ class setup_item_processor {
      * @param \tool_blocksmanager\setup_item $item Set up item to process.
      */
     public function process(setup_item $item) {
+        global $CFG;
         $courses = [];
+
+        require_once($CFG->dirroot.'/course/lib.php');
 
         // Build a list of courses we need to go through.
         foreach ($item->get_categories() as $catid) {
@@ -82,20 +85,35 @@ class setup_item_processor {
 
         foreach ($courses as $course) {
 
-            if ($item->get_pagetypepattern() == 'mod-assign-view') {
+            $pagetypesegments = explode('-', $item->get_pagetypepattern());
 
-                $assignments = get_coursemodules_in_course('assign', $course->id);
+            // Check if block is to be added to a course module
+            if ($pagetypesegments[0] == 'mod') {
 
-                foreach ($assignments as $assignid => $assign) {
+              // Get list of modules
+              $moduletypes = get_module_types_names();
+              $currentmoduletype = $pagetypesegments[1];
 
-                    $context = \context_module::instance($assignid);
+              // Check if pagetypepattern contains a valid module
+              if (array_key_exists($currentmoduletype, $moduletypes)) {
+
+                $moduleinstances = get_coursemodules_in_course($currentmoduletype, $course->id);
+
+                if (empty($moduleinstances)) {
+                    $this->logger->log_message('Skipped adding new instance of ' . $item->get_blockname() . '. '
+                        . ' The course with id ' . $course->id . ' does not contain an instance of the ' . $currentmoduletype . ' module.');
+                    continue;
+                }
+
+                foreach ($moduleinstances as $moduleid => $module) {
+
+                    $context = \context_module::instance($moduleid);
                     
                     // Create page
                     $page = new \moodle_page();
                     $page->set_context($context);
-                    $page->set_cm($assign, $course);
-                    $page->set_pagelayout('incourse');
-                    $page->set_pagetype('mod-assign-view');
+                    $page->set_cm($module, $course);
+                    $page->set_pagetype($item->get_pagetypepattern());
 
                     if (!$page->blocks instanceof block_manager) {
                         // TODO: disable whole plugin if block manager is not overridden.
@@ -115,12 +133,13 @@ class setup_item_processor {
                             $blockaddable = key_exists($item->get_blockname(), $page->blocks->get_addable_blocks());
                             if (!$blockaddable) {
                                 $this->logger->log_message('Skipped adding new instance of ' . $item->get_blockname()
-                                    . ' The block is not addable for assignment' . $assignid . 'of course ' . $course->id);
+                                    . ' The block is not addable for module' . $moduleid . 'in course ' . $course->id);
                                 continue;
                             }
 
                             $this->add_block($page, $item);
-                            $this->logger->log_message('Added a new instance of ' . $item->get_blockname() . ' to assignment ' . $assignid);
+                            $this->logger->log_message('Added a new instance of ' . $item->get_blockname() . ' to ' . $currentmoduletype 
+                                . ' ' . $moduleid . ' in course ' . $course->id);
                         } else {
 
                             // We can only either reposition, add a new instance of the existing block or update existing block.
@@ -139,18 +158,18 @@ class setup_item_processor {
                                     );
 
                                     $this->logger->log_message('Changed position of ' . $item->get_blockname()
-                                        . ' in assignment ' . $assignid);
+                                        . ' in ' . $currentmoduletype . ' ' . $moduleid);
                                 }
                             } else if ($item->get_add()) {
                                 if (key_exists($item->get_blockname(), $page->blocks->get_addable_blocks())) {
                                     $this->add_block($page, $item);
 
                                     $this->logger->log_message('Added another instance of ' . $item->get_blockname()
-                                        . ' in assignment ' . $assignid);
+                                        . ' in ' . $currentmoduletype . ' ' . $moduleid);
 
                                 } else {
                                     $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
-                                        . ' The block is not addable for the assignment page of assignment ' . $assignid);
+                                        . ' The block is not addable for module type ' . $currentmoduletype);
                                 }
                             } else if ($item->get_update()) {
                                 $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
@@ -158,22 +177,24 @@ class setup_item_processor {
                                 foreach ($existingblocks as $existingblock) {
                                     $this->update_block($existingblock, $page, $item);
                                     $this->logger->log_message('Updated instance of ' . $item->get_blockname()
-                                        . ' in assignment ' . $assignid);
+                                        . ' in ' . $currentmoduletype  . ' ' . $moduleid);
                                 }
                             } else {
                                 $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
-                                    . ' The block already exists in assignment ' . $assignid);
+                                    . '. The block already exists in module ' . $currentmoduletype . ' ' . $moduleid);
                             }
                         }
                     } catch (\Exception $exception) {
-                        $this->logger->log_message('Error processing block '. $item->get_blockname() . ' for assignment' . $assignid
-                            . ' Error: '. $exception->getMessage());
+                      $this->logger->log_message('Error processing block '. $item->get_blockname() . ' for module ' 
+                            . $currentmoduletype . ' ' . $moduleid . ' Error: '. $exception->getMessage());
                         continue;
                     }
-
                 }
+              } else {
+                  $this->logger->log_message('Skipped adding new instance of ' . $item->get_blockname() . '. '
+                      . ' The given page type "' . $item->get_pagetypepattern() . '" does not contain a valid course module (' . $currentmoduletype . ').');
+              }
             } else {
-
                 $page = new \moodle_page();
                 $page->set_course($course);
                 $page->set_pagelayout('course');
