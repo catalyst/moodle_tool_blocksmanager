@@ -16,10 +16,9 @@
 
 namespace tool_blocksmanager;
 
-require_once(__DIR__.'/../../../../config.php');
-require_once($CFG->dirroot.'/course/lib.php');
+defined('MOODLE_INTERNAL') || die();
 
-require_login();
+require_once($CFG->dirroot.'/course/lib.php');
 
 /**
  * A class to apply set up item.
