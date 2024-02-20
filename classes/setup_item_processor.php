@@ -145,7 +145,6 @@ class setup_item_processor {
                             // We can't have the combination of any of these actions together.
                             // This is controlled by a set up form UI where you select only one of the actions.
 
-                            $this->logger->log_message($page->blocks->is_block_present($item->get_blockname()));
                             if ($item->get_reposition()) {
                                 $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
 
@@ -224,7 +223,6 @@ class setup_item_processor {
                         // We can't have the combination of any of these actions together.
                         // This is controlled by a set up form UI where you select only one of the actions.
 
-                        $this->logger->log_message($page->blocks->is_block_present($item->get_blockname()));
                         if ($item->get_reposition()) {
                             $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
 
