@@ -170,5 +170,51 @@ class setup_item_processor_test extends \advanced_testcase {
             $this->assertEquals('side-pre', $position->region);
             $this->assertEquals('course-view-topics', $position->pagetype);
         }
+
+        // Let's test adding a block to different course modules.
+        $modules = ['assign', 'book', 'forum', 'quiz'];
+
+        foreach ($modules as $module) {
+            $logger = new dummy_logger();
+
+            $moduleinstance = $this->getDataGenerator()->create_module($module, ['course' => $course3]);
+            $data = 'side-post||' . $category2->id . '||blog_menu||-10||1||0||||0||0||0||mod-'. $module . '-view';
+            $item = new setup_item($data);
+            $processor = new setup_item_processor($logger);
+            $processor->process($item);
+
+            $logs = $logger->get_logs();
+            $this->assertSame('Added a new instance of blog_menu to ' . $module . ' ' . $moduleinstance->cmid
+              . ' in course ' . $course3->id, $logs[0]);
+        }
+
+        $blocks = $DB->get_records('block_instances', ['blockname' => 'blog_menu']);
+        $this->assertCount(4, $blocks);
+
+        // Let's test adding a block to different course modules while block already added to main course page.
+        $logger = new dummy_logger();
+        $data = 'side-post||' . $category2->id . '||blog_menu||-10||1||0||||0||0||0||course-view-*';
+        $item = new setup_item($data);
+        $logger = new dummy_logger();
+        $processor = new setup_item_processor($logger);
+        $processor->process($item);
+        $logs = $logger->get_logs();
+        $this->assertSame('Added a new instance of blog_menu to course ' . $course3->id, $logs[0]);
+
+        foreach ($modules as $module) {
+            $logger = new dummy_logger();
+            $moduleinstance = $this->getDataGenerator()->create_module($module, ['course' => $course3]);
+            $data = 'side-post||' . $category2->id . '||blog_menu||-10||1||0||||0||0||0||mod-'. $module . '-view';
+            $item = new setup_item($data);
+            $processor = new setup_item_processor($logger);
+            $processor->process($item);
+            $logs = $logger->get_logs();
+            $this->assertSame('Added a new instance of blog_menu to ' . $module . ' ' . $moduleinstance->cmid
+              . ' in course ' . $course3->id, $logs[1]);
+        }
+
+        // Block should now be in 9 locations - course main page, and each module created (8).
+        $blocks = $DB->get_records('block_instances', ['blockname' => 'blog_menu']);
+        $this->assertCount(9, $blocks);
     }
 }
