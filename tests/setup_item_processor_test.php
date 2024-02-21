@@ -192,8 +192,6 @@ class setup_item_processor_test extends \advanced_testcase {
         $this->assertCount(4, $blocks);
 
         // Let's test adding a block to different course modules while block already added to main course page.
-        //
-
         $category3 = $this->getDataGenerator()->create_category();
         $course4 = $this->getDataGenerator()->create_course(['category' => $category3->id]);
 
