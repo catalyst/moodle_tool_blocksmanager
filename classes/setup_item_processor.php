@@ -92,7 +92,7 @@ class setup_item_processor {
             if ($pagetypesegments[0] == 'mod') {
                 $this->process_module($item, $pagetypesegments, $course);
             } else {
-                $this->process_course($item, $pagetypesegments, $course);
+                $this->process_course($item, $course);
             }
         }
     }
@@ -139,25 +139,19 @@ class setup_item_processor {
                 }
 
                 try {
-                    // Create block instances.
-                    $page->blocks->add_region($item->get_region(), false);
-                    $page->blocks->load_blocks(true);
-                    $page->blocks->create_all_block_instances();
-
-                    // Check if block exists.
-                    $blockexist = $page->blocks->is_block_present($item->get_blockname());
+                    $blockexist = $this->is_block_exist($page, $item);
 
                     if (!$blockexist) {
-                        $blockaddable = key_exists($item->get_blockname(), $page->blocks->get_addable_blocks());
-                        if (!$blockaddable) {
+                        $blockadded = $this->add_block($page, $item);
+
+                        if (!$blockadded) {
                             $this->logger->log_message('Skipped adding new instance of ' . $item->get_blockname()
-                                . ' The block is not addable for module' . $moduleid . 'in course ' . $course->id);
+                                . ' The block is not addable for module ' . $moduleid . ' in course ' . $course->id);
                             continue;
                         }
 
-                        $this->add_block($page, $item);
                         $this->logger->log_message('Added a new instance of ' . $item->get_blockname() . ' to '
-                            . $currentmoduletype . ' ' . $moduleid . ' in course ' . $course->id);
+                                    . $currentmoduletype . ' ' . $moduleid . ' in course ' . $course->id);
                     } else {
 
                         // We can only either reposition, add a new instance of the existing block or update existing block.
@@ -232,19 +226,18 @@ class setup_item_processor {
             throw new \coding_exception('Terminate processing. Block manager class is not configured in config.php');
         }
         try {
-            $page->blocks->add_region($item->get_region(), false);
-            $page->blocks->load_blocks(true);
-            $page->blocks->create_all_block_instances();
 
-            if (!$page->blocks->is_block_present($item->get_blockname())) {
+            $blockexist = $this->is_block_exist($page, $item);
 
-                if (!key_exists($item->get_blockname(), $page->blocks->get_addable_blocks())) {
+            if (!$blockexist) {
+                $blockadded = $this->add_block($page, $item);
+
+                if (!$blockadded) {
                     $this->logger->log_message('Skipped adding new instance of ' . $item->get_blockname()
                         . ' The block is not addable for the course page of course ' . $course->id);
                     return;
                 }
 
-                $this->add_block($page, $item);
                 $this->logger->log_message('Added a new instance of ' . $item->get_blockname()
                   . ' to course ' . $course->id);
             } else {
@@ -298,12 +291,38 @@ class setup_item_processor {
     }
 
     /**
+     * Check if block exists on a page.
+     *
+     * @param \moodle_page $page Page instance.
+     * @param \tool_blocksmanager\setup_item $item Item with the block info.
+     * @return bool True if exists on given page. False otherwise.
+     */
+    public function is_block_exist(\moodle_page $page, setup_item $item): bool {
+        // Create block instances.
+        $page->blocks->add_region($item->get_region(), false);
+        $page->blocks->load_blocks(true);
+        $page->blocks->create_all_block_instances();
+
+        // Check if block exists.
+        $blockexist = $page->blocks->is_block_present($item->get_blockname());
+
+        return $blockexist;
+    }
+
+    /**
      * Add a new block to the page.
      *
      * @param \moodle_page $page Page instance.
      * @param \tool_blocksmanager\setup_item $item Item with the block info.
+     * @return bool True if added. False
      */
-    protected function add_block(\moodle_page $page, setup_item $item) {
+    protected function add_block(\moodle_page $page, setup_item $item): bool {
+
+        $blockaddable = key_exists($item->get_blockname(), $page->blocks->get_addable_blocks());
+        if (!$blockaddable) {
+            return false;
+        }
+
         // Add a new instance.
         $block = $page->blocks->add_block(
             $item->get_blockname(),
@@ -319,6 +338,8 @@ class setup_item_processor {
         if (!empty($item->get_config_data())) {
             $page->blocks->update_block_config_data($block, $item->get_config_data());
         }
+
+        return true;
     }
 
     /**
