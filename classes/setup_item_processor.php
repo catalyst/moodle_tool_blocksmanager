@@ -234,7 +234,7 @@ class setup_item_processor {
      *
      * @param \moodle_page $page Page instance.
      * @param \tool_blocksmanager\setup_item $item Item with the block info.
-     * @return bool True if added. False
+     * @return bool True if block added. False if block not added.
      */
     protected function add_block(\moodle_page $page, setup_item $item): bool {
 
