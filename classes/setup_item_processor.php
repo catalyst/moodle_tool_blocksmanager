@@ -58,7 +58,7 @@ class setup_item_processor {
     }
 
     /**
-     * Process a single set up item
+     * Process a single set up item.
      *
      * @param \tool_blocksmanager\setup_item $item Set up item to process.
      */
@@ -98,7 +98,7 @@ class setup_item_processor {
     }
 
     /**
-     * Process blocks to be added to modules
+     * Process blocks to be added to modules.
      *
      * @param \tool_blocksmanager\setup_item $item Item with the block info.
      * @param array $pagetypesegments Array of page type segments (i.e. [mod, assign, view])
@@ -153,7 +153,7 @@ class setup_item_processor {
                         $this->logger->log_message('Added a new instance of ' . $item->get_blockname() . ' to '
                                     . $currentmoduletype . ' ' . $moduleid . ' in course ' . $course->id);
                     } else {
-                      $this->change_block($page, $item, $currentmoduletype, $moduleid);
+                        $this->change_block($page, $item, $currentmoduletype, $moduleid);
                     }
                 } catch (\Exception $exception) {
                     $this->logger->log_message('Error processing block '. $item->get_blockname() . ' for module '
@@ -170,7 +170,7 @@ class setup_item_processor {
 
 
     /**
-     * Process blocks to be added to courses
+     * Process blocks to be added to courses.
      *
      * @param \tool_blocksmanager\setup_item $item Item with the block info.
      * @param  \stdClass $course Course object.
