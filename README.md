@@ -16,6 +16,7 @@ An admin tool that allows you to control a block layout across units.
   - Set up config data as a string if required.
   - Set whether to show the block in subcontexts.
   - Set the page type pattern.
+* Add blocks to course module / activity / resource pages.
 
 ## Installation ##
 1. Download files or clone the repository to /admin/tool/blocksmanager
@@ -61,7 +62,7 @@ To do  that, navigate to Site administration > Plugins > Admin tools > Blocks Ma
 
 The form let you to select: 
 
-- Region - what region to add a block to?
+- Region - what region to add a block to (e.g. side-pre, side-post)?
 - Block - what block to add? 
 - Categories - what categories to apply the block? 
 - Weight - what block weight will be on those pages? 
@@ -72,6 +73,10 @@ The form let you to select:
 - Reposition instance (if exists)? - if the block already exists, should we reposition the block?
 - Show in subcontexts - should the block be displayed on course subpages (e.g. course page and activity pages)?
 - Page type pattern - what page should the block be displayed? E.g. course-view-*, mod-assign-view and etc.
+    - courses: course-view-* (https://examplemoodle.com/course/view.php?id=1)
+    - assign modules: mod-assign-view (https://examplemoodle.com/mod/assign/view.php?id=1)
+    - quiz modules: mod-quiz-view (https://examplemoodle.com/mod/quiz/view.php?id=1)
+    - feedback modules: mod-feedback-view (https://examplemoodle.com/mod/feedback/view.php?id=1)
                                                                                                            
 Once you configured all fields in the form, you click on "Add new line". This will update "Set of blocks" text field with a new configuration line. (This data will be used later for applying blocks.) 
 Once all blocks are added to a set, click 'Apply set of blocks'. The form will be submitted, and the set of blocks will be applied 
