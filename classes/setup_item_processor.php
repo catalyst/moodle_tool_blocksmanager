@@ -104,7 +104,7 @@ class setup_item_processor {
      * @param array $pagetypesegments Array of page type segments (i.e. [mod, assign, view])
      * @param  \stdClass $course Course object.
      */
-    public function process_module(setup_item $item, array $pagetypesegments, \stdClass $course): void {
+    protected function process_module(setup_item $item, array $pagetypesegments, \stdClass $course): void {
 
         // Get list of modules.
         $moduletypes = get_module_types_names();
@@ -175,7 +175,7 @@ class setup_item_processor {
      * @param \tool_blocksmanager\setup_item $item Item with the block info.
      * @param  \stdClass $course Course object.
      */
-    public function process_course(setup_item $item, \stdClass $course): void {
+    protected function process_course(setup_item $item, \stdClass $course): void {
         $page = new \moodle_page();
         $page->set_course($course);
         $page->set_pagelayout('course');
@@ -217,7 +217,7 @@ class setup_item_processor {
      * @param \tool_blocksmanager\setup_item $item Item with the block info.
      * @return bool True if exists on given page. False otherwise.
      */
-    public function is_block_exist(\moodle_page $page, setup_item $item): bool {
+    protected function is_block_exist(\moodle_page $page, setup_item $item): bool {
         // Create block instances.
         $page->blocks->add_region($item->get_region(), false);
         $page->blocks->load_blocks(true);
@@ -270,7 +270,7 @@ class setup_item_processor {
      * @param string $pagetype Contains the type of page. i.e. course, assign, quiz.
      * @param int $typeid Contains the id of the page.
      */
-    public function change_block(\moodle_page $page, setup_item $item, string $pagetype, int $typeid): void {
+    protected function change_block(\moodle_page $page, setup_item $item, string $pagetype, int $typeid): void {
 
         if (!$page->blocks instanceof block_manager) {
             // TODO: disable whole plugin if block manager is not overridden.
