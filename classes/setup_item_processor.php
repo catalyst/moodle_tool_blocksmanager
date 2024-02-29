@@ -153,47 +153,7 @@ class setup_item_processor {
                         $this->logger->log_message('Added a new instance of ' . $item->get_blockname() . ' to '
                                     . $currentmoduletype . ' ' . $moduleid . ' in course ' . $course->id);
                     } else {
-
-                        // We can only either reposition, add a new instance of the existing block or update existing block.
-                        // We can't have the combination of any of these actions together.
-                        // This is controlled by a set up form UI where you select only one of the actions.
-
-                        if ($item->get_reposition()) {
-                            $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
-
-                            foreach ($existingblocks as $existingblock) {
-                                $page->blocks->reposition_block(
-                                    $existingblock->id,
-                                    $item->get_second_region(),
-                                    $item->get_second_weight()
-                                );
-
-                                $this->logger->log_message('Changed position of ' . $item->get_blockname()
-                                    . ' in ' . $currentmoduletype . ' ' . $moduleid);
-                            }
-                        } else if ($item->get_add()) {
-                            if (key_exists($item->get_blockname(), $page->blocks->get_addable_blocks())) {
-                                $this->add_block($page, $item);
-
-                                $this->logger->log_message('Added another instance of ' . $item->get_blockname()
-                                    . ' in ' . $currentmoduletype . ' ' . $moduleid);
-
-                            } else {
-                                $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
-                                    . ' The block is not addable for module type ' . $currentmoduletype);
-                            }
-                        } else if ($item->get_update()) {
-                            $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
-
-                            foreach ($existingblocks as $existingblock) {
-                                $this->update_block($existingblock, $page, $item);
-                                $this->logger->log_message('Updated instance of ' . $item->get_blockname()
-                                    . ' in ' . $currentmoduletype  . ' ' . $moduleid);
-                            }
-                        } else {
-                            $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
-                                . '. The block already exists in module ' . $currentmoduletype . ' ' . $moduleid);
-                        }
+                      $this->change_block($page, $item, $currentmoduletype, $moduleid);
                     }
                 } catch (\Exception $exception) {
                     $this->logger->log_message('Error processing block '. $item->get_blockname() . ' for module '
@@ -241,47 +201,7 @@ class setup_item_processor {
                 $this->logger->log_message('Added a new instance of ' . $item->get_blockname()
                   . ' to course ' . $course->id);
             } else {
-
-                // We can only either reposition, add a new instance of the existing block or update existing block.
-                // We can't have the combination of any of these actions together.
-                // This is controlled by a set up form UI where you select only one of the actions.
-
-                if ($item->get_reposition()) {
-                    $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
-
-                    foreach ($existingblocks as $existingblock) {
-                        $page->blocks->reposition_block(
-                            $existingblock->id,
-                            $item->get_second_region(),
-                            $item->get_second_weight()
-                        );
-
-                        $this->logger->log_message('Changed position of ' . $item->get_blockname()
-                            . ' in course ' . $course->id);
-                    }
-                } else if ($item->get_add()) {
-                    if (key_exists($item->get_blockname(), $page->blocks->get_addable_blocks())) {
-                        $this->add_block($page, $item);
-
-                        $this->logger->log_message('Added another instance of ' . $item->get_blockname()
-                            . ' to course ' . $course->id);
-
-                    } else {
-                        $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
-                            . ' The block is not addable for the course page of course ' . $course->id);
-                    }
-                } else if ($item->get_update()) {
-                    $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
-
-                    foreach ($existingblocks as $existingblock) {
-                        $this->update_block($existingblock, $page, $item);
-                        $this->logger->log_message('Updated instance of ' . $item->get_blockname()
-                            . ' in course ' . $course->id);
-                    }
-                } else {
-                    $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
-                        . ' The block is already exist in the course ' . $course->id);
-                }
+                $this->change_block($page, $item, 'course', $course->id);
             }
         } catch (\Exception $exception) {
             $this->logger->log_message('Error processing block '. $item->get_blockname() . ' for ' . $course->id
@@ -340,6 +260,63 @@ class setup_item_processor {
         }
 
         return true;
+    }
+
+    /**
+     * Change the block by repositioning, changing its configuration, or adding another instance.
+     *
+     * @param \moodle_page $page Page instance.
+     * @param \tool_blocksmanager\setup_item $item Item with the block info.
+     * @param string $pagetype Contains the type of page. i.e. course, assign, quiz.
+     * @param int $typeid Contains the id of the page.
+     */
+    public function change_block(\moodle_page $page, setup_item $item, string $pagetype, int $typeid): void {
+
+        if (!$page->blocks instanceof block_manager) {
+            // TODO: disable whole plugin if block manager is not overridden.
+            throw new \coding_exception('Terminate processing. Block manager class is not configured in config.php');
+        }
+
+        // We can only either reposition, add a new instance of the existing block or update existing block.
+        // We can't have the combination of any of these actions together.
+        // This is controlled by a set up form UI where you select only one of the actions.
+
+        if ($item->get_reposition()) {
+            $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
+
+            foreach ($existingblocks as $existingblock) {
+                $page->blocks->reposition_block(
+                    $existingblock->id,
+                    $item->get_second_region(),
+                    $item->get_second_weight()
+                );
+
+                $this->logger->log_message('Changed position of ' . $item->get_blockname()
+                    . ' in ' . $pagetype . ' ' . $typeid);
+            }
+        } else if ($item->get_add()) {
+            if (key_exists($item->get_blockname(), $page->blocks->get_addable_blocks())) {
+                $this->add_block($page, $item);
+
+                $this->logger->log_message('Added another instance of ' . $item->get_blockname()
+                    . ' to ' . $pagetype . ' ' . $typeid);
+
+            } else {
+                $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
+                    . ' The block is not addable for ' . $pagetype . ' ' . $typeid);
+            }
+        } else if ($item->get_update()) {
+            $existingblocks = $page->blocks->get_blocks_by_name($item->get_blockname());
+
+            foreach ($existingblocks as $existingblock) {
+                $this->update_block($existingblock, $page, $item);
+                $this->logger->log_message('Updated instance of ' . $item->get_blockname()
+                    . ' in ' . $pagetype . ' ' . $typeid);
+            }
+        } else {
+            $this->logger->log_message('Skipped adding another instance of ' . $item->get_blockname()
+                . ' The block already exists in ' . $pagetype . ' ' . $typeid);
+        }
     }
 
     /**
