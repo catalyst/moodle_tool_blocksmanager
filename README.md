@@ -82,6 +82,16 @@ Once you configured all fields in the form, you click on "Add new line". This wi
 Once all blocks are added to a set, click 'Apply set of blocks'. The form will be submitted, and the set of blocks will be applied 
 by an adhoc task in the background. This means there will a little delay before you see new blocks appeared.
 
+### CLI script ### 
+A CLI script has been added to handle recurring set of blocks. The configuration created in "Set up blocks" can be added to a file, then the script can be called as:
+
+```
+sudo -u www-data /usr/bin/php admin/tool/blocksmanager/cli/blocks_cli_setup.php --filepath=block_setup.txt
+```
+
+The set of blocks will be applied in the same way as previously by an adhoc task in the background.
+
+
 # Crafted by Catalyst IT
 
 
