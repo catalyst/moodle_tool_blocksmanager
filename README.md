@@ -1,4 +1,4 @@
-![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/catalyst/moodle_tool_blocksmanager/ci.yml?branch=master)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/catalyst/moodle_tool_blocksmanager/ci.yml?branch=MOODLE_404_STABLE)
 
 # Block Manager #
 
