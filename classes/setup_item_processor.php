@@ -253,10 +253,10 @@ class setup_item_processor {
             null
         );
         // Set visibility and position.
-        blocks_set_visibility($block, $page, $item->get_visible());
+        blocks_set_visibility($block->instance, $page, $item->get_visible());
         // Update config data.
         if (!empty($item->get_config_data())) {
-            $page->blocks->update_block_config_data($block, $item->get_config_data());
+            $page->blocks->update_block_config_data($block->instance, $item->get_config_data());
         }
 
         return true;

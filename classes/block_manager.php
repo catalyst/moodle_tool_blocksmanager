@@ -20,12 +20,12 @@ namespace tool_blocksmanager;
 
 use core\output\notification;
 use moodle_exception;
-use moodle_page;
 use stdClass;
 use context;
 use context_course;
+use context_system;
+use block_base;
 use moodle_url;
-use core_tag_tag;
 
 /**
  * Custom block manager.
@@ -44,305 +44,226 @@ class block_manager extends \block_manager {
     protected $lockedcategories;
 
     /**
-     * Override standard edit actions:
+     * Updates block configuration in the database
      *
-     *  - if a trying to save block to blocked region - don't save and display error after redirect.
-     *
-     * @return bool
-     * @throws \block_not_on_page_exception
-     * @throws \coding_exception
-     * @throws \dml_exception
-     * @throws \moodle_exception
+     * @param block_base $block
+     * @param stdClass $data data from the block edit form
+     * @return void
      */
-    public function process_url_edit() {
-        global $CFG, $DB, $PAGE, $OUTPUT;
+    public function save_block_data(block_base $block, stdClass $data): void {
+        global $DB;
 
-        $blockid = optional_param('bui_editid', null, PARAM_INT);
-        if (!$blockid) {
-            return false;
-        }
+        $bi = new stdClass;
+        $bi->id = $block->instance->id;
 
-        require_sesskey();
-        require_once($CFG->dirroot . '/blocks/edit_form.php');
-
-        $block = $this->find_instance($blockid);
-
-        if (!$block->user_can_edit() && !$this->page->user_can_edit_blocks()) {
-            throw new \moodle_exception('nopermissions', '', $this->page->url->out(), get_string('editblock'));
-        }
-
-        $editpage = new \moodle_page();
-        $editpage->set_pagelayout('admin');
-        $editpage->blocks->show_only_fake_blocks(true);
-        $editpage->set_course($this->page->course);
-        $editpage->set_context($this->page->context);
-        if ($this->page->cm) {
-            $editpage->set_cm($this->page->cm);
-        }
-        $editurlbase = str_replace($CFG->wwwroot . '/', '/', $this->page->url->out_omit_querystring());
-        $editurlparams = $this->page->url->params();
-        $editurlparams['bui_editid'] = $blockid;
-        $editpage->set_url($editurlbase, $editurlparams);
-        $editpage->set_block_actions_done();
-        // At this point we are either going to redirect, or display the form, so
-        // overwrite global $PAGE ready for this. (Formslib refers to it.)
-        $PAGE = $editpage;
-        $output = $editpage->get_renderer('core');
-        $OUTPUT = $output;
-
-        $formfile = $CFG->dirroot . '/blocks/' . $block->name() . '/edit_form.php';
-        if (is_readable($formfile)) {
-            require_once($formfile);
-            $classname = 'block_' . $block->name() . '_edit_form';
-            if (!class_exists($classname)) {
-                $classname = 'block_edit_form';
-            }
+        // This may get overwritten by the special case handling below.
+        $bi->pagetypepattern = $data->bui_pagetypepattern;
+        $bi->showinsubcontexts = (bool) $data->bui_contexts;
+        if (empty($data->bui_subpagepattern) || $data->bui_subpagepattern == '%@NULL@%') {
+            $bi->subpagepattern = null;
         } else {
-            $classname = 'block_edit_form';
+            $bi->subpagepattern = $data->bui_subpagepattern;
         }
 
-        $mform = new $classname($editpage->url, $block, $this->page);
-        $mform->set_data($block->instance);
+        $systemcontext = context_system::instance();
+        $frontpagecontext = context_course::instance(SITEID);
+        $parentcontext = context::instance_by_id($data->bui_parentcontextid);
 
-        if ($mform->is_cancelled()) {
-            redirect($this->page->url);
+        // Updating stickiness and contexts.  See MDL-21375 for details.
+        if (has_capability('moodle/site:manageblocks', $parentcontext)) { // Check permissions in destination.
 
-        } else if ($data = $mform->get_data()) {
-            $bi = new stdClass;
-            $bi->id = $block->instance->id;
+            // Explicitly set the default context.
+            $bi->parentcontextid = $parentcontext->id;
 
-            // This may get overwritten by the special case handling below.
-            $bi->pagetypepattern = $data->bui_pagetypepattern;
-            $bi->showinsubcontexts = (bool) $data->bui_contexts;
-            if (empty($data->bui_subpagepattern) || $data->bui_subpagepattern == '%@NULL@%') {
+            if ($data->bui_editingatfrontpage) {   // The block is being edited on the front page.
+
+                // The interface here is a special case because the pagetype pattern is
+                // totally derived from the context menu.  Here are the excpetions.   MDL-30340 .
+
+                switch ($data->bui_contexts) {
+                    case BUI_CONTEXTS_ENTIRE_SITE:
+                        // The user wants to show the block across the entire site.
+                        $bi->parentcontextid = $systemcontext->id;
+                        $bi->showinsubcontexts = true;
+                        $bi->pagetypepattern = '*';
+                        break;
+                    case BUI_CONTEXTS_FRONTPAGE_SUBS:
+                        // The user wants the block shown on the front page and all subcontexts.
+                        $bi->parentcontextid = $frontpagecontext->id;
+                        $bi->showinsubcontexts = true;
+                        $bi->pagetypepattern = '*';
+                        break;
+                    case BUI_CONTEXTS_FRONTPAGE_ONLY:
+                        // The user want to show the front page on the frontpage only.
+                        $bi->parentcontextid = $frontpagecontext->id;
+                        $bi->showinsubcontexts = false;
+                        $bi->pagetypepattern = 'site-index';
+                        // This is the only relevant page type anyway but we'll set it explicitly just
+                        // in case the front page grows site-index-* subpages of its own later.
+                        break;
+                }
+            }
+        }
+
+        $bits = explode('-', $bi->pagetypepattern);
+        // Hacks for some contexts.
+        if (($parentcontext->contextlevel == CONTEXT_COURSE) && ($parentcontext->instanceid != SITEID)) {
+            // For course context
+            // is page type pattern is mod-*, change showinsubcontext to 1.
+            if ($bits[0] == 'mod' || $bi->pagetypepattern == '*') {
+                $bi->showinsubcontexts = 1;
+            } else {
+                $bi->showinsubcontexts = 0;
+            }
+        } else if ($parentcontext->contextlevel == CONTEXT_USER) {
+            // For user context subpagepattern should be null.
+            if ($bits[0] == 'user' || $bits[0] == 'my') {
+                // We don't need subpagepattern in usercontext.
                 $bi->subpagepattern = null;
+            }
+        }
+
+        // Blocks Manager custom code.
+        $warning = false;
+
+        // Changing default region.
+        if ($block->instance->defaultregion != $data->bui_defaultregion) {
+            if ($this->get_locking_manager()->can_move_in($block->instance->blockname, $data->bui_defaultregion) &&
+                $this->get_locking_manager()->can_move_out($block->instance->blockname, $block->instance->defaultregion)
+            ) {
+                $bi->defaultregion = $data->bui_defaultregion;
             } else {
-                $bi->subpagepattern = $data->bui_subpagepattern;
+                $warning = true;
             }
+        }
 
-            $systemcontext = \context_system::instance();
-            $frontpagecontext = context_course::instance(SITEID);
-            $parentcontext = context::instance_by_id($data->bui_parentcontextid);
-
-            // Updating stickiness and contexts.  See MDL-21375 for details.
-            if (has_capability('moodle/site:manageblocks', $parentcontext)) { // Check permissions in destination
-
-                // Explicitly set the default context
-                $bi->parentcontextid = $parentcontext->id;
-
-                if ($data->bui_editingatfrontpage) {   // The block is being edited on the front page
-
-                    // The interface here is a special case because the pagetype pattern is
-                    // totally derived from the context menu.  Here are the excpetions.   MDL-30340
-
-                    switch ($data->bui_contexts) {
-                        case BUI_CONTEXTS_ENTIRE_SITE:
-                            // The user wants to show the block across the entire site
-                            $bi->parentcontextid = $systemcontext->id;
-                            $bi->showinsubcontexts = true;
-                            $bi->pagetypepattern  = '*';
-                            break;
-                        case BUI_CONTEXTS_FRONTPAGE_SUBS:
-                            // The user wants the block shown on the front page and all subcontexts
-                            $bi->parentcontextid = $frontpagecontext->id;
-                            $bi->showinsubcontexts = true;
-                            $bi->pagetypepattern  = '*';
-                            break;
-                        case BUI_CONTEXTS_FRONTPAGE_ONLY:
-                            // The user want to show the front page on the frontpage only
-                            $bi->parentcontextid = $frontpagecontext->id;
-                            $bi->showinsubcontexts = false;
-                            $bi->pagetypepattern  = 'site-index';
-                            // This is the only relevant page type anyway but we'll set it explicitly just
-                            // in case the front page grows site-index-* subpages of its own later
-                            break;
-                    }
-                }
-            }
-
-            $bits = explode('-', $bi->pagetypepattern);
-            // hacks for some contexts
-            if (($parentcontext->contextlevel == CONTEXT_COURSE) && ($parentcontext->instanceid != SITEID)) {
-                // For course context
-                // is page type pattern is mod-*, change showinsubcontext to 1
-                if ($bits[0] == 'mod' || $bi->pagetypepattern == '*') {
-                    $bi->showinsubcontexts = 1;
-                } else {
-                    $bi->showinsubcontexts = 0;
-                }
-            } else if ($parentcontext->contextlevel == CONTEXT_USER) {
-                // for user context
-                // subpagepattern should be null
-                if ($bits[0] == 'user' or $bits[0] == 'my') {
-                    // we don't need subpagepattern in usercontext
-                    $bi->subpagepattern = null;
-                }
-            }
-
-            // Blocks Manager custom code.
-            $warning = false;
-
-            // Changing default region.
-            if ($block->instance->defaultregion != $data->bui_defaultregion) {
-                if ($this->get_locking_manager()->can_move_in($block->instance->blockname, $data->bui_defaultregion) &&
-                    $this->get_locking_manager()->can_move_out($block->instance->blockname, $block->instance->defaultregion)
-                ) {
-                    $bi->defaultregion = $data->bui_defaultregion;
-                } else {
-                    $warning = true;
-                }
-            }
-
-            // Changing default weight.
-            if ($block->instance->defaultweight != $data->bui_defaultweight) {
-                if ($this->get_locking_manager()->can_move($block->instance->blockname, $block->instance->defaultregion)) {
-                    $bi->defaultregion = $data->bui_defaultregion;
-                } else {
-                    $warning = true;
-                }
-            }
-            // Blocks Manager custom code.
-
-            $bi->timemodified = time();
-            $DB->update_record('block_instances', $bi);
-
-            if (!empty($block->config)) {
-                $config = clone($block->config);
+        // Changing default weight.
+        if ($block->instance->defaultweight != $data->bui_defaultweight) {
+            if ($this->get_locking_manager()->can_move($block->instance->blockname, $block->instance->defaultregion)) {
+                $bi->defaultweight = $data->bui_defaultweight;
             } else {
-                $config = new stdClass;
+                $warning = true;
             }
-            foreach ($data as $configfield => $value) {
-                if (strpos($configfield, 'config_') !== 0) {
-                    continue;
-                }
-                $field = substr($configfield, 7);
-                $config->$field = $value;
+        }
+        // Blocks Manager custom code.
+
+        $bi->timemodified = time();
+        $DB->update_record('block_instances', $bi);
+
+        if (!empty($block->config)) {
+            $config = clone ($block->config);
+        } else {
+            $config = new stdClass;
+        }
+        foreach ($data as $configfield => $value) {
+            if (strpos($configfield, 'config_') !== 0) {
+                continue;
             }
-            $block->instance_config_save($config);
+            $field = substr($configfield, 7);
+            $config->$field = $value;
+        }
+        $block->instance_config_save($config);
 
-            $bp = new stdClass;
-            $bp->visible = $block->instance->visible;
 
-            // Blocks Manager custom code.
-            // Change visibility.
-            if ($block->instance->visible != $data->bui_visible) {
-                if ($this->get_locking_manager()->can_hide(
-                    $block->instance->blockname,
-                    $block->instance->region,
-                    $this->page->category)
-                ) {
-                    $bp->visible = $data->bui_visible;
-                } else {
-                    $bp->visible = $block->instance->visible;
-                    $warning = true;
-                }
-            }
 
-            // Move regions.
-            if ($block->instance->region != $data->bui_region) {
-                if ($this->get_locking_manager()->can_move_in($block->instance->blockname, $data->bui_region) &&
-                    $this->get_locking_manager()->can_move_out($block->instance->blockname, $block->instance->region)
-                ) {
-                    $bp->region = $data->bui_region;
-                } else {
-                    $warning = true;
-                    $bp->region = $block->instance->region;
-                }
+        $bp = new stdClass;
+        $bp->visible = $data->bui_visible;
+        $bp->region = $data->bui_region;
+        $bp->weight = $data->bui_weight;
+
+        // Blocks Manager custom code.
+        // Change visibility.
+        if ($block->instance->visible != $data->bui_visible) {
+            if ($this->get_locking_manager()->can_hide(
+                $block->instance->blockname,
+                $block->instance->region)
+                // $this->page->category)
+            ) {
+                $bp->visible = $data->bui_visible;
             } else {
+                $bp->visible = $block->instance->visible;
+                $warning = true;
+            }
+        }
+
+        // Move regions.
+        if ($block->instance->region != $data->bui_region) {
+            if ($this->get_locking_manager()->can_move_in($block->instance->blockname, $data->bui_region) &&
+                $this->get_locking_manager()->can_move_out($block->instance->blockname, $block->instance->region)
+            ) {
+                $bp->region = $data->bui_region;
+            } else {
+                $warning = true;
                 $bp->region = $block->instance->region;
             }
+        } else {
+            $bp->region = $block->instance->region;
+        }
 
-            // Move inside region.
-            if ($block->instance->weight != $data->bui_weight) {
-                if ($this->get_locking_manager()->can_move($block->instance->blockname, $data->bui_region)) {
-                    $bp->weight = $data->bui_weight;
-                } else {
-                    $warning = true;
-                    $bp->weight = $block->instance->weight;
-                }
+        // Move inside region.
+        if ($block->instance->weight != $data->bui_weight) {
+            if ($this->get_locking_manager()->can_move($block->instance->blockname, $data->bui_region)) {
+                $bp->weight = $data->bui_weight;
             } else {
+                $warning = true;
                 $bp->weight = $block->instance->weight;
             }
-            // Blocks Manager custom code.
-
-            $needbprecord = !$data->bui_visible || $data->bui_region != $data->bui_defaultregion ||
-                $data->bui_weight != $data->bui_defaultweight;
-
-            if ($block->instance->blockpositionid && !$needbprecord) {
-                $DB->delete_records('block_positions', array('id' => $block->instance->blockpositionid));
-
-            } else if ($block->instance->blockpositionid && $needbprecord) {
-                $bp->id = $block->instance->blockpositionid;
-                $DB->update_record('block_positions', $bp);
-
-            } else if ($needbprecord) {
-                $bp->blockinstanceid = $block->instance->id;
-                $bp->contextid = $this->page->context->id;
-                $bp->pagetype = $this->page->pagetype;
-                if ($this->page->subpage) {
-                    $bp->subpage = $this->page->subpage;
-                } else {
-                    $bp->subpage = '';
-                }
-                $DB->insert_record('block_positions', $bp);
-            }
-
-            // Blocks Manager custom code.
-            if ($warning) {
-                redirect($this->page->url,
-                    get_string('error:lockedregion', 'tool_blocksmanager'),
-                    null,
-                    notification::NOTIFY_ERROR
-                );
-            } else {
-                redirect($this->page->url);
-            }
-            // Blocks Manager custom code.
-
         } else {
-            $strheading = get_string('blockconfiga', 'moodle', $block->get_title());
-            $editpage->set_title($strheading);
-            $editpage->set_heading($strheading);
-            $bits = explode('-', $this->page->pagetype);
-            if ($bits[0] == 'tag' && !empty($this->page->subpage)) {
-                // better navbar for tag pages
-                $editpage->navbar->add(get_string('tags'), new \moodle_url('/tag/'));
-                $tag = core_tag_tag::get($this->page->subpage);
-                // tag search page doesn't have subpageid
-                if ($tag) {
-                    $editpage->navbar->add($tag->get_display_name(), $tag->get_view_url());
-                }
-            }
-            $editpage->navbar->add($block->get_title());
-            $editpage->navbar->add(get_string('configuration'));
-            echo $output->header();
-            echo $output->heading($strheading, 2);
-            $mform->display();
-            echo $output->footer();
-            exit;
+            $bp->weight = $block->instance->weight;
         }
-    }
+        // Blocks Manager custom code.
 
-    /**
-     * Override standard functionality.
-     *
-     * - If default region is locked - don't add any blocks.
-     *
-     * @param string $blockname Name of the block.
-     * @param null|string $blockregion If defined add the new block to the specified region.
-     */
-    public function add_block_at_end_of_default_region($blockname, $blockregion = null) {
-        $defaulregion = $this->get_default_region();
+        $needbprecord = !$data->bui_visible || $data->bui_region != $data->bui_defaultregion ||
+            $data->bui_weight != $data->bui_defaultweight;
 
-        if (!$this->get_locking_manager()->can_move_in($blockname, $defaulregion)) {
+        if ($block->instance->blockpositionid && !$needbprecord) {
+            $DB->delete_records('block_positions', array('id' => $block->instance->blockpositionid));
+
+        } else if ($block->instance->blockpositionid && $needbprecord) {
+            $bp->id = $block->instance->blockpositionid;
+            $DB->update_record('block_positions', $bp);
+
+        } else if ($needbprecord) {
+            $bp->blockinstanceid = $block->instance->id;
+            $bp->contextid = $this->page->context->id;
+            $bp->pagetype = $this->page->pagetype;
+            if ($this->page->subpage) {
+                $bp->subpage = $this->page->subpage;
+            } else {
+                $bp->subpage = '';
+            }
+            $DB->insert_record('block_positions', $bp);
+        }
+
+        // Blocks Manager custom code.
+        if ($warning) {
             redirect($this->page->url,
-                get_string('error:lockedefaultregion', 'tool_blocksmanager'),
+                get_string('error:lockedregion', 'tool_blocksmanager'),
                 null,
                 notification::NOTIFY_ERROR
             );
         }
+        // Blocks Manager custom code.
+    }
 
-        parent::add_block_at_end_of_default_region($blockname);
+    /**
+     * When passed a block name create a new instance of the block in the specified region.
+     *
+     * @param string $blockname Name of the block to add.
+     * @param null|string $blockregion If defined add the new block to the specified region.
+     * @return ?block_base
+     */
+    public function add_block_at_end_of_default_region($blockname, $blockregion = null) {
+        // Check if the user has permission to add this block to the region.
+        if (!$this->get_locking_manager()->can_move_in($blockname, $this->get_default_region())) {
+            \core\notification::add(
+                get_string('error:lockedregion', 'tool_blocksmanager'),
+                notification::NOTIFY_ERROR
+            );
+            return null;
+        }
+
+        return parent::add_block_at_end_of_default_region($blockname, $blockregion);
     }
 
     /**
@@ -562,7 +483,7 @@ class block_manager extends \block_manager {
 
         // Moving outside region -> check move in a new region and move out from the old region.
         if ($newregion != $block->instance->region) {
-            if (!$this->get_locking_manager()->can_move_in($block->instance->blockname, $newregion)  ||
+            if (!$this->get_locking_manager()->can_move_in($block->instance->blockname, $newregion) ||
                 !$this->get_locking_manager()->can_move_out($block->instance->blockname, $block->instance->region)
             ) {
                 throw new \moodle_exception('error:lockedregion', 'tool_blocksmanager');
@@ -570,55 +491,6 @@ class block_manager extends \block_manager {
         }
 
         parent::process_url_move();
-    }
-
-    /**
-     * Override core function to be able to return block instance.
-     *
-     * {@inheritdoc}
-     *
-     * @param string $blockname The type of block to add.
-     * @param string $region the block region on this page to add the block to.
-     * @param integer $weight determines the order where this block appears in the region.
-     * @param boolean $showinsubcontexts whether this block appears in subcontexts, or just the current context.
-     * @param string|null $pagetypepattern which page types this block should appear on. Defaults to just the current page type.
-     * @param string|null $subpagepattern which subpage this block should appear on. NULL = any (the default), otherwise only the specified subpage.
-     *
-     * @return stdClass
-     */
-    public function add_block($blockname, $region, $weight, $showinsubcontexts, $pagetypepattern = null, $subpagepattern = null) {
-        global $DB;
-        // Allow invisible blocks because this is used when adding default page blocks, which
-        // might include invisible ones if the user makes some default blocks invisible.
-        $this->check_known_block_type($blockname, true);
-        $this->check_region_is_known($region);
-
-        if (empty($pagetypepattern)) {
-            $pagetypepattern = $this->page->pagetype;
-        }
-
-        $blockinstance = new stdClass;
-        $blockinstance->blockname = $blockname;
-        $blockinstance->parentcontextid = $this->page->context->id;
-        $blockinstance->showinsubcontexts = !empty($showinsubcontexts);
-        $blockinstance->pagetypepattern = $pagetypepattern;
-        $blockinstance->subpagepattern = $subpagepattern;
-        $blockinstance->defaultregion = $region;
-        $blockinstance->defaultweight = $weight;
-        $blockinstance->configdata = '';
-        $blockinstance->timecreated = time();
-        $blockinstance->timemodified = $blockinstance->timecreated;
-        $blockinstance->id = $DB->insert_record('block_instances', $blockinstance);
-
-        // Ensure the block context is created.
-        \context_block::instance($blockinstance->id);
-
-        // If the new instance was created, allow it to do additional setup.
-        if ($block = block_instance($blockname, $blockinstance)) {
-            $block->instance_create();
-        }
-
-        return $blockinstance;
     }
 
     /**
@@ -673,3 +545,4 @@ class block_manager extends \block_manager {
 
 }
 // @codingStandardsIgnoreEnd
+
