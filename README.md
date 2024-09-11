@@ -4,6 +4,13 @@
 
 An admin tool that allows you to control a block layout across units.
 
+# Versions and branches
+
+| Moodle Version   | Branch            |
+|------------------|-------------------|
+| Moodle 3.9 - 4.1 | master            |
+| Moodle 4.4       | MOODLE_404_STABLE |
+
 ## Features ##
 * Lock down functionality for the blocks in the regions.
   - Create locking rules for the regions in the specific course categories (block regions in courses from the selected course categories (including child categories) will be locked according to configured rules).
