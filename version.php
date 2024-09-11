@@ -26,7 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tool_blocksmanager';
 $plugin->release = '0.1.1';
-$plugin->version = 2023050400;
-$plugin->requires = 2018051700;
-$plugin->supported = [39, 401];
+$plugin->version = 2024091100;
+$plugin->requires = 2024042200;
 $plugin->maturity = MATURITY_STABLE;
