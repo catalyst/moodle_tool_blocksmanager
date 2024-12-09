@@ -9,7 +9,7 @@ An admin tool that allows you to control a block layout across units.
 | Moodle Version   | Branch            |
 |------------------|-------------------|
 | Moodle 3.9 - 4.1 | master            |
-| Moodle 4.4       | MOODLE_404_STABLE |
+| Moodle 4.4 - 4.5 | MOODLE_404_STABLE |
 
 ## Features ##
 * Lock down functionality for the blocks in the regions.
@@ -28,11 +28,6 @@ An admin tool that allows you to control a block layout across units.
 ## Installation ##
 1. Download files or clone the repository to /admin/tool/blocksmanager
 2. Install the plugin as usual.
-3. Add following line to your config.php.
-
-```php
- $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
-```
 
 ## Usage ##
 
