@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lib functions.
+ * Hook definitions.
  *
- * @package    tool_blocksmanager
- * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
- * @copyright  Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     tool_blocksmanager
+ * @author      Alexander Van der Bellen <alexandervanderbellen@catalyst-au.net>
+ * @copyright   2024 Catalyst IT Australia
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/**
- * Call back tool_blocksmanager_after_config.
- */
-function tool_blocksmanager_after_config() {
-    global $CFG;
+defined('MOODLE_INTERNAL') || die();
 
-    $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
-}
+$callbacks = [
+    [
+        'hook' => \core\hook\after_config::class,
+        'callback' => '\tool_blocksmanager\hook_callbacks::after_config',
+    ],
+];

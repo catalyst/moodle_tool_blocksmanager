@@ -14,19 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_blocksmanager;
+
 /**
- * Plugin version and other meta-data are defined here.
+ * Hook callbacks.
  *
  * @package     tool_blocksmanager
- * @copyright   2019 Catalyst IT
+ * @author      Alexander Van der Bellen <alexandervanderbellen@catalyst-au.net>
+ * @copyright   2024 Catalyst IT Australia
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class hook_callbacks {
+    /**
+     * Listener for the after_config hook.
+     *
+     * @param \core\hook\after_config $hook
+     */
+    public static function after_config(\core\hook\after_config $hook): void {
+        global $CFG;
 
-defined('MOODLE_INTERNAL') || die();
+        if (during_initial_install() || isset($CFG->upgraderunning)) {
+            // Do nothing during installation or upgrade.
+            return;
+        }
 
-$plugin->component = 'tool_blocksmanager';
-$plugin->release = '0.1.1';
-$plugin->version = 2024121000;
-$plugin->requires = 2024042200;
-$plugin->supported = [404, 405];
-$plugin->maturity = MATURITY_STABLE;
+        $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
+    }
+}
