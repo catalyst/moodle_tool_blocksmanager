@@ -38,6 +38,6 @@ class hook_callbacks {
             return;
         }
 
-        tool_blocksmanager_after_config();
+        $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
     }
 }
