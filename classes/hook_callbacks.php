@@ -38,6 +38,7 @@ class hook_callbacks {
             return;
         }
 
-        $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
+        // Call the original function for backwards compatibility.
+        tool_blocksmanager_after_config();
     }
 }
