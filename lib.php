@@ -15,18 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Lib functions.
  *
- * @package     tool_blocksmanager
- * @copyright   2019 Catalyst IT
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_blocksmanager
+ * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
+ * @copyright  Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+/**
+ * Call back tool_blocksmanager_after_config.
+ */
+function tool_blocksmanager_after_config() {
+    global $CFG;
 
-$plugin->component = 'tool_blocksmanager';
-$plugin->release = '0.1.1';
-$plugin->version = 2025031900;
-$plugin->requires = 2024042200;
-$plugin->supported = [404, 405];
-$plugin->maturity = MATURITY_STABLE;
+    $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
+}

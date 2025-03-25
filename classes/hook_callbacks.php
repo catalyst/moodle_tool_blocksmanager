@@ -38,6 +38,8 @@ class hook_callbacks {
             return;
         }
 
-        $CFG->blockmanagerclass = '\\tool_blocksmanager\\block_manager';
+        // Call the original function for backwards compatibility.
+        require_once($CFG->dirroot . '/admin/tool/blocksmanager/lib.php');
+        tool_blocksmanager_after_config();
     }
 }
